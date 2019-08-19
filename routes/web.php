@@ -14,7 +14,7 @@
 use Illuminate\Http\Request;
 
 Route::get('/', function () {
-    return 'Hello World';
+    return view('splash');
 });
 
 Route::get('/login', 'Auth\LoginController@loginWithVatsimSSO')->name('login');
