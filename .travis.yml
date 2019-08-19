@@ -36,6 +36,9 @@ before_script:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
     ./cc-test-reporter before-build;
     fi
+  - sed -i 's%^VATSIM_SSO_CERTIFCATE.*$%VATSIM_SSO_CERTIFCATE=\"${SSO_CERT}\"%' .env
+  - sed -i "s%^VATSIM_SSO_KEY.*$%VATSIM_SSO_KEY=${SSO_KEY}%" .env
+  - sed -i "s%^VATSIM_SSO_SECRET.*$%VATSIM_SSO_SECRET=${SSO_SECRET}%" .env
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
