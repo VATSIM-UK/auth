@@ -18,6 +18,8 @@ abstract class TestCase extends BaseTestCase
 
         $this->user = factory(User::class)->create();
 
+        $this->seedTables();
+
     }
 
     protected function seedTables()

@@ -11,7 +11,7 @@ class MockCoreDatabase
     public static function create()
     {
         DB::connection('mysql_core')->statement(
-            "create if not exists mship_account
+            "create table if not exists mship_account
             (
                 id int unsigned not null
                     primary key,
