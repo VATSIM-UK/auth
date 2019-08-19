@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Tests\Database\MockCoreDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -16,5 +17,26 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->user = factory(User::class)->create();
+
+    }
+
+    protected function seedTables()
+    {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
+            return;
+        }
+
+        // Setup account table
+        MockCoreDatabase::create();
+    }
+
+    protected function dropTabkes()
+    {
+        if (!method_exists($this, 'beginDatabaseTransaction')) {
+            return;
+        }
+
+        // Setup account table
+        MockCoreDatabase::destroy();
     }
 }

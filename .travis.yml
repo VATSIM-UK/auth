@@ -1,26 +1,26 @@
 os:
   - linux
-​
+
 php:
   - 7.2
   - 7.3
-​
+
 addons:
   mariadb: '10.2'
-​
+
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
   - mysql -e 'create database IF NOT EXISTS core;' -uroot
   - sudo apt-get update
   - composer self-update
   - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
-​
+
 install:
   - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan passport:keys
-​
+
 before_script:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
@@ -29,6 +29,6 @@ before_script:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
     ./cc-test-reporter before-build;
     fi
-​
+
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
