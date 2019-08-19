@@ -28,6 +28,13 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout', 'loginSecondary');
     }
 
+    public function logout()
+    {
+        Auth::logout();
+        Auth::guard('partial_web')->logout();
+        return redirect('/');
+    }
+
     /*
      * Step 1: Redirect to VATSIM.NET SSO
      */
@@ -73,7 +80,7 @@ class LoginController extends Controller
                 }
 
                 Auth::loginUsingId($vatsimUser->id);
-                return redirect('/home');
+                return redirect()->intended('/home');
             },
             function ($error) {
                 throw new Exception($error['message']);
@@ -116,6 +123,6 @@ class LoginController extends Controller
             return back()->with('error', 'Incorrect details provided');
         }
         Auth::guard('partial_web')->logout();
-        return redirect('/home');
+        return redirect()->intended('/home');
     }
 }
