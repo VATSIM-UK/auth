@@ -14,12 +14,19 @@ before_install:
   - sudo apt-get update
   - composer self-update
   - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
+  - yarn install
 
 install:
   - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan passport:keys
+  # If this is not a PR and we are not running on master, run yarn as dev to improve performance
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
+    yarn run dev;
+    else
+    yarn run prod;
+    fi
 
 before_script:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi

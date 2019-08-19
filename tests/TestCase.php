@@ -16,9 +16,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->user = factory(User::class)->create();
-
         // Setup account table
         MockCoreDatabase::create();
+
+        $this->user = factory(User::class)->create();
     }
 }
