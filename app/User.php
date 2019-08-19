@@ -14,6 +14,8 @@ class User extends Authenticatable
     protected $connection = 'mysql_core';
     protected $table = 'mship_account';
 
+    public $incrementing = false;
+
     protected $fillable = [
         'id',
         'name_first',

@@ -25,7 +25,7 @@ class LoginController extends Controller
 
     public function __construct()
     {
-        $this->middleware('guest')->except('logout', 'loginSecondary');
+        $this->middleware('guest')->except('logout');
     }
 
     public function logout()
@@ -40,6 +40,10 @@ class LoginController extends Controller
      */
     public function loginWithVatsimSSO()
     {
+        if(Auth::guard('partial_web')->check()){
+            return redirect()->route('login.secondary');
+        }
+
         $sso = new VATSIMSSO();
         return $sso->login(url('/login/sso/verify'), function ($key, $secret, $url) {
             Session::put('vatsimauth', compact('key', 'secret'));
@@ -112,7 +116,7 @@ class LoginController extends Controller
         $user = Auth::guard('partial_web')->user();
 
         if (!$user->hasPassword()) {
-            return redirect('/');
+            return redirect()->route('login');
         }
 
         $this->validate($request, [
