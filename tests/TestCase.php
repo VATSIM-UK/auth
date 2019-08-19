@@ -18,27 +18,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->user = factory(User::class)->create();
 
-        $this->seedTables();
-
-    }
-
-    protected function seedTables()
-    {
-        if (!method_exists($this, 'beginDatabaseTransaction')) {
-            return;
-        }
-
         // Setup account table
         MockCoreDatabase::create();
-    }
-
-    protected function dropTabkes()
-    {
-        if (!method_exists($this, 'beginDatabaseTransaction')) {
-            return;
-        }
-
-        // Setup account table
-        MockCoreDatabase::destroy();
     }
 }
