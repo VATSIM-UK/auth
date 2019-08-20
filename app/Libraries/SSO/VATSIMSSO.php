@@ -109,16 +109,17 @@ class VATSIMSSO
      */
     public function login($returnUrl, $success, $error = null)
     {
-        if ($token = $this->requestToken($returnUrl, false, false)) {
+        if ($ssoToken = $this->requestToken($returnUrl, false, false)) {
             return $this->callResponse($success, [
-                (string)$token->token->oauth_token,
-                (string)$token->token->oauth_token_secret,
+                (string)$ssoToken->token->oauth_token,
+                (string)$ssoToken->token->oauth_token_secret,
                 $this->sendToVatsim()
             ]);
         }
 
-        if (is_null($error))
+        if (is_null($error)){
             return false;
+        }
         return $this->callResponse($error, [$this->getError()]);
     }
 
@@ -140,8 +141,9 @@ class VATSIMSSO
                 $request->request
             ]);
         } else {
-            if (is_null($error))
+            if (is_null($error)){
                 return false;
+            }
             return $this->callResponse($error, [$this->getError()]);
         }
     }
@@ -170,53 +172,48 @@ class VATSIMSSO
         // generate a token request from the consumer details
         $req = Request::from_consumer_and_token($this->consumer, false, "POST", $tokenUrl, array(
             'oauth_callback' => (String)$return_url,
-            'oauth_allow_suspended' => ($allow_sus) ? true : false,
-            'oauth_allow_inactive' => ($allow_ina) ? true : false
+            'oauth_allow_suspended' => (bool) $allow_sus,
+            'oauth_allow_inactive' => (bool) $allow_ina
         ));
         // sign the request using the specified signature/encryption method (set in this class)
         $req->sign_request($this->signature, $this->consumer, false);
 
         $response = $this->curlRequest($tokenUrl, $req->to_postdata());
 
-        if ($response) {
-            // convert using our response format (depending upon user preference)
-            $sso = $this->responseFormat($response);
-
-            // did VATSIM return a successful result?
-            if ($sso->request->result == 'success') {
-
-                // this parameter is required by 1.0a spec
-                if ($sso->token->oauth_callback_confirmed == 'true') {
-                    // store the token data saved
-                    $this->token = new Consumer($sso->token->oauth_token, $sso->token->oauth_token_secret);
-                    // return the full object to the user
-                    return $sso;
-                } else {
-                    // no callback_confirmed parameter
-                    $this->error = [
-                        'type' => 'callback_confirm',
-                        'code' => false,
-                        'message' => 'Callback confirm flag missing - protocol mismatch'
-                    ];
-                    return false;
-                }
-
-            } else {
-
-                // oauth returned a failed request, store the error details
-                $this->error = [
-                    'type' => 'oauth_response',
-                    'code' => false,
-                    'message' => $sso->request->message
-                ];
-
-                return false;
-            }
-        } else {
+        if(!$response){
             // cURL response failed
             return false;
         }
 
+        // convert using our response format (depending upon user preference)
+        $sso = $this->responseFormat($response);
+
+        // did VATSIM return a successful result?
+        if ($sso->request->result == 'success') {
+
+            // this parameter is required by 1.0a spec
+            if ($sso->token->oauth_callback_confirmed == 'true') {
+                // store the token data saved
+                $this->token = new Consumer($sso->token->oauth_token, $sso->token->oauth_token_secret);
+                // return the full object to the user
+                return $sso;
+            } else {
+                // no callback_confirmed parameter
+                $this->error = [
+                    'type' => 'callback_confirm',
+                    'code' => false,
+                    'message' => 'Callback confirm flag missing - protocol mismatch'
+                ];
+            }
+        } else {
+            // oauth returned a failed request, store the error details
+            $this->error = [
+                'type' => 'oauth_response',
+                'code' => false,
+                'message' => $sso->request->message
+            ];
+        }
+        return false;
     }
 
     /**
@@ -246,36 +243,32 @@ class VATSIMSSO
         // post the details to VATSIM and obtain the result
         $response = $this->curlRequest($returnUrl, $req->to_postdata());
 
-        if ($response) {
-            // convert using our response format (depending upon user preference)
-            $sso = $this->responseFormat($response);
-
-            // did VATSIM return a successful result?
-            if ($sso->request->result == 'success') {
-
-                // one time use of tokens only, token no longer valid
-                $this->token = false;
-
-                // return the full object to the user
-                return $sso;
-            } else {
-
-                // oauth returned a failed request, store the error details
-                $this->error = array(
-                    'type' => 'oauth_response',
-                    'code' => false,
-                    'message' => $sso->request->message
-                );
-
-                return false;
-
-            }
-
-        } else {
+        if (!$response) {
             // cURL response failed
             return false;
         }
 
+        // convert using our response format (depending upon user preference)
+        $sso = $this->responseFormat($response);
+
+        // did VATSIM return a successful result?
+        if ($sso->request->result == 'success') {
+
+            // one time use of tokens only, token no longer valid
+            $this->token = false;
+
+            // return the full object to the user
+            return $sso;
+        } else {
+
+            // oauth returned a failed request, store the error details
+            $this->error = array(
+                'type' => 'oauth_response',
+                'code' => false,
+                'message' => $sso->request->message
+            );
+        }
+        return false;
     }
 
 
@@ -317,12 +310,9 @@ class VATSIMSSO
 
             return false;
 
-        } else {
-
-            return $response;
-
         }
 
+        return $response;
     }
 
     private function responseFormat($response)
@@ -359,13 +349,7 @@ class VATSIMSSO
         $signature = strtoupper($signature);
 
         // RSA-SHA1 public key/private key encryption
-        if ($signature == 'RSA' || $signature == 'RSA-SHA1') {
-
-            // private key must be provided
-            if (!$private_key) {
-                return false;
-            }
-
+        if ($private_key && ($signature == 'RSA' || $signature == 'RSA-SHA1')) {
             // signature method set to RSA-SHA1 using this private key (interacts with OAuth class)
             $this->signature = new RsaSha1($private_key);
 
@@ -377,10 +361,9 @@ class VATSIMSSO
             $this->signature = new HmacSha1;
 
             return true;
-        } else {
-            // signature method was not recognised
-            return false;
         }
+
+        return false;
     }
 
 

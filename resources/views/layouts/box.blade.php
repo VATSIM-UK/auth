@@ -30,7 +30,7 @@
         <div class="row justify-content-center" style="padding-top: 10%">
             <div class="col-md-6 text-center">
 
-                <img src="{{asset('img/vatsimuk_white.png')}}" class="w-100 pb-4" style="max-width: 300px"/>
+                <img src="{{asset('img/vatsimuk_white.png')}}" alt="VATSIM UK" class="w-100 pb-4" style="max-width: 300px"/>
 
                 <div class="card">
                     <div class="card-body">

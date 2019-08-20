@@ -61,11 +61,12 @@ trait HasPassword
      * Set the user's password.
      *
      * @param string $password The password string.
-     * @param bool $temporary Will only be a temporary password
      * @return bool
      */
-    public function setPassword($password, $temporary = false)
+    public function setPassword($password)
     {
+        //TODO: Implement expiry
+
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),

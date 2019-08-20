@@ -7,6 +7,7 @@ use App\Libraries\SSO\VATSIMSSO;
 use App\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
@@ -49,7 +50,7 @@ class LoginController extends Controller
             Session::put('vatsimauth', compact('key', 'secret'));
             return redirect($url);
         }, function ($error) {
-            throw new Exception('Could not authenticate: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate: ' . $error['message']);
         });
     }
 
@@ -75,7 +76,7 @@ class LoginController extends Controller
                 $user->joined_at = $vatsimUser->reg_date;
                 $user->last_login = Carbon::now();
                 $user->last_login_ip = \Request::ip();
-                $user->inactive = $vatsimUser->rating->id == -1 ? true : false;
+                $user->inactive = $vatsimUser->rating->id == -1;
                 $user->save();
 
                 if ($user->hasPassword()) {
@@ -87,7 +88,7 @@ class LoginController extends Controller
                 return redirect()->intended('/home');
             },
             function ($error) {
-                throw new Exception($error['message']);
+                throw new AuthenticationException($error['message']);
             }
         );
     }
