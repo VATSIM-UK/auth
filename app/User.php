@@ -33,14 +33,4 @@ class User extends Authenticatable
     protected $casts = [
         'inactive' => 'bool'
     ];
-
-    /**
-     * Determine whether the current account has a password set.
-     *
-     * @return bool
-     */
-    public function hasPassword()
-    {
-        return $this->password !== null;
-    }
 }

@@ -4,6 +4,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -12,14 +13,36 @@ class LoginTest extends TestCase
 
     protected $connectionsToTransact = ['mysql','mysql_core'];
 
-    /* @test */
+    /** @test */
+    public function testUserCanLogout()
+    {
+        $this->actingAs($this->user, 'web');
+        $this->assertAuthenticated('web');
+
+        $this->followingRedirects()
+            ->get(route('logout'))
+            ->assertOk();
+
+        $this->assertGuest();
+
+        $this->actingAs($this->user, 'partial_web');
+        $this->assertAuthenticated('partial_web');
+
+        $this->followingRedirects()
+            ->get(route('logout'))
+            ->assertOk();
+
+        $this->assertGuest();
+    }
+
+    /** @test */
     public function testUserIsRedirectedToVATSIM()
     {
         $this->get(route('login'))
             ->assertRedirect();
     }
 
-    /* @test */
+    /** @test */
     public function testLoggedInUserRedirected()
     {
         $this->actingAs($this->user)
@@ -27,7 +50,7 @@ class LoginTest extends TestCase
             ->assertRedirect('/home');
     }
 
-    /* @test */
+    /** @test */
     public function testSSOUserWithPasswordIsRedirected()
     {
         $this->user->setPassword("1234");
@@ -37,7 +60,18 @@ class LoginTest extends TestCase
             ->assertRedirect(route('login.secondary'));
     }
 
-    /* @test */
+    /** @test */
+    public function testSSOUserCanSeeSignin()
+    {
+        $this->user->setPassword("1234");
+
+        $this->actingAs($this->user, 'partial_web')
+            ->get(route('login.secondary'))
+            ->assertSuccessful()
+            ->assertSeeText('Secondary Authentication');
+    }
+
+    /** @test */
     public function testInvalidPasswordNotAccepted()
     {
         $this->user->setPassword("1234");
@@ -51,7 +85,7 @@ class LoginTest extends TestCase
             ->assertLocation(route('login.secondary'));
     }
 
-    /* @test */
+    /** @test */
     public function testValidPasswordAccepted()
     {
         $this->user->setPassword("1234");

@@ -10,7 +10,6 @@ use Session;
 
 trait HasPassword
 {
-
     public function verifyPassword($password)
     {
         if ($this->password == sha1(sha1($password))) {
@@ -53,42 +52,6 @@ trait HasPassword
     }
 
     /**
-     * Determine whether the current password has expired.
-     *
-     * @return bool
-     */
-    public function hasPasswordExpired()
-    {
-        if (!$this->hasPassword()) {
-            return false;
-        }
-
-        if ($this->password_expires_at === null) {
-            return false;
-        }
-
-        return $this->password_expires_at->isPast();
-    }
-
-    /**
-     * Calculate the password expiry for this account.
-     *
-     * @param bool $temporary Should we treat the password as temporary?
-     *
-     * @return null|Carbon
-     */
-    public function calculatePasswordExpiry($temporary = false)
-    {
-        if ($temporary) {
-            return Carbon::now();
-        }
-
-        if ($this->password_lifetime > 0) {
-            return Carbon::now()->addDays($this->password_lifetime);
-        }
-    }
-
-    /**
      * Set the user's password.
      *
      * @param string $password The password string.
@@ -100,7 +63,6 @@ trait HasPassword
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
-            'password_expires_at' => $this->calculatePasswordExpiry($temporary),
         ])->save();
 
         // if the password is being reset by its owner...
