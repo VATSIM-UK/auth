@@ -34,6 +34,6 @@ return array(
      * Your RSA **PRIVATE** key
      * If you are not using RSA, this value can be anything (or not set)
      */
-    'cert' => env('VATSIM_SSO_CERTIFCATE'),
+    'cert' => str_replace('\n', "\n", env('VATSIM_SSO_CERTIFCATE', '')),
 
 );

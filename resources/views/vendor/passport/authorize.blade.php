@@ -59,7 +59,7 @@
 
                 <input type="hidden" name="state" value="{{ $request->state }}">
                 <input type="hidden" name="client_id" value="{{ $client->id }}">
-                <button type="submit" class="btn btn-success btn-approve">Authorize</button>
+                <button type="submit" class="btn btn-success btn-approve">Authorise</button>
             </form>
 
             <!-- Cancel Button -->
