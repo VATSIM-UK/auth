@@ -7,9 +7,9 @@ use App\Libraries\SSO\VATSIMSSO;
 use App\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
@@ -74,7 +74,7 @@ class LoginController extends Controller
                 $user->experience = $vatsimUser->experience;
                 $user->joined_at = $vatsimUser->reg_date;
                 $user->last_login = Carbon::now();
-                $user->last_login_ip = Request::ip();
+                $user->last_login_ip = \Request::ip();
                 $user->inactive = $vatsimUser->rating->id == -1 ? true : false;
                 $user->save();
 
@@ -111,7 +111,7 @@ class LoginController extends Controller
      * Step (4): Fully Authenticate
      */
 
-    public function verifySecondarySignin(\Illuminate\Http\Request $request)
+    public function verifySecondarySignin(Request $request)
     {
         $user = Auth::guard('partial_web')->user();
 

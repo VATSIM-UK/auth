@@ -8,7 +8,6 @@ use Eher\OAuth\RsaSha1 as BaseRsaSha1;
 
 class RsaSha1 extends BaseRsaSha1
 {
-
     private $cert = false;
 
     public function __construct($cert)
@@ -25,5 +24,4 @@ class RsaSha1 extends BaseRsaSha1
     {
         throw new OAuthException("fetch_public_cert not implemented");
     }
-
 }

@@ -10,6 +10,12 @@ use Session;
 
 trait HasPassword
 {
+    /**
+     * Verify if supplied password is correct for user
+     *
+     * @param $password
+     * @return bool
+     */
     public function verifyPassword($password)
     {
         if ($this->password == sha1(sha1($password))) {

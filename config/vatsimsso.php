@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     /*
     * The location of the VATSIM OAuth interface
@@ -36,4 +36,4 @@ return array(
      */
     'cert' => str_replace('\n', "\n", env('VATSIM_SSO_CERTIFCATE', '')),
 
-);
+];
