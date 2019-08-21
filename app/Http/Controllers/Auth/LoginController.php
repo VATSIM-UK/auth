@@ -41,6 +41,12 @@ class LoginController extends Controller
      */
     public function loginWithVatsimSSO()
     {
+		// Check we have nessesary information
+		if(!VATSIMSSO::isEnabled()){
+			return back()->with('error', 'VATSIM SSO Authentication is not currently available');
+		}
+		
+		
         if(Auth::guard('partial_web')->check()){
             return redirect()->route('login.secondary');
         }
@@ -125,7 +131,10 @@ class LoginController extends Controller
         ]);
 
         if (!Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
-            return back()->with('error', 'Incorrect details provided');
+			$error = \Illuminate\Validation\ValidationException::withMessages([
+			   'password' => ['Incorrect details provided'],
+			]);
+			throw $error;
         }
         Auth::guard('partial_web')->logout();
         return redirect()->intended('/home');

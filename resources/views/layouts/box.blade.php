@@ -31,7 +31,13 @@
             <div class="col-md-6 text-center">
 
                 <img src="{{asset('img/vatsimuk_white.png')}}" alt="VATSIM UK" class="w-100 pb-4" style="max-width: 300px"/>
-
+				
+				@if(Session::has('error') OR isset($error))
+					<div class="alert alert-danger" role="alert">
+						<strong>Error!</strong> {!! Session::has('error') ? Session::pull("error") : $error !!}
+					</div>
+				@endif
+				
                 <div class="card">
                     <div class="card-body">
                         @yield('content')

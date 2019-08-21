@@ -92,6 +92,11 @@ class VATSIMSSO
 
         $this->signature(config('vatsimsso.method'), config('vatsimsso.cert'));
     }
+	
+	public static function isEnabled()
+	{
+		return config('vatsimsso.base') && config('vatsimsso.key') && config('vatsimsso.secret') && config('vatsimsso.method') && config('vatsimsso.cert');
+	}
 
 
     /*

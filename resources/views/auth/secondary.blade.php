@@ -21,13 +21,13 @@
                 <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                 <div class="col-md-6">
-                    <input id="password" type="password" class="form-control {{session('error') ? 'is-invalid' : ''}}"
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                            name="password" required autocomplete="current-password">
-                    @if (session('error'))
+                    @error('password')
                         <span class="invalid-feedback" role="alert">
-                                        <strong>{{ session('error') }}</strong>
+                                        <strong>{{ $message }}</strong>
                                     </span>
-                    @endif
+                    @enderror
                 </div>
             </div>
             <div class="form-group row mb-0 mt-4">
