@@ -81,7 +81,7 @@ class LoginTest extends TestCase
             ->post(route('login.secondary'), [
                 'password' => 'abcd'
             ])
-            ->assertSessionHas('error')
+            ->assertSessionHasErrors()
             ->assertLocation(route('login.secondary'));
     }
 
