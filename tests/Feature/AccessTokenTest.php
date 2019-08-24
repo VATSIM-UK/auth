@@ -26,7 +26,7 @@ class AccessTokenTest extends TestCase
         ]);
     }
 
-    /** @test */
+
     public function testCanRequestAuthorization()
     {
         $state = Str::random(40);
@@ -43,7 +43,7 @@ class AccessTokenTest extends TestCase
             ->assertRedirect('login');
     }
 
-    /** @test */
+
     public function testGetsSentBackToCallbackWithoutApprovalForFirstParty()
     {
         $state = Str::random(40);

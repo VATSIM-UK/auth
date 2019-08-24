@@ -17,13 +17,16 @@ Route::get('/', function () {
     return view('splash');
 });
 
-Route::get('/login', 'Auth\LoginController@loginWithVatsimSSO')->name('login');
-Route::get('/login/sso/verify', 'Auth\LoginController@verifySSOLogin')->name('login.sso.verify');
-Route::get('/login/secondary', 'Auth\LoginController@showSecondarySignin')->name('login.secondary');
-Route::post('/login/secondary', 'Auth\LoginController@verifySecondarySignin');
+Route::namespace('Auth')->group(function () {
+    Route::get('/login', 'LoginController@loginWithVatsimSSO')->name('login');
+    Route::get('/login/sso/verify', 'LoginController@verifySSOLogin')->name('login.sso.verify');
+    Route::get('/login/secondary', 'LoginController@showSecondarySignin')->name('login.secondary');
+    Route::post('/login/secondary', 'LoginController@verifySecondarySignin');
 
 
-Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+
+});
 
 
 Route::get('/home', 'HomeController@index')->name('home');

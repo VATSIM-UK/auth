@@ -15,11 +15,23 @@ class RsaSha1 extends BaseRsaSha1
         $this->cert = $cert;
     }
 
+    /**
+     * Fetch the private RSA certificate
+     *
+     * @param $request
+     * @return string
+     */
     public function fetch_private_cert(&$request)
     {
         return $this->cert;
     }
 
+    /**
+     * Fetch the public RSA certificate (we do not use this functionality)
+     *
+     * @param $request
+     * @throws OAuthException
+     */
     public function fetch_public_cert(&$request)
     {
         throw new OAuthException("fetch_public_cert not implemented");

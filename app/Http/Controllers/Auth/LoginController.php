@@ -45,8 +45,8 @@ class LoginController extends Controller
 		if(!VATSIMSSO::isEnabled()){
 			return back()->with('error', 'VATSIM SSO Authentication is not currently available');
 		}
-		
-		
+
+
         if(Auth::guard('partial_web')->check()){
             return redirect()->route('login.secondary');
         }
@@ -63,10 +63,14 @@ class LoginController extends Controller
     /*
      * Step 2: Verify SSO Login after redirect
      */
-    public function verifySSOLogin()
+    public function verifySSOLogin(Request $request)
     {
         $sso = new VATSIMSSO();
         $session = Session::get('vatsimauth');
+
+        $this->validate($request, [
+            'oauth_verifier' => 'required',
+        ]);
 
         return $sso->validate(
             $session['key'],

@@ -9,14 +9,14 @@ use Tests\TestCase;
 
 class UserRetrievalTest extends TestCase
 {
-    /** @test */
+
     public function testUnauthenticatedUserCannotAccessUserInformation()
     {
         $this->json('GET', route('api.user'))
             ->assertUnauthorized();
     }
 
-    /** @test */
+
     public function testAuthenticatedUserCanAccessTheirInformation()
     {
         Passport::actingAs($this->user);

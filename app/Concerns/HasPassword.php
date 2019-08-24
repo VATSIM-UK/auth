@@ -16,9 +16,9 @@ trait HasPassword
      * @param $password
      * @return bool
      */
-    public function verifyPassword($password)
+    public function verifyPassword(String $password): bool
     {
-        if ($this->password == sha1(sha1($password))) {
+        if ($this->password === sha1(sha1($password))) {
             $this->password = $password;
             $this->save();
         }
@@ -33,7 +33,7 @@ trait HasPassword
      *
      * @param null|string $password The password value to set.
      */
-    public function setPasswordAttribute($password)
+    public function setPasswordAttribute(String $password): void
     {
         // if password is null, remove the current password
         // elseif password is already hashed, store it as provided
@@ -52,7 +52,7 @@ trait HasPassword
      *
      * @return bool
      */
-    public function hasPassword()
+    public function hasPassword(): bool
     {
         return $this->password !== null;
     }
@@ -63,7 +63,7 @@ trait HasPassword
      * @param string $password The password string.
      * @return bool
      */
-    public function setPassword($password)
+    public function setPassword(String $password): bool
     {
         //TODO: Implement expiry
 
@@ -87,7 +87,7 @@ trait HasPassword
      *
      * @return bool
      */
-    public function removePassword()
+    public function removePassword(): bool
     {
         return $this->fill([
             'password' => null,

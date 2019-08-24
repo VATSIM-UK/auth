@@ -13,7 +13,7 @@ class LoginTest extends TestCase
 
     protected $connectionsToTransact = ['mysql','mysql_core'];
 
-    /** @test */
+
     public function testUserCanLogout()
     {
         $this->actingAs($this->user, 'web');
@@ -35,14 +35,14 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
-    /** @test */
+
     public function testUserIsRedirectedToVATSIM()
     {
         $this->get(route('login'))
             ->assertRedirect();
     }
 
-    /** @test */
+
     public function testLoggedInUserRedirected()
     {
         $this->actingAs($this->user)
@@ -50,7 +50,7 @@ class LoginTest extends TestCase
             ->assertRedirect('/home');
     }
 
-    /** @test */
+
     public function testSSOUserWithPasswordIsRedirected()
     {
         $this->user->setPassword("1234");
@@ -60,7 +60,7 @@ class LoginTest extends TestCase
             ->assertRedirect(route('login.secondary'));
     }
 
-    /** @test */
+
     public function testSSOUserCanSeeSignin()
     {
         $this->user->setPassword("1234");
@@ -71,7 +71,7 @@ class LoginTest extends TestCase
             ->assertSeeText('Secondary Authentication');
     }
 
-    /** @test */
+
     public function testInvalidPasswordNotAccepted()
     {
         $this->user->setPassword("1234");
@@ -85,7 +85,7 @@ class LoginTest extends TestCase
             ->assertLocation(route('login.secondary'));
     }
 
-    /** @test */
+
     public function testValidPasswordAccepted()
     {
         $this->user->setPassword("1234");
