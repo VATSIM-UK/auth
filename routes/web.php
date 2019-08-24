@@ -24,7 +24,7 @@ Route::namespace('Auth')->group(function () {
     Route::post('/login/secondary', 'LoginController@verifySecondarySignin');
 
 
-    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+    Route::get('/logout', 'LoginController@logout')->name('logout');
 
 });
 

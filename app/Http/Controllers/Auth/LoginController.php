@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Request as RequestFacade;
 
 class LoginController extends Controller
 {
@@ -41,7 +42,7 @@ class LoginController extends Controller
      */
     public function loginWithVatsimSSO()
     {
-		// Check we have nessesary information
+		// Check we have necessary information
 		if(!VATSIMSSO::isEnabled()){
 			return back()->with('error', 'VATSIM SSO Authentication is not currently available');
 		}
@@ -85,7 +86,7 @@ class LoginController extends Controller
                 $user->experience = $vatsimUser->experience;
                 $user->joined_at = $vatsimUser->reg_date;
                 $user->last_login = Carbon::now();
-                $user->last_login_ip = \Request::ip();
+                $user->last_login_ip = RequestFacade::ip();
                 $user->inactive = $vatsimUser->rating->id == -1;
                 $user->save();
 

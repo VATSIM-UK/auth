@@ -3,10 +3,10 @@
 
 namespace App\Concerns;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Hash;
-use Session;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Session\Session;
 
 trait HasPassword
 {
@@ -33,7 +33,7 @@ trait HasPassword
      *
      * @param null|string $password The password value to set.
      */
-    public function setPasswordAttribute(String $password): void
+    public function setPasswordAttribute($password): void
     {
         // if password is null, remove the current password
         // elseif password is already hashed, store it as provided
