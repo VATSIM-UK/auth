@@ -1,26 +1,33 @@
 os:
   - linux
-​
+
 php:
   - 7.2
   - 7.3
-​
+
 addons:
   mariadb: '10.2'
-​
+
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
   - mysql -e 'create database IF NOT EXISTS core;' -uroot
   - sudo apt-get update
   - composer self-update
   - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
-​
+  - yarn install
+
 install:
   - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan passport:keys
-​
+  # If this is not a PR and we are not running on master, run yarn as dev to improve performance
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
+    yarn run dev;
+    else
+    yarn run prod;
+    fi
+
 before_script:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
@@ -29,6 +36,9 @@ before_script:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
     ./cc-test-reporter before-build;
     fi
-​
+  - sed -i 's%^VATSIM_SSO_CERTIFCATE.*$%VATSIM_SSO_CERTIFCATE=\"${SSO_CERT}\"%' .env
+  - sed -i "s%^VATSIM_SSO_KEY.*$%VATSIM_SSO_KEY=${SSO_KEY}%" .env
+  - sed -i "s%^VATSIM_SSO_SECRET.*$%VATSIM_SSO_SECRET=${SSO_SECRET}%" .env
+
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml

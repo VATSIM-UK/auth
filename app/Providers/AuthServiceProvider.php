@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
+use App\Passport\Client;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -14,5 +14,8 @@ class AuthServiceProvider extends ServiceProvider
 
         // Register passport routes
         Passport::routes();
+
+        // Override Default Client Model
+        Passport::useClientModel(Client::class);
     }
 }
