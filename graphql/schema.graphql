@@ -1,0 +1,37 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-01-01 13:00:00`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query @middleware(checks: ["auth:api"]){
+    authUser: User @auth
+    user(id: ID! @eq): User @find
+    users(ids: [Int!] @in(key: "id")): [User!]! @all
+}
+
+type User {
+    id: ID!
+    slack_id: String
+    name_first: String!
+    name_last: String!
+    nickname: String
+    email: String!
+    password: String
+    password_set_at: DateTime
+    password_expires_at: DateTime
+    last_login: DateTime
+    last_login_ip: String!
+    remember_token: String
+    gender: String
+    experience: String
+    age: Int
+    inactive: Int!
+    is_invisible: Int!
+    debug: Int!
+    joined_at: DateTime!
+    created_at: DateTime!
+    updated_at: DateTime!
+    cert_checked_at: DateTime
+    deleted_at: DateTime
+}
