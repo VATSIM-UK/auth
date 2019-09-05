@@ -52,6 +52,23 @@ class UserRetrievalTest extends TestCase
         ]);
     }
 
+    public function testCanRetrieveUserByID()
+    {
+        $users = factory(User::class)->create();
+
+        $this->actingAs($this->user, 'api')->graphQL("
+        query{
+            user(id: {$this->user->id}){
+                id
+            }
+        }
+        ")->assertJson([
+            "data" => [
+                "user" => ["id" => "{$this->user->id}"]
+            ]
+        ]);
+    }
+
     public function testCanRetrieveUsersByIDs()
     {
         $users = factory(User::class, 5)->create();
