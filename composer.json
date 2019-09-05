@@ -1,10 +1,12 @@
 {
-    "name": "laravel/laravel",
+    "name": "vatsim-uk/auth",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "VATSIM UK Centralised Authentication Service",
     "keywords": [
-        "framework",
-        "laravel"
+        "OAuth",
+        "VATSIM UK",
+        "Authentication"
+
     ],
     "license": "MIT",
     "require": {
