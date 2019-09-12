@@ -14,7 +14,6 @@ class UserRetrievalTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(\Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
     }
 
     public function testUnauthenticatedCantAccessMethods()

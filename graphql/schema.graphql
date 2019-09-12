@@ -8,7 +8,7 @@ type Query @middleware(checks: ["auth:api"]){
     authUser: User @auth
 }
 
-extend type Query @middleware(checks: ["client"]){
+extend type Query @middleware(checks: ["auth.api.multi"]){
     user(id: Int! @eq): User @find
     users(ids: [Int!] @in(key: "id")): [User!]! @all
 }
