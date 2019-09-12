@@ -11,6 +11,12 @@ class UserRetrievalTest extends TestCase
 {
     use DatabaseTransactions, MakesGraphQLRequests;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutMiddleware(\Laravel\Passport\Http\Middleware\CheckClientCredentials::class);
+    }
+
     public function testUnauthenticatedCantAccessMethods()
     {
         $this->graphQL('
