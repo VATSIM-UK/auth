@@ -11,11 +11,6 @@ class UserRetrievalTest extends TestCase
 {
     use DatabaseTransactions, MakesGraphQLRequests;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testUnauthenticatedCantAccessMethods()
     {
         $this->graphQL('
