@@ -21,6 +21,7 @@ install:
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan passport:keys
+  - php artisan passport:client --client --name="VATSIM UK ClientCredentials Client"
   # If this is not a PR and we are not running on master, run yarn as dev to improve performance
   - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "master" ]; then
     yarn run dev;
