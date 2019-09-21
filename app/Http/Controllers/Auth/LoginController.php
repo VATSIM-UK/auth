@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Request as RequestFacade;
 
@@ -76,7 +75,7 @@ class LoginController extends Controller
         return $sso->validate(
             $session['key'],
             $session['secret'],
-            Input::get('oauth_verifier'),
+            $request->input('oauth_verifier'),
             function ($vatsimUser) {
 
                 $user = User::firstOrNew(['id' => $vatsimUser->id]);
