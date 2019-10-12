@@ -37,4 +37,15 @@ type User {
     updated_at: DateTime!
     cert_checked_at: DateTime
     deleted_at: DateTime
+
+    ratings: [Rating!]
+}
+
+type Rating {
+    code: String
+    type: String
+    name_small: String
+    name_long: String
+    name_grp: String
+    vatsim: Int
 }

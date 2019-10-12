@@ -3,6 +3,9 @@
 namespace App;
 
 use App\Concerns\HasPassword;
+use App\Models\Rating;
+use App\Models\RatingPivot;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -33,4 +36,16 @@ class User extends Authenticatable
     protected $casts = [
         'inactive' => 'bool'
     ];
+
+    public function ratings(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Rating::class,
+            'mship_account_qualification',
+            'account_id',
+            'qualification_id'
+        )->using(RatingPivot::class)
+            ->wherePivot('deleted_at', '=', null)
+            ->withTimestamps();
+    }
 }
