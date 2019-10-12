@@ -39,6 +39,8 @@ type User {
     deleted_at: DateTime
 
     ratings: [Rating!]
+    atcRating: Rating!
+    pilotRatings: [Rating!]
 }
 
 type Rating {

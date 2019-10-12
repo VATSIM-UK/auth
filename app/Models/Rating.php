@@ -9,5 +9,7 @@ class Rating extends Model
     protected $connection = 'mysql_core';
     protected $table = 'mship_qualification';
 
+    public $timestamps = false;
+
 
 }

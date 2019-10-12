@@ -48,4 +48,20 @@ class User extends Authenticatable
             ->wherePivot('deleted_at', '=', null)
             ->withTimestamps();
     }
+
+    public function getATCRatingAttribute()
+    {
+        return $this->ratings->filter(function ($rating) {
+            return $rating->type == 'atc';
+        })->sortByDesc(function ($rating, $key) {
+            return $rating->pivot->created_at;
+        })->first();
+    }
+
+    public function getPilotRatingsAttribute()
+    {
+        return $this->ratings->filter(function ($rating) {
+            return $rating->type == 'pilot';
+        });
+    }
 }
