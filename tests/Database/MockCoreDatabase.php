@@ -41,12 +41,47 @@ class MockCoreDatabase
                     unique (slack_id)
             );"
         );
+
+        DB::connection('mysql_core')->statement(
+            "create table if not exists mship_qualification
+                (
+                    id int unsigned auto_increment
+                        primary key,
+                    code varchar(3) not null,
+                    type enum('atc', 'pilot', 'training_atc', 'training_pilot', 'admin') not null,
+                    name_small varchar(15) not null,
+                    name_long varchar(25) not null,
+                    name_grp varchar(40) not null,
+                    vatsim smallint(6) not null,
+                    constraint mship_qualification_code_unique
+                        unique (code)
+                );"
+        );
+
+        DB::connection('mysql_core')->statement(
+            "create table if not exists mship_account_qualification
+                    (
+                        id bigint unsigned auto_increment
+                            primary key,
+                        account_id int unsigned not null,
+                        qualification_id int unsigned not null,
+                        created_at timestamp null,
+                        updated_at timestamp null,
+                        deleted_at timestamp null
+                    );"
+        );
     }
 
     public static function destroy()
     {
         DB::connection('mysql_core')->statement(
             "drop table if exists mship_account"
+        );
+        DB::connection('mysql_core')->statement(
+            "drop table if exists mship_qualification"
+        );
+        DB::connection('mysql_core')->statement(
+            "drop table if exists mship_account_qualification"
         );
     }
 }
