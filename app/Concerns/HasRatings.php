@@ -25,7 +25,7 @@ trait HasRatings
     public function syncRatings(int $actRatingCode, int $pilotRatingCode)
     {
         $ratings = collect();
-        $ratings->push(Rating::find(5));
+
         // Handle ATC rating
         if ($actRatingCode === 0) {
         //   TODO:         $this->addNetworkBan('Network ban discovered via Cert login.');
@@ -49,7 +49,10 @@ trait HasRatings
             }
         }
 
-        $ratingIds = $ratings->pluck('id');
+        $ratingIds = $ratings->pluck('id')->filter(function ($value) {
+            return $value != null;
+        });
+
         if (!empty($ratingIds)) {
             $this->ratings()->syncWithoutDetaching($ratingIds);
             //TODO: Account Sync to external services
@@ -58,11 +61,15 @@ trait HasRatings
 
     public function getATCRatingAttribute()
     {
-        return $this->ratings->filter(function ($rating) {
+        $rating = $this->ratings->filter(function ($rating) {
             return $rating->type == 'atc';
+        })->sortByDesc(function ($rating, $key) {
+            return $rating->id;
         })->sortByDesc(function ($rating, $key) {
             return $rating->pivot->created_at;
         })->first();
+
+        return $rating ? $rating : Rating::code('OBS')->first();
     }
 
     public function getPilotRatingsAttribute()
