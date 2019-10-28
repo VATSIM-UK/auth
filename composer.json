@@ -15,7 +15,8 @@
         "laravel/framework": "^6.0",
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
-        "nuwave/lighthouse": "^4.3"
+        "nuwave/lighthouse": "^4.3",
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

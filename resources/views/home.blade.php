@@ -15,6 +15,12 @@
                     @endif
 
                     You are logged in!
+
+                    <?php
+                        dump($user);
+                        dump($user->atcRating);
+                        dump($user->pilotRating);
+                    ?>
                 </div>
             </div>
         </div>

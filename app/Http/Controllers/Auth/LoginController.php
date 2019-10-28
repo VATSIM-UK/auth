@@ -89,6 +89,8 @@ class LoginController extends Controller
                 $user->inactive = $vatsimUser->rating->id == -1;
                 $user->save();
 
+                $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
+
                 if ($user->hasPassword()) {
                     Auth::guard('partial_web')->loginUsingId($vatsimUser->id);
                     return redirect()->route('login.secondary');
