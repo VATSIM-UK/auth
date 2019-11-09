@@ -2,25 +2,27 @@
 
 $factory->define(\App\Models\Rating::class, function (Faker\Generator $faker) {
     return [
-    'code' => $faker->bothify('?##'),
-        'name_small' => $faker->word,
-        'name_long' => $faker->word,
-        'name_grp' => $faker->word,
-        'vatsim' => $faker->randomDigit,
+        'code' => $faker->bothify('?##'),
+        'code_long' => $faker->bothify('???##'),
+        'name' => $faker->word,
+        'name_long' => "$faker->word $faker->word",
+        'vatsim_id' => $faker->randomDigit,
     ];
 });
 
 $factory->defineAs(\App\Models\Rating::class, 'atc', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(\App\Models\Rating::class);
     return array_merge($atc, [
-        'code' => $faker->bothify('?##'),
-        'type' => 'atc',
+        'code' => $faker->bothify('C##'),
+        'code_long' => $faker->bothify('STU##'),
+        'type' => \App\Constants\RatingConstants::ATC,
     ]);
 });
 $factory->defineAs(\App\Models\Rating::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(\App\Models\Rating::class);
     return array_merge($atc, [
-        'code' => $faker->bothify('?##'),
-        'type' => 'pilot',
+        'code' => $faker->bothify('P##'),
+        'code_long' => $faker->bothify('P##'),
+        'type' =>  \App\Constants\RatingConstants::PILOT,
     ]);
 });

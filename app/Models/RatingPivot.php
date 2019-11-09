@@ -3,16 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RatingPivot extends Pivot
 {
-    use SoftDeletes;
-
-    protected $table = 'mship_account_qualification';
-    protected $connection = 'mysql_core';
+    protected $table = 'user_ratings';
     protected $primaryKey = 'id';
-    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+    protected $dates = ['created_at', 'updated_at'];
     protected $hidden = ['id'];
     public $incrementing = true;
+
 }

@@ -14,11 +14,10 @@ trait HasRatings
     {
         return $this->belongsToMany(
             Rating::class,
-            'mship_account_qualification',
-            'account_id',
-            'qualification_id'
+            "user_ratings",
+            'user_id',
+            'rating_id'
         )->using(RatingPivot::class)
-            ->wherePivot('deleted_at', '=', null)
             ->withTimestamps();
     }
 
@@ -45,7 +44,7 @@ trait HasRatings
         // Handle pilot ratings
         for ($i = 1; $i <= 256; $i *= 2) {
             if ($i & $pilotRatingCode) {
-                $ratings->push(Rating::ofType('pilot')->networkValue($i)->first());
+                $ratings->push(Rating::typePilot()->networkValue($i)->first());
             }
         }
 
@@ -61,21 +60,18 @@ trait HasRatings
 
     public function getATCRatingAttribute()
     {
-        $rating = $this->ratings->filter(function ($rating) {
-            return $rating->type == 'atc';
-        })->sortByDesc(function ($rating, $key) {
+        $rating = $this->ratings()->typeATC()->get()
+        ->sortByDesc(function ($rating, $key) {
             return $rating->id;
-        })->sortByDesc(function ($rating, $key) {
+         })
+        ->sortByDesc(function ($rating, $key) {
             return $rating->pivot->created_at;
         })->first();
-
         return $rating ? $rating : Rating::code('OBS')->first();
     }
 
     public function getPilotRatingsAttribute()
     {
-        return $this->ratings->filter(function ($rating) {
-            return $rating->type == 'pilot';
-        });
+        return $this->ratings()->typePilot()->get();
     }
 }

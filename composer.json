@@ -11,12 +11,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-simplexml": "*",
+        "bensampo/laravel-enum": "^1.26",
         "bonroyage/oauth": "1.*",
         "laravel/framework": "^6.0",
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
-        "nuwave/lighthouse": "^4.3",
-        "ext-simplexml": "*"
+        "nuwave/lighthouse": "^4.6"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

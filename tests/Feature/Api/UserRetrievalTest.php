@@ -93,7 +93,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersRatings()
     {
-        $ratings = factory(Rating::class, 2)->create();
+        $ratings = factory(Rating::class, 'atc', 2)->create();
 
         $this->user->ratings()->sync($ratings);
 
@@ -128,13 +128,17 @@ class UserRetrievalTest extends TestCase
             user(id: {$this->user->id}){
                 atcRating {
                     code
+                    type
                 }
             }
         }
         ")->assertJsonFragment([
             "data" => [
                 "user" => [
-                    "atcRating" => ['code' => $rating->code],
+                    "atcRating" => [
+                        'code' => $rating->code,
+                        "type" => "ATC"
+                    ],
                 ]
             ]
         ]);
@@ -174,7 +178,12 @@ class UserRetrievalTest extends TestCase
         ")->assertJsonFragment([
             "data" => [
                 "user" => [
-                    "pilotRatings" => [['code' => $rating->code]],
+                    "pilotRatings" => [
+                        [
+                            'code' => $rating->code,
+                            'type' => "PILOT"
+                        ]
+                    ],
                 ]
             ]
         ]);

@@ -15,8 +15,7 @@ class User extends Authenticatable
 {
     use Notifiable, HasApiTokens, HasPassword, HasRatings;
 
-    protected $connection = 'mysql_core';
-    protected $table = 'mship_account';
+    protected $table = 'users';
 
     public $incrementing = false;
 

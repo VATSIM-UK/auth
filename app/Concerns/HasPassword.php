@@ -92,7 +92,6 @@ trait HasPassword
         return $this->fill([
             'password' => null,
             'password_set_at' => null,
-            'password_expires_at' => null,
         ])->save();
     }
 }

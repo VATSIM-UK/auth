@@ -11,10 +11,10 @@ class UserTest extends TestCase
 {
     /** @test */
     public function itCanHaveAPasswordSet(){
-        $this->assertDatabaseHas('mship_account', [
+        $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'password' => null,
-        ], 'mysql_core');
+        ]);
 
         Carbon::setTestNow(Carbon::now());
         $this->user->setPassword('test12345');
@@ -22,10 +22,10 @@ class UserTest extends TestCase
         $this->assertNotNull($this->user->password);
         $this->assertEquals(Carbon::now(), $this->user->password_set_at);
 
-        $this->assertDatabaseHas('mship_account', [
+        $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'password' => $this->user->password,
-        ], 'mysql_core');
+        ]);
     }
 
     /** @test */
@@ -52,10 +52,10 @@ class UserTest extends TestCase
 
         $this->user->removePassword();
 
-        $this->assertDatabaseHas('mship_account', [
+        $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'password' => null,
             'password_set_at' => null,
-        ], 'mysql_core');
+        ]);
     }
 }

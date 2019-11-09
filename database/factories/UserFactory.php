@@ -6,6 +6,5 @@ $factory->define(\App\User::class, function (Faker\Generator $faker) {
         'name_first' => $faker->firstName,
         'name_last' => $faker->lastName,
         'email' => $faker->email,
-        'is_invisible' => 0,
     ];
 });

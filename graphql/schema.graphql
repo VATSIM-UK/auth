@@ -22,20 +22,13 @@ type User {
     email: String!
     password: String
     password_set_at: DateTime
-    password_expires_at: DateTime
     last_login: DateTime
     last_login_ip: String!
     remember_token: String
-    gender: String
-    experience: String
-    age: Int
-    inactive: Int!
-    is_invisible: Int!
-    debug: Int!
     joined_at: DateTime!
+    cert_checked_at: DateTime
     created_at: DateTime!
     updated_at: DateTime!
-    cert_checked_at: DateTime
     deleted_at: DateTime
 
     ratings: [Rating!]
@@ -44,10 +37,10 @@ type User {
 }
 
 type Rating {
+    type: RatingConstant
     code: String
-    type: String
-    name_small: String
+    code_long: String
+    name: String
     name_long: String
-    name_grp: String
-    vatsim: Int
+    vatsim_id: Int
 }

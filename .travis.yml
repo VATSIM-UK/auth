@@ -20,6 +20,7 @@ install:
   - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
+  - php artisan db:seed
   - php artisan passport:keys
   - php artisan passport:client --client --name="VATSIM UK ClientCredentials Client"
   # If this is not a PR and we are not running on master, run yarn as dev to improve performance

@@ -5,19 +5,15 @@ namespace Tests\Unit;
 
 
 use App\Models\Rating;
-use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class UserRatingTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function itCantHaveNoRatings(){
-        if(Rating::code('OBS')->count() == 0){
-            factory(Rating::class, 'atc')->create([
-                'code' => 'OBS'
-            ]);
-        }
-
        $this->assertEquals('OBS', $this->user->atcRating->code);
        $this->assertEquals(true, $this->user->pilotRatings->isEmpty());
     }
@@ -35,22 +31,13 @@ class UserRatingTest extends TestCase
 
     /** @test */
     public function itReturnsLatestATCRating(){
-        if(!$firstRating = Rating::ofType('atc')->networkValue('4')->first()){
-            $firstRating = factory(Rating::class, 'atc')->create([
-                'vatsim' => 4,
-                'code' => 'S3'
-            ]);
-        }
-        if(!$secondRating = Rating::ofType('atc')->networkValue('5')->first()){
-            $secondRating = factory(Rating::class, 'atc')->create([
-                'vatsim' => 5,
-                'code' => 'C1'
-            ]);
-        }
-        $this->user->syncRatings($firstRating->vatsim, 0);
+        $firstRating = Rating::typeATC()->networkValue('4')->first();
+        $secondRating = Rating::typeATC()->networkValue('5')->first();
+
+        $this->user->syncRatings($firstRating->vatsim_id, 0);
         $this->assertEquals($firstRating->id, $this->user->fresh()->atcRating->id);
 
-        $this->user->syncRatings($secondRating->vatsim, 0);
+        $this->user->syncRatings($secondRating->vatsim_id, 0);
         $this->assertEquals($secondRating->id, $this->user->fresh()->atcRating->id);
     }
 }
