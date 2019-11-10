@@ -94,7 +94,7 @@ trait HasBans
     /**
      * Ends any current network back
      *
-     * @return bool
+     * @return Ban|bool
      */
     public function endNetworkBanIfHas()
     {
