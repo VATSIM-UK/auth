@@ -4,13 +4,20 @@ namespace App\Models;
 
 use App\Constants\RatingConstants;
 use App\User;
+use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 
 class Rating extends Model
 {
+    use CastsEnums;
+
     protected $connection = 'mysql';
     protected $table = 'ratings';
     public $timestamps = false;
+
+    protected $enumCasts = [
+        'type' => RatingConstants::class,
+    ];
 
     public function scopeCode($query, $code)
     {

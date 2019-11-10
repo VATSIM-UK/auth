@@ -3,6 +3,7 @@
 
 namespace App\Concerns;
 
+use App\Events\User\Updated;
 use App\Libraries\CERT\VATSIMUserDetails;
 use App\Models\Rating;
 use App\Models\RatingPivot;
@@ -52,9 +53,11 @@ trait HasRatings
             return $value != null;
         });
 
-        if (!empty($ratingIds)) {
-            $this->ratings()->syncWithoutDetaching($ratingIds);
-            //TODO: Account Sync to external services
+        $currentRatingIds = $this->ratings()->distinct()->pluck('ratings.id');
+
+        if (!empty($idsToSync = $ratingIds->diff($currentRatingIds))) {
+            $this->ratings()->syncWithoutDetaching($idsToSync);
+            event(new Updated($this));
         }
     }
 

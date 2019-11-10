@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Api;
 
+use App\Constants\BanConstants;
+use App\Models\Ban;
 use App\Models\Rating;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
@@ -172,6 +175,7 @@ class UserRetrievalTest extends TestCase
             user(id: {$this->user->id}){
                 pilotRatings {
                     code
+                    type
                 }
             }
         }
@@ -187,5 +191,43 @@ class UserRetrievalTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    public function testCanRetrieveUsersBans()
+    {
+        factory(Ban::class)->create([
+            'type' => BanConstants::LOCAL,
+            'user_id' => $this->user->id,
+            'starts_at' => Carbon::now()->subDays(2),
+            'ends_at' => Carbon::now()->subDays(1),
+        ]);
+        factory(Ban::class)->create([
+            'type' => BanConstants::NETWORK,
+            'user_id' => $this->user->id,
+            'ends_at' => null
+        ]);
+
+        $this->actingAs($this->user, 'api')->graphQL("
+        query{
+            user(id: {$this->user->id}){
+                banned
+                bans {
+                    starts_at
+                    ends_at
+                }
+                network_ban {
+                    ends_at
+                }
+                currentBans {
+                    type
+                    starts_at
+                    ends_at
+                }
+            }
+        }
+        ")->assertJsonCount(2, 'data.user.bans')
+            ->assertJsonCount(1, 'data.user.currentBans')
+            ->assertJsonPath('data.network_ban.ends_at', null)
+            ->assertJsonPath('data.user.banned', true);
     }
 }

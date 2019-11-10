@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
 use App\Concerns\HasRatings;
 use App\Models\Rating;
@@ -13,7 +14,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasPassword, HasRatings;
+    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans;
 
     protected $table = 'users';
 

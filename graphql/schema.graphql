@@ -34,13 +34,48 @@ type User {
     ratings: [Rating!]
     atcRating: Rating!
     pilotRatings: [Rating!]
+
+    bans: [Ban!]
+    currentBans: [Ban!]
+    network_ban: Ban
+    banned: Boolean
 }
 
 type Rating {
-    type: RatingConstant
-    code: String
-    code_long: String
-    name: String
-    name_long: String
-    vatsim_id: Int
+    id: ID!
+    type: RatingConstant!
+    code: String!
+    code_long: String!
+    name: String!
+    name_long: String!
+    vatsim_id: Int!
+}
+
+type Ban {
+    id: ID!
+    user_id: ID!
+    banner_id: ID
+    reason_id: ID
+    type: BanConstant!
+    body: String
+    starts_at: DateTime!
+    ends_at: DateTime
+
+    created_at: DateTime!
+    updated_at: DateTime!
+    repealed_at: DateTime
+
+    user: User!
+    banner: User
+    reason: BanReason
+}
+
+type BanReason {
+    id: ID!
+    name: String!
+    body: String
+    period: String!
+
+    created_at: DateTime!
+    updated_at: DateTime!
 }

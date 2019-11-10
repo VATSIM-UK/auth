@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Constants\BanConstants;
 use App\Constants\RatingConstants;
 use Illuminate\Support\ServiceProvider;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
@@ -30,5 +31,9 @@ class ConstantServiceProvider extends ServiceProvider
         $typeRegistry->register(
             new LaravelEnumType(RatingConstants::class, 'RatingConstant')
         );
+        $typeRegistry->register(
+            new LaravelEnumType(BanConstants::class, 'BanConstant')
+        );
+
     }
 }
