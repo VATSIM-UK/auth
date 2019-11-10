@@ -68,6 +68,7 @@ trait HasBans
      * @param null $banner
      * @param Carbon $end
      * @return Ban
+     * @throws BanEndsBeforeStartException
      */
     public function banLocally($body, Ban\Reason $reason = null, $banner = null, Carbon $end = null)
     {
@@ -80,6 +81,7 @@ trait HasBans
      * @param null $body
      * @return Ban
      * @throws AlreadyNetworkBannedException
+     * @throws BanEndsBeforeStartException
      */
     public function banNetwork($body = null)
     {
@@ -87,6 +89,20 @@ trait HasBans
             throw new AlreadyNetworkBannedException();
         }
         return $this->ban(BanConstants::NETWORK, $body ? $body : "Network Ban Discovered");
+    }
+
+    /**
+     * Ends any current network back
+     *
+     * @return bool
+     */
+    public function endNetworkBanIfHas()
+    {
+        if (!$ban = $this->network_ban) {
+            return false;
+        }
+        $ban->end();
+        return $ban;
     }
 
     /**

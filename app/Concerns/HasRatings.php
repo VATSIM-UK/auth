@@ -28,9 +28,9 @@ trait HasRatings
 
         // Handle ATC rating
         if ($actRatingCode === 0) {
-        //   TODO:         $this->addNetworkBan('Network ban discovered via Cert login.');
+            $this->banNetwork('Network ban discovered via Cert login.');
         } elseif ($actRatingCode > 0) {
-        //   TODO:         $this->removeNetworkBan();
+            $this->endNetworkBanIfHas();
             $ratings->push(Rating::atcRatingFromID($actRatingCode));
         }
 

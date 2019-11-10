@@ -62,8 +62,9 @@ class Ban extends Model
 
     public function end()
     {
-        if (!$this->end_at){
-            $this->end_at = Carbon::now();
+        if (!$this->ends_at){
+            $this->ends_at = Carbon::now();
+            $this->save();
         }
     }
 

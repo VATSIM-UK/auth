@@ -171,6 +171,18 @@ class UserBansTest extends TestCase
     }
 
     /** @test */
+    public function itCanHaveNetworkBanEnded()
+    {
+        $this->user->banNetwork();
+
+        $this->assertTrue($this->user->banned);
+
+        $this->user->endNetworkBanIfHas();
+
+        $this->assertFalse($this->user->banned);
+    }
+
+    /** @test */
     public function itCanHaveBanRepealed()
     {
         $ban = factory(Ban::class)->create([
