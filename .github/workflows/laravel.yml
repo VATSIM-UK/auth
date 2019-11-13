@@ -22,4 +22,7 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
+        CORE_DB_CONNECTION: sqlite
+        CORE_DB_DATABASE: database/ukauth.sqlite
       run: vendor/bin/phpunit
+      
