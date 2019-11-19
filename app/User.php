@@ -37,4 +37,9 @@ class User extends Authenticatable
     protected $casts = [
         'inactive' => 'bool'
     ];
+
+    public function getHasPasswordAttribute(): bool
+    {
+        return (bool) $this->password;
+    }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Session\Session;
+use Laravel\Passport\Token;
 
 trait HasPassword
 {
@@ -89,6 +90,11 @@ trait HasPassword
                 'password_hash' => Auth::user()->getAuthPassword(),
             ]);
         }
+
+        // Invalidate tokens
+        $this->tokens->each(function(Token $token){
+            $token->revoke();
+        });
 
         return $save;
     }
