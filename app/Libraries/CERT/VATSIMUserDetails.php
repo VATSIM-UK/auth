@@ -13,13 +13,13 @@ class VATSIMUserDetails
     const idstatusprat = "https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=";
 
     /* Information on a user's controlling times */
-    const idstatusrat = "https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=";
+    const idstatusrat = "https://cert.vatsim.net/vatsimnet/idstatusrat.php?cid=";
 
     /* General information for a VATSIM user */
-    const idstatusint = "https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=";
+    const idstatusint = "https://cert.vatsim.net/vatsimnet/idstatusint.php?cid=";
 
     /* Same as above, but with ratings converted into textual representations */
-    const idstatus = "https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=";
+    const idstatus = "https://cert.vatsim.net/vatsimnet/idstatus.php?cid=";
 
     public static function getPreviousRatingsInfo($cid)
     {
@@ -43,7 +43,7 @@ class VATSIMUserDetails
 
     private static function callMethod($url, int $cid)
     {
-        $client = new Client();
+        $client = resolve(Client::class);
 
         try {
             $response = $client->get($url . $cid);
