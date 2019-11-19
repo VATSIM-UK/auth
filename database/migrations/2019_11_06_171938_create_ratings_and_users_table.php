@@ -41,7 +41,7 @@ class CreateRatingsAndUsersTable extends Migration
             $table->string('code_long', 10);
             $table->string('name');
             $table->string('name_long');
-            $table->unsignedTinyInteger('vatsim_id');
+            $table->unsignedSmallInteger('vatsim_id');
         });
 
         Schema::create('user_ratings', function (Blueprint $table) {
