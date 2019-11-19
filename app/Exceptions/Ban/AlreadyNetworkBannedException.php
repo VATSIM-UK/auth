@@ -6,5 +6,5 @@ use Exception;
 
 class AlreadyNetworkBannedException extends Exception
 {
-    protected $message = "This user is already has a network ban";
+    protected $message = "This user is already network banned";
 }

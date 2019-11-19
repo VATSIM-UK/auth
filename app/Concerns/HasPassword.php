@@ -48,6 +48,17 @@ trait HasPassword
     }
 
     /**
+     * Returns the Carbon instance for when the set password expires
+     *
+     * @return Carbon|null
+     */
+    public function getPasswordExpiresAtAttribute(): ?Carbon
+    {
+        //TODO: Implement password expiry based on role/permissions
+        return null;
+    }
+
+    /**
      * Determine whether the current account has a password set.
      *
      * @return bool

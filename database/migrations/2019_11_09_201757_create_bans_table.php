@@ -14,11 +14,11 @@ class CreateBansTable extends Migration
     public function up()
     {
         Schema::create('bans', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->unsignedInteger('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('banner_id')->nullable();
-            $table->unsignedInteger('reason_id')->nullable();
-            $table->unsignedSmallInteger('type');
+            $table->unsignedTinyInteger('reason_id')->nullable();
+            $table->unsignedTinyInteger('type');
             $table->string('body')->nullable();
 
             $table->timestamp('starts_at')->nullable();
@@ -28,7 +28,7 @@ class CreateBansTable extends Migration
         });
 
         Schema::create('ban_reasons', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->unsignedTinyInteger('id');
             $table->string('name');
             $table->text('body')->nullable();
             $table->string('period');

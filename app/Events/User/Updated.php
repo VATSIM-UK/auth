@@ -24,5 +24,4 @@ class Updated
     {
         $this->user = $user;
     }
-
 }

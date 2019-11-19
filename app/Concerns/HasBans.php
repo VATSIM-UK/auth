@@ -11,15 +11,16 @@ use App\Models\Ban;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait HasBans
 {
     /**
      * Gets all present and historic bans
      *
-     * @return mixed
+     * @return HasMany
      */
-    public function bans()
+    public function bans(): HasMany
     {
         return $this->hasMany(Ban::class)->orderBy('starts_at');
     }
@@ -27,9 +28,9 @@ trait HasBans
     /**
      * Gets all currently active bans
      *
-     * @return mixed
+     * @return HasMany
      */
-    public function currentBans()
+    public function currentBans(): HasMany
     {
         return $this->bans()
             ->where('starts_at', '<=', Carbon::now())
@@ -43,9 +44,9 @@ trait HasBans
     /**
      * Gets the current network ban
      *
-     * @return mixed
+     * @return Ban|null
      */
-    public function getNetworkBanAttribute()
+    public function getNetworkBanAttribute(): ?Ban
     {
         return $this->currentBans()->network()->first();
     }
@@ -65,12 +66,12 @@ trait HasBans
      *
      * @param $body
      * @param Ban\Reason $reason
-     * @param null $banner
+     * @param User|int $banner
      * @param Carbon $end
      * @return Ban
      * @throws BanEndsBeforeStartException
      */
-    public function banLocally($body, Ban\Reason $reason = null, $banner = null, Carbon $end = null)
+    public function banLocally($body, Ban\Reason $reason = null, $banner = null, Carbon $end = null): Ban
     {
         return $this->ban(BanConstants::LOCAL, $body, $reason, $banner, $end);
     }
@@ -83,7 +84,7 @@ trait HasBans
      * @throws AlreadyNetworkBannedException
      * @throws BanEndsBeforeStartException
      */
-    public function banNetwork($body = null)
+    public function banNetwork($body = null): Ban
     {
         if ($this->network_ban) {
             throw new AlreadyNetworkBannedException();
@@ -94,12 +95,12 @@ trait HasBans
     /**
      * Ends any current network back
      *
-     * @return Ban|bool
+     * @return Ban|null
      */
-    public function endNetworkBanIfHas()
+    public function endNetworkBanIfHas(): ?Ban
     {
         if (!$ban = $this->network_ban) {
-            return false;
+            return null;
         }
         $ban->end();
         return $ban;
@@ -116,7 +117,7 @@ trait HasBans
      * @return Ban
      * @throws BanEndsBeforeStartException
      */
-    private function ban($type, $body, Ban\Reason $reason = null, $banner = null, Carbon $end = null)
+    private function ban($type, $body, Ban\Reason $reason = null, $banner = null, Carbon $end = null): Ban
     {
         // Compose ban
         $ban = new Ban();

@@ -29,6 +29,11 @@ class Rating extends Model
         return $query->where('type', $type);
     }
 
+    public function scopeSpecialTypes($query)
+    {
+        return $query->whereIn('type', [RatingConstants::ADMIN, RatingConstants::TRAINING_ATC]);
+    }
+
     public function scopeTypePilot($query)
     {
         return $query->ofType(RatingConstants::PILOT);

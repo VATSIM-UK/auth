@@ -35,20 +35,21 @@ class CreateRatingsAndUsersTable extends Migration
         });
 
         Schema::create('ratings', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedSmallInteger('type');
+            $table->unsignedTinyInteger('id');
+            $table->unsignedTinyInteger('type');
             $table->string('code', 10);
             $table->string('code_long', 10);
             $table->string('name');
             $table->string('name_long');
-            $table->unsignedInteger('vatsim_id');
+            $table->unsignedTinyInteger('vatsim_id');
         });
 
         Schema::create('user_ratings', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->unsignedInteger('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('rating_id');
+            $table->unsignedTinyInteger('rating_id');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         (new RatingsSeeder())->run();
@@ -61,6 +62,7 @@ class CreateRatingsAndUsersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('users');
         Schema::dropIfExists('ratings');
         Schema::dropIfExists('user_ratings');
     }
