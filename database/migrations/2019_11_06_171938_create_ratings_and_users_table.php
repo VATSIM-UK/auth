@@ -14,7 +14,7 @@ class CreateRatingsAndUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->unsignedInteger('id');
+            $table->increments('id');
             $table->string('slack_id', 10)->unique()->nullable();
             $table->string('name_first');
             $table->string('name_last');
@@ -35,7 +35,7 @@ class CreateRatingsAndUsersTable extends Migration
         });
 
         Schema::create('ratings', function (Blueprint $table) {
-            $table->unsignedTinyInteger('id');
+            $table->tinyIncrements('id');
             $table->unsignedTinyInteger('type');
             $table->string('code', 10);
             $table->string('code_long', 10);
@@ -45,7 +45,7 @@ class CreateRatingsAndUsersTable extends Migration
         });
 
         Schema::create('user_ratings', function (Blueprint $table) {
-            $table->unsignedInteger('id');
+            $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedTinyInteger('rating_id');
             $table->timestamps();

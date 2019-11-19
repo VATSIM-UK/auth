@@ -14,7 +14,7 @@ class CreateBansTable extends Migration
     public function up()
     {
         Schema::create('bans', function (Blueprint $table) {
-            $table->unsignedInteger('id');
+            $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('banner_id')->nullable();
             $table->unsignedTinyInteger('reason_id')->nullable();
@@ -28,7 +28,7 @@ class CreateBansTable extends Migration
         });
 
         Schema::create('ban_reasons', function (Blueprint $table) {
-            $table->unsignedTinyInteger('id');
+            $table->tinyIncrements('id');
             $table->string('name');
             $table->text('body')->nullable();
             $table->string('period');
