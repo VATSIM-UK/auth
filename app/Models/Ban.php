@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Constants\BanConstants;
+use App\Constants\BanTypeConstants;
 use App\Events\User\BanRepealed;
 use App\Models\Ban\Reason;
 use App\User;
@@ -17,7 +17,7 @@ class Ban extends Model
 
     protected $table = "bans";
     protected $enumCasts = [
-        'type' => BanConstants::class,
+        'type' => BanTypeConstants::class,
     ];
     public $timestamps = [
         'starts_at',
@@ -27,12 +27,12 @@ class Ban extends Model
 
     public function scopeLocal(Builder $query)
     {
-        return $query->where('type', BanConstants::LOCAL);
+        return $query->where('type', BanTypeConstants::LOCAL);
     }
 
     public function scopeNetwork(Builder $query)
     {
-        return $query->where('type', BanConstants::NETWORK);
+        return $query->where('type', BanTypeConstants::NETWORK);
     }
 
     public function scopeNotRepealed(Builder $query)
@@ -77,11 +77,11 @@ class Ban extends Model
 
     public function getIsLocalAttribute()
     {
-        return $this->type->is(BanConstants::LOCAL);
+        return $this->type->is(BanTypeConstants::LOCAL);
     }
 
     public function getIsNetworkAttribute()
     {
-        return $this->type->is(BanConstants::NETWORK);
+        return $this->type->is(BanTypeConstants::NETWORK);
     }
 }

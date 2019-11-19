@@ -11,7 +11,7 @@ $factory->define(\App\Models\Ban::class, function (Faker\Generator $faker) {
         'reason_id' => function (){
             return factory(\App\Models\Ban\Reason::class)->create();
         },
-        'type' => \App\Constants\BanConstants::getRandomValue(),
+        'type' => \App\Constants\BanTypeConstants::getRandomValue(),
         'body' => $faker->paragraph,
         'starts_at' => \Carbon\Carbon::now(),
         'ends_at' => \Carbon\Carbon::now()->addDays($faker->randomDigitNot(0))

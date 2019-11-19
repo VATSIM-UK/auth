@@ -5,7 +5,7 @@ namespace App\Constants;
 
 use BenSampo\Enum\Enum;
 
-final class RatingConstants extends Enum
+final class RatingTypeConstants extends Enum
 {
     const ATC = 1;
     const TRAINING_ATC = 2;

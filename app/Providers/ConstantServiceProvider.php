@@ -2,24 +2,14 @@
 
 namespace App\Providers;
 
-use App\Constants\BanConstants;
-use App\Constants\RatingConstants;
+use App\Constants\BanTypeConstants;
+use App\Constants\RatingTypeConstants;
 use Illuminate\Support\ServiceProvider;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Nuwave\Lighthouse\Schema\Types\LaravelEnumType;
 
 class ConstantServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
     /**
      * Bootstrap services.
      *
@@ -29,10 +19,10 @@ class ConstantServiceProvider extends ServiceProvider
     public function boot(TypeRegistry $typeRegistry)
     {
         $typeRegistry->register(
-            new LaravelEnumType(RatingConstants::class, 'RatingConstant')
+            new LaravelEnumType(RatingTypeConstants::class, 'RatingConstant')
         );
         $typeRegistry->register(
-            new LaravelEnumType(BanConstants::class, 'BanConstant')
+            new LaravelEnumType(BanTypeConstants::class, 'BanConstant')
         );
 
     }

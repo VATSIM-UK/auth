@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Constants\RatingConstants;
+use App\Constants\RatingTypeConstants;
 use App\User;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +16,7 @@ class Rating extends Model
     public $timestamps = false;
 
     protected $enumCasts = [
-        'type' => RatingConstants::class,
+        'type' => RatingTypeConstants::class,
     ];
 
     public function scopeCode($query, $code)
@@ -31,17 +31,17 @@ class Rating extends Model
 
     public function scopeSpecialTypes($query)
     {
-        return $query->whereIn('type', [RatingConstants::ADMIN, RatingConstants::TRAINING_ATC]);
+        return $query->whereIn('type', [RatingTypeConstants::ADMIN, RatingTypeConstants::TRAINING_ATC]);
     }
 
     public function scopeTypePilot($query)
     {
-        return $query->ofType(RatingConstants::PILOT);
+        return $query->ofType(RatingTypeConstants::PILOT);
     }
 
     public function scopeTypeATC($query)
     {
-        return $query->ofType(RatingConstants::ATC);
+        return $query->ofType(RatingTypeConstants::ATC);
     }
 
     public function scopeNetworkValue($query, $networkValue)
@@ -61,11 +61,11 @@ class Rating extends Model
         if ($networkID < 1) {
             return;
         } elseif ($networkID >= 8 and $networkID <= 10) {
-            $type = RatingConstants::TRAINING_ATC;
+            $type = RatingTypeConstants::TRAINING_ATC;
         } elseif ($networkID >= 11) {
-            $type = RatingConstants::ADMIN;
+            $type = RatingTypeConstants::ADMIN;
         } else {
-            $type = RatingConstants::ATC;
+            $type = RatingTypeConstants::ATC;
         }
 
         // Sort out the atc ratings
@@ -79,7 +79,7 @@ class Rating extends Model
         for ($i = 0; $i <= 8; $i++) {
             $pow = pow(2, $i);
             if (($pow & $networkID) == $pow) {
-                $ro = self::ofType(RatingConstants::TYPE_PILOT)->networkValue($pow)->first();
+                $ro = self::ofType(RatingTypeConstants::TYPE_PILOT)->networkValue($pow)->first();
                 if ($ro) {
                     $ratingsOutput[] = $ro;
                 }

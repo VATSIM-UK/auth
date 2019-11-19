@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api;
 
-use App\Constants\BanConstants;
+use App\Constants\BanTypeConstants;
 use App\Models\Ban;
 use App\Models\Rating;
 use App\User;
@@ -196,13 +196,13 @@ class UserRetrievalTest extends TestCase
     public function testCanRetrieveUsersBans()
     {
         factory(Ban::class)->create([
-            'type' => BanConstants::LOCAL,
+            'type' => BanTypeConstants::LOCAL,
             'user_id' => $this->user->id,
             'starts_at' => Carbon::now()->subDays(2),
             'ends_at' => Carbon::now()->subDays(1),
         ]);
         factory(Ban::class)->create([
-            'type' => BanConstants::NETWORK,
+            'type' => BanTypeConstants::NETWORK,
             'user_id' => $this->user->id,
             'ends_at' => null
         ]);

@@ -37,20 +37,23 @@ trait HasRatings
 
         // Check if has non-ATC primary rating
         if ($atcRatingCode >= 8) {
+
             $previousRating = VATSIMUserDetails::getPreviousRatingsInfo($this->id);
             if ($previousRating && isset($previousRating->PreviousRatingInt) && $previousRating->PreviousRatingInt > 0) {
                 // Push pre-special rating
                 $ratings->push(Rating::atcRatingFromID($previousRating->PreviousRatingInt));
             }
+
             // Check if we are going to be adding a different "special" rating than current
-            if($this->specialRating->id != $atcRatingCode){
+            if ($this->specialRating->id != $atcRatingCode) {
                 $pivot = $this->specialRating->pivot;
                 $pivot->deleted_at = Carbon::now();
                 $pivot->save();
             }
         } else {
+
             // Remove any "special" ATC ratings
-            if($this->specialRating){
+            if ($this->specialRating) {
                 $pivot = $this->specialRating->pivot;
                 $pivot->deleted_at = Carbon::now();
                 $pivot->save();
@@ -67,10 +70,7 @@ trait HasRatings
                 $ratings->push(Rating::typePilot()->networkValue($i)->first());
             }
         }
-
-        $ratingIds = $ratings->pluck('id')->filter(function ($value) {
-            return $value != null;
-        });
+        $ratingIds = $ratings->pluck('id');
 
         $currentRatingIds = $this->ratings()->distinct()->pluck('ratings.id');
 

@@ -3,7 +3,7 @@
 
 namespace App\Concerns;
 
-use App\Constants\BanConstants;
+use App\Constants\BanTypeConstants;
 use App\Events\User\Banned;
 use App\Exceptions\Ban\AlreadyNetworkBannedException;
 use App\Exceptions\Ban\BanEndsBeforeStartException;
@@ -73,7 +73,7 @@ trait HasBans
      */
     public function banLocally($body, Ban\Reason $reason = null, $banner = null, Carbon $end = null): Ban
     {
-        return $this->ban(BanConstants::LOCAL, $body, $reason, $banner, $end);
+        return $this->ban(BanTypeConstants::LOCAL, $body, $reason, $banner, $end);
     }
 
     /**
@@ -89,7 +89,7 @@ trait HasBans
         if ($this->network_ban) {
             throw new AlreadyNetworkBannedException();
         }
-        return $this->ban(BanConstants::NETWORK, $body ? $body : "Network Ban Discovered");
+        return $this->ban(BanTypeConstants::NETWORK, $body ? $body : "Network Ban Discovered");
     }
 
     /**
