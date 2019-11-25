@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
+use App\Concerns\HasRatings;
 use App\Models\Rating;
 use App\Models\RatingPivot;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,10 +14,9 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasPassword;
+    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans;
 
-    protected $connection = 'mysql_core';
-    protected $table = 'mship_account';
+    protected $table = 'users';
 
     public $incrementing = false;
 
@@ -37,31 +38,8 @@ class User extends Authenticatable
         'inactive' => 'bool'
     ];
 
-    public function ratings(): BelongsToMany
+    public function getHasPasswordAttribute(): bool
     {
-        return $this->belongsToMany(
-            Rating::class,
-            'mship_account_qualification',
-            'account_id',
-            'qualification_id'
-        )->using(RatingPivot::class)
-            ->wherePivot('deleted_at', '=', null)
-            ->withTimestamps();
-    }
-
-    public function getATCRatingAttribute()
-    {
-        return $this->ratings->filter(function ($rating) {
-            return $rating->type == 'atc';
-        })->sortByDesc(function ($rating, $key) {
-            return $rating->pivot->created_at;
-        })->first();
-    }
-
-    public function getPilotRatingsAttribute()
-    {
-        return $this->ratings->filter(function ($rating) {
-            return $rating->type == 'pilot';
-        });
+        return (bool) $this->password;
     }
 }

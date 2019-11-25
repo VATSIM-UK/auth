@@ -2,14 +2,124 @@
 
 namespace App\Models;
 
+use App\Constants\RatingTypeConstants;
+use App\User;
+use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 
 class Rating extends Model
 {
-    protected $connection = 'mysql_core';
-    protected $table = 'mship_qualification';
+    use CastsEnums;
 
+    protected $connection = 'mysql';
+    protected $table = 'ratings';
     public $timestamps = false;
 
+    protected $enumCasts = [
+        'type' => RatingTypeConstants::class,
+    ];
 
+    public function scopeCode($query, $code)
+    {
+        return $query->where('code', $code);
+    }
+
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeSpecialTypes($query)
+    {
+        return $query->whereIn('type', [RatingTypeConstants::ADMIN, RatingTypeConstants::TRAINING_ATC]);
+    }
+
+    public function scopeTypePilot($query)
+    {
+        return $query->ofType(RatingTypeConstants::PILOT);
+    }
+
+    public function scopeTypeATC($query)
+    {
+        return $query->ofType(RatingTypeConstants::ATC);
+    }
+
+    public function scopeNetworkValue($query, $networkValue)
+    {
+        return $query->where('vatsim_id', $networkValue);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_ratings', 'rating_id', 'user_id')
+            ->using(RatingPivot::class)
+            ->withTimestamps();
+    }
+
+    public static function atcRatingFromID(int $networkID)
+    {
+        if ($networkID < 1) {
+            return;
+        } elseif ($networkID >= 8 and $networkID <= 10) {
+            $type = RatingTypeConstants::TRAINING_ATC;
+        } elseif ($networkID >= 11) {
+            $type = RatingTypeConstants::ADMIN;
+        } else {
+            $type = RatingTypeConstants::ATC;
+        }
+
+        // Sort out the atc ratings
+        return self::ofType($type)->networkValue($networkID)->first();
+    }
+
+    public static function pilotRatingFromID(int $networkID)
+    {
+        $ratingsOutput = [];
+        // Let's check each bitmask....
+        for ($i = 0; $i <= 8; $i++) {
+            $pow = pow(2, $i);
+            if (($pow & $networkID) == $pow) {
+                $ro = self::ofType(RatingTypeConstants::TYPE_PILOT)->networkValue($pow)->first();
+                if ($ro) {
+                    $ratingsOutput[] = $ro;
+                }
+            }
+        }
+        return $ratingsOutput;
+    }
+
+    public function __toString()
+    {
+        return $this->code;
+    }
+
+    public function getIsOBSAttribute()
+    {
+        return $this->code == 'OBS';
+    }
+
+    public function getIsS1Attribute()
+    {
+        return $this->code == 'S1';
+    }
+
+    public function getIsS2Attribute()
+    {
+        return $this->code == 'S2';
+    }
+
+    public function getIsS3Attribute()
+    {
+        return $this->code == 'S3';
+    }
+
+    public function getIsC1Attribute()
+    {
+        return $this->code == 'C1';
+    }
+
+    public function getIsC3Attribute()
+    {
+        return $this->code == 'C3';
+    }
 }

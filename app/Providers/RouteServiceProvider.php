@@ -36,6 +36,10 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapWebRoutes();
+
+        Route::get('api/pulse', function(){
+            return response()->json(['alive' => true]);
+        });
     }
 
     /**

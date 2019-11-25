@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Session\Session;
+use Laravel\Passport\Token;
 
 trait HasPassword
 {
@@ -48,6 +49,17 @@ trait HasPassword
     }
 
     /**
+     * Returns the Carbon instance for when the set password expires
+     *
+     * @return Carbon|null
+     */
+    public function getPasswordExpiresAtAttribute(): ?Carbon
+    {
+        //TODO: Implement password expiry based on role/permissions
+        return null;
+    }
+
+    /**
      * Determine whether the current account has a password set.
      *
      * @return bool
@@ -79,6 +91,11 @@ trait HasPassword
             ]);
         }
 
+        // Invalidate tokens
+        $this->tokens->each(function(Token $token){
+            $token->revoke();
+        });
+
         return $save;
     }
 
@@ -92,7 +109,6 @@ trait HasPassword
         return $this->fill([
             'password' => null,
             'password_set_at' => null,
-            'password_expires_at' => null,
         ])->save();
     }
 }

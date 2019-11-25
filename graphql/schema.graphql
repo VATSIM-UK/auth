@@ -20,34 +20,62 @@ type User {
     name_last: String!
     nickname: String
     email: String!
-    password: String
     password_set_at: DateTime
-    password_expires_at: DateTime
     last_login: DateTime
     last_login_ip: String!
     remember_token: String
-    gender: String
-    experience: String
-    age: Int
-    inactive: Int!
-    is_invisible: Int!
-    debug: Int!
     joined_at: DateTime!
+    cert_checked_at: DateTime
     created_at: DateTime!
     updated_at: DateTime!
-    cert_checked_at: DateTime
     deleted_at: DateTime
+    has_password: Boolean
 
     ratings: [Rating!]
     atcRating: Rating!
     pilotRatings: [Rating!]
+
+    bans: [Ban!]
+    currentBans: [Ban!]
+    network_ban: Ban
+    banned: Boolean
 }
 
 type Rating {
-    code: String
-    type: String
-    name_small: String
-    name_long: String
-    name_grp: String
-    vatsim: Int
+    id: ID!
+    type: RatingConstant!
+    code: String!
+    code_long: String!
+    name: String!
+    name_long: String!
+    vatsim_id: Int!
+}
+
+type Ban {
+    id: ID!
+    user_id: ID!
+    banner_id: ID
+    reason_id: ID
+    type: BanConstant!
+    body: String
+    starts_at: DateTime!
+    ends_at: DateTime
+
+    created_at: DateTime!
+    updated_at: DateTime!
+    repealed_at: DateTime
+
+    user: User!
+    banner: User
+    reason: BanReason
+}
+
+type BanReason {
+    id: ID!
+    name: String!
+    body: String
+    period: String!
+
+    created_at: DateTime!
+    updated_at: DateTime!
 }

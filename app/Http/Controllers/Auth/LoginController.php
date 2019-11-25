@@ -48,7 +48,11 @@ class LoginController extends Controller
 
 
         if(Auth::guard('partial_web')->check()){
-            return redirect()->route('login.secondary');
+            if(Auth::guard('partial_web')->user()->hasPassword()){
+                return redirect()->route('login.secondary');
+            }else{
+                return redirect()->intended('/home');
+            }
         }
 
         $sso = new VATSIMSSO();
@@ -77,24 +81,23 @@ class LoginController extends Controller
             $session['secret'],
             $request->input('oauth_verifier'),
             function ($vatsimUser) {
-
                 $user = User::firstOrNew(['id' => $vatsimUser->id]);
                 $user->name_first = utf8_decode($vatsimUser->name_first);
                 $user->name_last = utf8_decode($vatsimUser->name_last);
                 $user->email = $vatsimUser->email;
-                $user->experience = $vatsimUser->experience;
                 $user->joined_at = $vatsimUser->reg_date;
                 $user->last_login = Carbon::now();
                 $user->last_login_ip = RequestFacade::ip();
-                $user->inactive = $vatsimUser->rating->id == -1;
                 $user->save();
 
+                $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
+
                 if ($user->hasPassword()) {
-                    Auth::guard('partial_web')->loginUsingId($vatsimUser->id);
+                    Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
                     return redirect()->route('login.secondary');
                 }
 
-                Auth::loginUsingId($vatsimUser->id);
+                Auth::loginUsingId($vatsimUser->id, true);
                 return redirect()->intended('/home');
             },
             function ($error) {
@@ -112,7 +115,7 @@ class LoginController extends Controller
         $user = Auth::guard('partial_web')->user();
 
         if (!$user->hasPassword()) {
-            return redirect('/');
+            redirect()->intended('/home');
         }
 
         return view('auth.secondary');

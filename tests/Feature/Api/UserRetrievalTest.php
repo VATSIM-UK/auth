@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Api;
 
+use App\Constants\BanTypeConstants;
+use App\Models\Ban;
 use App\Models\Rating;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
@@ -93,7 +96,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersRatings()
     {
-        $ratings = factory(Rating::class, 2)->create();
+        $ratings = factory(Rating::class, 'atc', 2)->create();
 
         $this->user->ratings()->sync($ratings);
 
@@ -128,13 +131,17 @@ class UserRetrievalTest extends TestCase
             user(id: {$this->user->id}){
                 atcRating {
                     code
+                    type
                 }
             }
         }
         ")->assertJsonFragment([
             "data" => [
                 "user" => [
-                    "atcRating" => ['code' => $rating->code],
+                    "atcRating" => [
+                        'code' => $rating->code,
+                        "type" => "ATC"
+                    ],
                 ]
             ]
         ]);
@@ -168,15 +175,59 @@ class UserRetrievalTest extends TestCase
             user(id: {$this->user->id}){
                 pilotRatings {
                     code
+                    type
                 }
             }
         }
         ")->assertJsonFragment([
             "data" => [
                 "user" => [
-                    "pilotRatings" => [['code' => $rating->code]],
+                    "pilotRatings" => [
+                        [
+                            'code' => $rating->code,
+                            'type' => "PILOT"
+                        ]
+                    ],
                 ]
             ]
         ]);
+    }
+
+    public function testCanRetrieveUsersBans()
+    {
+        factory(Ban::class)->create([
+            'type' => BanTypeConstants::LOCAL,
+            'user_id' => $this->user->id,
+            'starts_at' => Carbon::now()->subDays(2),
+            'ends_at' => Carbon::now()->subDays(1),
+        ]);
+        factory(Ban::class)->create([
+            'type' => BanTypeConstants::NETWORK,
+            'user_id' => $this->user->id,
+            'ends_at' => null
+        ]);
+
+        $this->actingAs($this->user, 'api')->graphQL("
+        query{
+            user(id: {$this->user->id}){
+                banned
+                bans {
+                    starts_at
+                    ends_at
+                }
+                network_ban {
+                    ends_at
+                }
+                currentBans {
+                    type
+                    starts_at
+                    ends_at
+                }
+            }
+        }
+        ")->assertJsonCount(2, 'data.user.bans')
+            ->assertJsonCount(1, 'data.user.currentBans')
+            ->assertJsonPath('data.network_ban.ends_at', null)
+            ->assertJsonPath('data.user.banned', true);
     }
 }
