@@ -48,10 +48,13 @@ class LoginController extends Controller
 
 
         if(Auth::guard('partial_web')->check()){
-            if(Auth::guard('partial_web')->user()->hasPassword()){
+            $user = Auth::guard('partial_web')->user();
+            if($user->hasPassword()){
                 return redirect()->route('login.secondary');
             }else{
-                return redirect()->intended('/home');
+                Auth::loginUsingId($user->id);
+                Auth::guard('partial_web')->logout();
+                return $this->authDone($user);
             }
         }
 
@@ -98,7 +101,7 @@ class LoginController extends Controller
                 }
 
                 Auth::loginUsingId($vatsimUser->id, true);
-                return redirect()->intended('/home');
+                return $this->authDone($user);
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -115,7 +118,7 @@ class LoginController extends Controller
         $user = Auth::guard('partial_web')->user();
 
         if (!$user->hasPassword()) {
-            redirect()->intended('/home');
+            return redirect('/');
         }
 
         return view('auth.secondary');
@@ -144,6 +147,11 @@ class LoginController extends Controller
 			throw $error;
         }
         Auth::guard('partial_web')->logout();
-        return redirect()->intended('/home');
+
+        return $this->authDone($user);
+    }
+
+    public function authDone(User $user){
+        return redirect()->intended('/');
     }
 }

@@ -13,9 +13,6 @@
 
 use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    return view('splash');
-});
 
 Route::namespace('Auth')->group(function () {
     Route::get('/login', 'LoginController@loginWithVatsimSSO')->name('login');
@@ -29,4 +26,4 @@ Route::namespace('Auth')->group(function () {
 });
 
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/{any?}', 'SpaController@index')->where('any', '.*');
