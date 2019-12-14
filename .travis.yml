@@ -11,13 +11,13 @@ addons:
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
   - mysql -e 'create database IF NOT EXISTS core;' -uroot
+  - cp .env.example .env
   - sudo apt-get update
   - composer self-update
   - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
   - yarn install
 
 install:
-  - cp .env.example .env
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan db:seed
