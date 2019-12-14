@@ -1,12 +1,4 @@
-@extends('layouts.box')
-
-@section('slickNav')
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="{{route('logout')}}">Logout</a>
-        </li>
-    </ul>
-@endsection
+@extends('layouts.box_loggedin')
 
 @section('content')
     <div class="container">
@@ -14,7 +6,7 @@
         <p>
             Hi {{$user->name_first}}, please enter your secondary password.
         </p>
-        <form method="POST" action="{{ route('login.secondary') }}">
+        <form method="POST" action="{{ isset($postroute) ? $postroute : route('login.secondary') }}">
             @csrf
 
             <div class="form-group row">
@@ -39,7 +31,7 @@
                     </button>
                 </div>
             </div>
-            <a href="">Forgot your password?</a>
+            <a href="{{route('password.request')}}">Forgot your password?</a>
         </form>
     </div>
 @endsection
