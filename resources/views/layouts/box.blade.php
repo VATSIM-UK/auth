@@ -22,7 +22,7 @@
     @stack('head')
 </head>
 <body>
-<div class="h-100 bg-primary">
+<div class="bg-primary min-vh-100 pb-2">
     <nav class="navbar navbar-dark " style="height: 55px">
         @yield('slickNav')
     </nav>
