@@ -11,8 +11,6 @@
 |
 */
 
-use Illuminate\Http\Request;
-
 
 Route::namespace('Auth')->group(function () {
     Route::get('/login', 'LoginController@loginWithVatsimSSO')->name('login');
@@ -20,8 +18,13 @@ Route::namespace('Auth')->group(function () {
     Route::get('/login/secondary', 'LoginController@showSecondarySignin')->name('login.secondary');
     Route::post('/login/secondary', 'LoginController@verifySecondarySignin');
 
-
     Route::get('/logout', 'LoginController@logout')->name('logout');
+
+
+    Route::get('/login/password/forgot', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    Route::get('/login/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+    Route::post('/login/password/reset', 'Auth\ResetPasswordController@reset');
 
 });
 

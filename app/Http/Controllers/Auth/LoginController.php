@@ -121,7 +121,7 @@ class LoginController extends Controller
             return redirect('/');
         }
 
-        return view('auth.secondary');
+        return view('auth.secondary')->with('user', $user);
     }
 
     /*

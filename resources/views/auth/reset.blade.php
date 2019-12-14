@@ -12,7 +12,7 @@
     <div class="container">
         <h3>Secondary Authentication</h3>
         <p>
-            Hi {{$user->name_first}}, please enter your secondary password.
+            Please enter your secondary password.
         </p>
         <form method="POST" action="{{ route('login.secondary') }}">
             @csrf
@@ -23,14 +23,12 @@
                 <div class="col-md-6">
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                            name="password" required autocomplete="current-password">
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                    @enderror
                 </div>
-                @error('password')
-                <div class="col-12">
-                    <span class="invalid-feedback d-block" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                </div>
-                @enderror
             </div>
             <div class="form-group row mb-0 mt-4">
                 <div class="col">
@@ -39,15 +37,6 @@
                     </button>
                 </div>
             </div>
-            <a href="">Forgot your password?</a>
         </form>
     </div>
-@endsection
-
-@section('boxFooter')
-    @error('password')
-        <div class="card-footer bg-danger text-white">
-            Having trouble? Send an email to <a class="badge badge-light" href="mailto:web-support@vatsim.uk">web-support@vatsim.uk</a>
-        </div>
-    @enderror
 @endsection
