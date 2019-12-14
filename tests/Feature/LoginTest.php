@@ -47,7 +47,7 @@ class LoginTest extends TestCase
     {
         $this->actingAs($this->user)
             ->get(route('login'))
-            ->assertRedirect('/home');
+            ->assertRedirect('/');
     }
 
 
@@ -94,7 +94,7 @@ class LoginTest extends TestCase
             ->from(route('login.secondary'))
             ->post(route('login.secondary'), [
                 'password' => '1234'
-            ])->assertRedirect('/home');
+            ])->assertRedirect('/');
     }
 
 
