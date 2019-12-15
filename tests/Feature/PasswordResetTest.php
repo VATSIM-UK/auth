@@ -93,6 +93,5 @@ class PasswordResetTest extends TestCase
             ])->assertLocation('/');
         $this->assertAuthenticatedAs($this->user, 'web');
         $this->assertTrue($this->user->fresh()->verifyPassword('SecretSt1ng'));
-
     }
 }
