@@ -10,8 +10,8 @@ type Query @middleware(checks: ["auth:api"]){
 
 type Mutation @middleware(checks: ["auth:api"]){
     updatePassword(
-        old_password: String
-        new_password: String! @rules(apply: ["min:8","different:old_password"])
+        old_password: String @rules(apply: ["different:new_password"])
+        new_password: String! @rules(apply: ["min:8"])
     ): Boolean
 
     removePassword(

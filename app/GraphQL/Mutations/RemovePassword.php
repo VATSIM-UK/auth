@@ -33,8 +33,7 @@ class RemovePassword
             ]);
         };
 
-        $user->password = null;
-        $user->save();
+        $user->removePassword();
 
         return true;
     }

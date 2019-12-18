@@ -19,11 +19,6 @@ trait HasPassword
      */
     public function verifyPassword(String $password): bool
     {
-        if ($this->password === sha1(sha1($password))) {
-            $this->password = $password;
-            $this->save();
-        }
-
         return Hash::check($password, $this->password);
     }
 
@@ -78,18 +73,10 @@ trait HasPassword
     public function setPassword(String $password): bool
     {
         //TODO: Implement expiry
-
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
         ])->save();
-
-        // if the password is being reset by its owner...
-        if ($save && Auth::check() && Auth::user()->id === $this->id) {
-            Session::put([
-                'password_hash' => Auth::user()->getAuthPassword(),
-            ]);
-        }
 
         // Invalidate tokens
         $this->tokens->each(function(Token $token){

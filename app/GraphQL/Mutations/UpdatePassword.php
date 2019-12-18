@@ -25,8 +25,7 @@ class UpdatePassword
 
         if ($user->has_password) {
             if ($user->verifyPassword($args['old_password'])) {
-                $user->password = $args['old_password'];
-                $user->save();
+                $user->setPassword($args['new_password']);
                 return true;
             };
 
@@ -35,8 +34,7 @@ class UpdatePassword
             ]);
         }
 
-        $user->password = $args['new_password'];
-        $user->save();
+        $user->setPassword($args['new_password']);
         return true;
     }
 }
