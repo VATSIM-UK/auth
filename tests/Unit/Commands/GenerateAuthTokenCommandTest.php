@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit\Commands;
-
 
 use App\Passport\Client;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -30,7 +28,7 @@ class GenerateAuthTokenCommandTest extends TestCase
         $client = app()->make(ClientRepository::class)->create(null, 'Personal Access Client', '/', true);
         Passport::personalAccessClientId($client->id);
 
-        Artisan::call("token:generate 1234");
+        Artisan::call('token:generate 1234');
         $this->assertEquals("A user was not found with the ID 1234\n", Artisan::output());
     }
 
@@ -38,12 +36,12 @@ class GenerateAuthTokenCommandTest extends TestCase
     public function itGeneratesATokenWhenAble()
     {
         $id = factory(Client::class)->create([
-            'personal_access_client' => true
+            'personal_access_client' => true,
         ])->id;
         Passport::personalAccessClientId($id);
 
         $this->partialMock(PersonalAccessTokenFactory::class, function ($mock) {
-            $mock->shouldReceive("make")
+            $mock->shouldReceive('make')
                 ->andReturn(new PersonalAccessTokenResult(
                     'eYMyJWTHere', 'eYMyJWTHere'
                 ));

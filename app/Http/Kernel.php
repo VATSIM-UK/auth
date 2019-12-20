@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.api.multi' => ApiClientOrUserAuthentication::class,
         'auth.password.confirm' => RequirePasswordMiddleware::class,
-        'auth.mandate.password' => MustHavePassword::class
+        'auth.mandate.password' => MustHavePassword::class,
     ];
 
     /**

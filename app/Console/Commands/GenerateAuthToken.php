@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Console\Commands;
-
 
 use App\User;
 use Illuminate\Console\Command;
@@ -10,7 +8,7 @@ use Laravel\Passport\ClientRepository;
 
 class GenerateAuthToken extends Command
 {
-    protected $signature = "token:generate {user}";
+    protected $signature = 'token:generate {user}';
     protected $user;
 
     public function __construct(User $user)
@@ -24,15 +22,17 @@ class GenerateAuthToken extends Command
         try {
             app()->make(ClientRepository::class)->personalAccessClient();
         } catch (\RuntimeException $e) {
-            if ($e->getMessage() == "Personal access client not found. Please create one.") {
+            if ($e->getMessage() == 'Personal access client not found. Please create one.') {
                 $this->info('No personal access client has been setup. Create one with "php artisan passport:client --personal"');
+
                 return;
             }
             throw $e;
         }
 
-        if (!$user = $this->user::find($this->argument('user'))) {
+        if (! $user = $this->user::find($this->argument('user'))) {
             $this->info("A user was not found with the ID {$this->argument('user')}");
+
             return;
         }
 

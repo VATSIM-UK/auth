@@ -78,7 +78,6 @@ class PasswordResetTest extends TestCase
         }
         ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.uppercase', ['attribute' => 'new password']));
 
-
         $this->graphQL('
         mutation{
             updatePassword(
