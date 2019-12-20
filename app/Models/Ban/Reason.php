@@ -16,8 +16,8 @@ class Reason extends Model
          *
          * For our purposes, the P is being appended automatically. Thus the `period` column should be like the following formats:
          *  "12D" (12 Days)
-         *  "1DT12H" (1 Day, 2 Hours - note the T designates the end of the date component and start of the time components)
+         *  "1DT12H" (1 Day, 12 Hours - note the T designates the end of the date component and start of the time components)
          */
-        return CarbonInterval::create('P'.$this->period);
+        return CarbonInterval::create('P' . $this->period);
     }
 }
