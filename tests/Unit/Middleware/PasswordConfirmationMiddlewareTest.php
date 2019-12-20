@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Middleware;
 
-use App\Http\Middleware\RequirePasswordMiddleware;
+use App\Http\Middleware\PasswordConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Validation\UnauthorizedException;
 use Tests\TestCase;
 
-class RequirePasswordMiddlewareTest extends TestCase
+class PasswordConfirmationMiddlewareTest extends TestCase
 {
     /** @test */
     public function itAsksForConfirmationIfHasPassword()
@@ -47,7 +47,8 @@ class RequirePasswordMiddlewareTest extends TestCase
             // just return an anonymous dummy class that knows the has() method and
             // returns true or false depending on our needs. Alternative would be
             // to also mock the session and return the session mock.
-            ->andReturn(new class {
+            ->andReturn(new class
+            {
                 public function get(string $key)
                 {
                     return true; // or false, depends on what you want to test
@@ -55,7 +56,7 @@ class RequirePasswordMiddlewareTest extends TestCase
             });
         $requestMock->shouldReceive('expectsJson')->andReturn(true);
         $requestMock->makePartial();
-        $middleware = resolve(RequirePasswordMiddleware::class);
+        $middleware = resolve(PasswordConfirmation::class);
 
         return $middleware->handle($requestMock, function () {
         });

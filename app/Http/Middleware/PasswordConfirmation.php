@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Validation\UnauthorizedException;
 
-class RequirePasswordMiddleware extends RequirePassword
+class PasswordConfirmation extends RequirePassword
 {
     /**
      * Handle an incoming request.
@@ -18,10 +18,10 @@ class RequirePasswordMiddleware extends RequirePassword
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
-        throw_if(! auth()->user(), new UnauthorizedException());
+        throw_if(!auth()->user(), new UnauthorizedException());
 
         // If the user doesn't have a password, don't require confirmation
-        if (! auth()->user()->hasPassword()) {
+        if (!auth()->user()->hasPassword()) {
             return $next($request);
         }
 
