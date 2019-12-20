@@ -47,8 +47,7 @@ class PasswordConfirmationMiddlewareTest extends TestCase
             // just return an anonymous dummy class that knows the has() method and
             // returns true or false depending on our needs. Alternative would be
             // to also mock the session and return the session mock.
-            ->andReturn(new class
-            {
+            ->andReturn(new class {
                 public function get(string $key)
                 {
                     return true; // or false, depends on what you want to test

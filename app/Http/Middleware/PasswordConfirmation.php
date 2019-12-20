@@ -18,10 +18,10 @@ class PasswordConfirmation extends RequirePassword
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
-        throw_if(!auth()->user(), new UnauthorizedException());
+        throw_if(! auth()->user(), new UnauthorizedException());
 
         // If the user doesn't have a password, don't require confirmation
-        if (!auth()->user()->hasPassword()) {
+        if (! auth()->user()->hasPassword()) {
             return $next($request);
         }
 
