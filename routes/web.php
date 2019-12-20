@@ -11,8 +11,6 @@
 |
 */
 
-use Illuminate\Http\Request;
-
 Route::get('/', function () {
     return view('splash');
 });
@@ -23,10 +21,7 @@ Route::namespace('Auth')->group(function () {
     Route::get('/login/secondary', 'LoginController@showSecondarySignin')->name('login.secondary');
     Route::post('/login/secondary', 'LoginController@verifySecondarySignin');
 
-
     Route::get('/logout', 'LoginController@logout')->name('logout');
-
 });
-
 
 Route::get('/home', 'HomeController@index')->name('home');

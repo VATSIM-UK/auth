@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -37,7 +37,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapWebRoutes();
 
-        Route::get('api/pulse', function(){
+        Route::get('api/pulse', function () {
             return response()->json(['alive' => true]);
         });
     }

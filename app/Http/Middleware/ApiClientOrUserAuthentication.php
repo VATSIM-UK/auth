@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Factory as Auth;
-use Laravel\Passport\Exceptions\MissingScopeException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
@@ -56,7 +55,7 @@ class ApiClientOrUserAuthentication
     public function handle($request, Closure $next)
     {
         // Check if basic authentication is met
-        if($this->authenticate($request, ["api"]) !== false){
+        if ($this->authenticate($request, ['api']) !== false) {
             return $next($request);
         }
 
@@ -95,6 +94,7 @@ class ApiClientOrUserAuthentication
         $this->exceptions[] = new AuthenticationException(
             'Unauthenticated.', $guards
         );
+
         return false;
     }
 }

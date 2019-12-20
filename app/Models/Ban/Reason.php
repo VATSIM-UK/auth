@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reason extends Model
 {
-    protected $table = "ban_reasons";
+    protected $table = 'ban_reasons';
 
-    function getPeriodIntervalAttribute(): CarbonInterval
+    public function getPeriodIntervalAttribute(): CarbonInterval
     {
         /*
          * The input for CarbonInterval follows the ISO_8601 duration format (https://en.wikipedia.org/wiki/ISO_8601#Durations)
@@ -18,6 +18,6 @@ class Reason extends Model
          *  "12D" (12 Days)
          *  "1DT12H" (1 Day, 2 Hours - note the T designates the end of the date component and start of the time components)
          */
-        return CarbonInterval::create('P' . $this->period);
+        return CarbonInterval::create('P'.$this->period);
     }
 }
