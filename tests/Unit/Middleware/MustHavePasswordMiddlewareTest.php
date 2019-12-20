@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit\Middleware;
-
 
 use App\Http\Middleware\MustHavePassword;
 use Illuminate\Http\RedirectResponse;

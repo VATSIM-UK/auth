@@ -18,9 +18,9 @@ class MustHavePassword
     public function handle($request, Closure $next)
     {
         $user = Auth::user() ?? Auth::guard('partial_web')->user();
-        throw_if(!$user, new UnauthorizedException());
+        throw_if(! $user, new UnauthorizedException());
 
-        if (!$user->hasPassword()) {
+        if (! $user->hasPassword()) {
             return redirect('/');
         }
 
