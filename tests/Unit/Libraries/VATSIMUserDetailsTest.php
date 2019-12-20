@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit;
-
 
 use App\Libraries\CERT\VATSIMUserDetails;
 use GuzzleHttp\Client;
@@ -49,7 +47,7 @@ class VATSIMUserDetailsTest extends TestCase
     {
         $this->mock(Client::class, function ($mock) {
             $mock->shouldReceive('get')
-                ->andThrow(new ConnectException("Request timed out", new Request('GET', 'some-url.com')));
+                ->andThrow(new ConnectException('Request timed out', new Request('GET', 'some-url.com')));
         });
 
         $this->assertEquals(null, VATSIMUserDetails::getPublicInfoWithIntRatings(1300001));
@@ -125,5 +123,4 @@ class VATSIMUserDetailsTest extends TestCase
                 </user>
                 </root>';
     }
-
 }

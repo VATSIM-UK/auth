@@ -5,11 +5,8 @@ namespace App;
 use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
 use App\Concerns\HasRatings;
-use App\Models\Rating;
-use App\Models\RatingPivot;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -35,7 +32,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'inactive' => 'bool'
+        'inactive' => 'bool',
     ];
 
     public function getHasPasswordAttribute(): bool

@@ -8,21 +8,21 @@ use App\Models\Ban\Reason;
 use App\User;
 use BenSampo\Enum\Traits\CastsEnums;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class Ban extends Model
 {
     use CastsEnums;
 
-    protected $table = "bans";
+    protected $table = 'bans';
     protected $enumCasts = [
         'type' => BanTypeConstants::class,
     ];
     public $timestamps = [
         'starts_at',
         'ends_at',
-        'repealed_at'
+        'repealed_at',
     ];
 
     public function scopeLocal(Builder $query)
@@ -62,7 +62,7 @@ class Ban extends Model
 
     public function end()
     {
-        if (!$this->ends_at){
+        if (! $this->ends_at) {
             $this->ends_at = Carbon::now();
             $this->save();
         }

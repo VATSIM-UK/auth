@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Libraries\SSO;
 
 use Eher\OAuth\OAuthException;
@@ -16,7 +15,7 @@ class RsaSha1 extends BaseRsaSha1
     }
 
     /**
-     * Fetch the private RSA certificate
+     * Fetch the private RSA certificate.
      *
      * @param $request
      * @return string
@@ -27,13 +26,13 @@ class RsaSha1 extends BaseRsaSha1
     }
 
     /**
-     * Fetch the public RSA certificate (we do not use this functionality)
+     * Fetch the public RSA certificate (we do not use this functionality).
      *
      * @param $request
      * @throws OAuthException
      */
     public function fetch_public_cert(&$request)
     {
-        throw new OAuthException("fetch_public_cert not implemented");
+        throw new OAuthException('fetch_public_cert not implemented');
     }
 }

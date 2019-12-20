@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit;
-
 
 use App\Events\User\Banned;
 use App\Events\User\BanRepealed;
@@ -67,7 +65,7 @@ class UserBansTest extends TestCase
 
         $ban = factory(Ban::class)->create([
             'user_id' => $this->user->id,
-            'ends_at' => null
+            'ends_at' => null,
         ]);
 
         $this->assertNotEmpty($this->user->fresh()->currentBans);
@@ -78,16 +76,16 @@ class UserBansTest extends TestCase
     public function itCanGetBanReason()
     {
         $reason = factory(Ban\Reason::class)->create([
-            'name' => "Silly Billy"
+            'name' => 'Silly Billy',
         ]);
 
         $ban = factory(Ban::class)->create([
             'user_id' => $this->user->id,
-            'reason_id' => $reason
+            'reason_id' => $reason,
         ]);
 
         $this->assertEquals($reason->id, $this->user->currentBans->first()->reason->id);
-        $this->assertEquals("Silly Billy", $this->user->currentBans->first()->reason->name);
+        $this->assertEquals('Silly Billy', $this->user->currentBans->first()->reason->name);
     }
 
     /** @test */
@@ -99,12 +97,12 @@ class UserBansTest extends TestCase
         Carbon::setTestNow(Carbon::now());
 
         $reason = factory(Ban\Reason::class)->create([
-            'period' => 'T12H' // 12 hours
+            'period' => 'T12H', // 12 hours
         ]);
 
         $banner = factory(User::class)->create();
 
-        $this->user->banLocally("Did something bad", $reason, $banner);
+        $this->user->banLocally('Did something bad', $reason, $banner);
 
         Event::assertDispatched(Banned::class);
         $this->assertEquals(Carbon::now()->addHours(12), $this->user->fresh()->currentBans->first()->ends_at);
@@ -120,7 +118,7 @@ class UserBansTest extends TestCase
 
         $banner = factory(User::class)->create();
 
-        $this->user->banLocally("Did something bad", null, $banner, Carbon::now()->addMonth());
+        $this->user->banLocally('Did something bad', null, $banner, Carbon::now()->addMonth());
 
         Event::assertDispatched(Banned::class);
         $this->assertEquals(Carbon::now()->addMonth(), $this->user->fresh()->currentBans->first()->ends_at);
@@ -135,12 +133,12 @@ class UserBansTest extends TestCase
         Carbon::setTestNow(Carbon::now());
 
         $reason = factory(Ban\Reason::class)->create([
-            'period' => '1DT12H' // 12 hours
+            'period' => '1DT12H', // 12 hours
         ]);
 
         $banner = factory(User::class)->create();
 
-        $this->user->banLocally("Did something bad", $reason, $banner->id);
+        $this->user->banLocally('Did something bad', $reason, $banner->id);
 
         Event::assertDispatched(Banned::class);
         $this->assertEquals(Carbon::now()->addDay()->addHours(12), $this->user->fresh()->currentBans->first()->ends_at);
@@ -154,7 +152,7 @@ class UserBansTest extends TestCase
         $this->user->banNetwork();
 
         Event::assertDispatched(Banned::class);
-        $this->assertEquals("Network Ban Discovered", $this->user->fresh()->currentBans->first()->body);
+        $this->assertEquals('Network Ban Discovered', $this->user->fresh()->currentBans->first()->body);
         $this->assertNotNull($this->user->networkBan);
     }
 
@@ -186,7 +184,7 @@ class UserBansTest extends TestCase
     public function itCanHaveBanRepealed()
     {
         $ban = factory(Ban::class)->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $this->assertTrue($this->user->banned);
@@ -202,6 +200,6 @@ class UserBansTest extends TestCase
     {
         $this->expectException(BanEndsBeforeStartException::class);
 
-        $this->user->banLocally("Silly Billy", null, null, Carbon::now()->subDay());
+        $this->user->banLocally('Silly Billy', null, null, Carbon::now()->subDay());
     }
 }
