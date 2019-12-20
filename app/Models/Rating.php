@@ -85,6 +85,7 @@ class Rating extends Model
                 }
             }
         }
+
         return $ratingsOutput;
     }
 

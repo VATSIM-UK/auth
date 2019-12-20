@@ -26,8 +26,9 @@ class UpdatePassword
         if ($user->has_password) {
             if ($user->verifyPassword($args['old_password'])) {
                 $user->setPassword($args['new_password']);
+
                 return true;
-            };
+            }
 
             throw ValidationException::withMessages([
                 'old_password' => ['Incorrect previous password given'],
@@ -35,6 +36,7 @@ class UpdatePassword
         }
 
         $user->setPassword($args['new_password']);
+
         return true;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 use App\Constants\RatingTypeConstants;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class RatingsSeeder extends Seeder
@@ -22,15 +21,12 @@ class RatingsSeeder extends Seeder
             ['code' => 'C2', 'type' => RatingTypeConstants::ATC, 'code_long' => 'CTR+', 'name' => 'Senior Controller', 'name_long' => 'Senior Controller', 'vatsim_id' => 6],
             ['code' => 'C3', 'type' => RatingTypeConstants::ATC, 'code_long' => 'CTR+', 'name' => 'Senior Controller', 'name_long' => 'Senior Controller', 'vatsim_id' => 7],
 
-
             ['code' => 'I1', 'type' => RatingTypeConstants::TRAINING_ATC, 'code_long' => 'INS', 'name' => 'Instructor', 'name_long' => 'Instructor', 'vatsim_id' => 8],
             ['code' => 'I2', 'type' => RatingTypeConstants::TRAINING_ATC, 'code_long' => 'INS+', 'name' => 'Senior Instructor', 'name_long' => 'Senior Instructor', 'vatsim_id' => 9],
             ['code' => 'I3', 'type' => RatingTypeConstants::TRAINING_ATC, 'code_long' => 'INS+', 'name' => 'Senior Instructor', 'name_long' => 'Senior Instructor', 'vatsim_id' => 10],
 
-
             ['code' => 'SUP', 'type' => RatingTypeConstants::ADMIN, 'code_long' => 'SUP', 'name' => 'Supervisor', 'name_long' => 'Network Supervisor', 'vatsim_id' => 11],
             ['code' => 'ADM', 'type' => RatingTypeConstants::ADMIN, 'code_long' => 'ADM', 'name' => 'Administrator', 'name_long' => 'Network Administrator', 'vatsim_id' => 12],
-
 
             ['code' => 'P1', 'type' => RatingTypeConstants::PILOT, 'code_long' => 'P1', 'name' => 'P1', 'name_long' => 'Online Pilot', 'vatsim_id' => 1],
             ['code' => 'P2', 'type' => RatingTypeConstants::PILOT, 'code_long' => 'P2', 'name' => 'P2', 'name_long' => 'Flight Fundamentals', 'vatsim_id' => 2],

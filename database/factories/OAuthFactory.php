@@ -1,13 +1,12 @@
 <?php
 
-
 use App\Passport\Client;
 
 $factory->define(Client::class, function ($faker) {
     return [
         'name' => $faker->sentence(2),
         'secret' => $faker->sha256,
-        'redirect' => "",
+        'redirect' => '',
         'personal_access_client' => true,
         'password_client' => true,
         'revoked' => false,

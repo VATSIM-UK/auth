@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
-class PasswordResetRest extends TestCase
+class PasswordResetTest extends TestCase
 {
     use DatabaseTransactions, MakesGraphQLRequests;
 
@@ -35,7 +35,7 @@ class PasswordResetRest extends TestCase
     public function testUpdatingPasswordRequiresCorrectOldPassword()
     {
         $this->actingAs($this->user, 'api');
-        $this->assertFalse($this->user->verifyPassword("Testing12345"));
+        $this->assertFalse($this->user->verifyPassword('Testing12345'));
         $this->graphQL('
         mutation{
             updatePassword(
@@ -43,7 +43,7 @@ class PasswordResetRest extends TestCase
                 new_password: "Testing12345"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.old_password.0', "Incorrect previous password given");
+        ')->assertJsonPath('errors.0.extensions.validation.old_password.0', 'Incorrect previous password given');
 
         $this->graphQL('
         mutation{
@@ -53,13 +53,13 @@ class PasswordResetRest extends TestCase
             )
         }
         ')->assertJsonPath('data.updatePassword', true);
-        $this->assertTrue($this->user->fresh()->verifyPassword("Testing12345"));
+        $this->assertTrue($this->user->fresh()->verifyPassword('Testing12345'));
     }
 
     public function testItRequiresCorrectLevelOfPasswordSecurity()
     {
         $this->actingAs($this->user, 'api');
-        $this->assertFalse($this->user->fresh()->verifyPassword("Testing1"));
+        $this->assertFalse($this->user->fresh()->verifyPassword('Testing1'));
         $this->graphQL('
         mutation{
             updatePassword(
@@ -67,7 +67,7 @@ class PasswordResetRest extends TestCase
                 new_password: "Testin"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', "The new password must be at least 8 characters.");
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', 'The new password must be at least 8 characters.');
 
         $this->graphQL('
         mutation{
@@ -77,7 +77,7 @@ class PasswordResetRest extends TestCase
             )
         }
         ')->assertJsonPath('data.updatePassword', true);
-        $this->assertTrue($this->user->fresh()->verifyPassword("Testing1"));
+        $this->assertTrue($this->user->fresh()->verifyPassword('Testing1'));
     }
 
     public function testUserWithNoPasswordCanAddPassword()
@@ -92,7 +92,7 @@ class PasswordResetRest extends TestCase
                 new_password: "Testin"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', "The new password must be at least 8 characters.");
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', 'The new password must be at least 8 characters.');
 
         $this->graphQL('
         mutation{
@@ -101,7 +101,7 @@ class PasswordResetRest extends TestCase
             )
         }
         ')->assertJsonPath('data.updatePassword', true);
-        $this->assertTrue($this->user->fresh()->verifyPassword("Testing1"));
+        $this->assertTrue($this->user->fresh()->verifyPassword('Testing1'));
     }
 
     public function testUserCantUpdateWithSamePassword()
@@ -143,7 +143,7 @@ class PasswordResetRest extends TestCase
                 current_password: "Testin"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.current_password.0', "Incorrect current password given");
+        ')->assertJsonPath('errors.0.extensions.validation.current_password.0', 'Incorrect current password given');
 
         $this->graphQL('
         mutation{

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Concerns;
 
 use App\Events\User\Updated;
@@ -16,7 +15,7 @@ trait HasRatings
     {
         return $this->belongsToMany(
             Rating::class,
-            "user_ratings",
+            'user_ratings',
             'user_id',
             'rating_id'
         )->using(RatingPivot::class)
@@ -32,12 +31,12 @@ trait HasRatings
         // Handle ATC rating
         if ($atcRatingCode === 0) {
             $this->banNetwork('Network ban discovered via Cert login.');
+
             return;
         }
 
         // Check if has non-ATC primary rating
         if ($atcRatingCode >= 8) {
-
             $previousRating = VATSIMUserDetails::getPreviousRatingsInfo($this->id);
             if ($previousRating && isset($previousRating->PreviousRatingInt) && $previousRating->PreviousRatingInt > 0) {
                 // Push pre-special rating
@@ -74,7 +73,7 @@ trait HasRatings
 
         $currentRatingIds = $this->ratings()->distinct()->pluck('ratings.id');
 
-        if (!empty($idsToSync = $ratingIds->diff($currentRatingIds))) {
+        if (! empty($idsToSync = $ratingIds->diff($currentRatingIds))) {
             $this->ratings()->syncWithoutDetaching($idsToSync);
             event(new Updated($this));
         }
@@ -89,6 +88,7 @@ trait HasRatings
             ->sortByDesc(function ($rating, $key) {
                 return $rating->pivot->created_at;
             })->first();
+
         return $rating ? $rating : Rating::code('OBS')->first();
     }
 

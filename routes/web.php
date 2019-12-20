@@ -11,7 +11,6 @@
 |
 */
 
-
 Route::namespace('Auth')->group(function () {
     Route::get('/login', 'LoginController@loginWithVatsimSSO')->name('login');
     Route::get('/login/sso/verify', 'LoginController@verifySSOLogin')->name('login.sso.verify');
@@ -20,7 +19,7 @@ Route::namespace('Auth')->group(function () {
 
     Route::get('/logout', 'LoginController@logout')->name('logout');
 
-    Route::middleware(['auth:partial_web','guest:web', 'has_password'])->group(function() {
+    Route::middleware(['auth:partial_web', 'guest:web', 'has_password'])->group(function () {
         Route::get('/login/password/forgot', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
         Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
         Route::get('/login/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
@@ -32,4 +31,3 @@ Route::namespace('Auth')->group(function () {
 });
 
 Route::get('/{any?}', 'SpaController@index')->where('any', '.*');
-

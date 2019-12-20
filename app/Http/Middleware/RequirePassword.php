@@ -15,7 +15,7 @@ class RequirePassword extends \Illuminate\Auth\Middleware\RequirePassword
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
-        if(!$request->user()->hasPassword()){
+        if (! $request->user()->hasPassword()) {
             return $next($request);
         }
 

@@ -23,15 +23,15 @@ class RemovePassword
     {
         $user = Auth::guard('api')->user();
 
-        if (!$user->has_password) {
+        if (! $user->has_password) {
             return false;
         }
 
-        if (!$user->verifyPassword($args['current_password'])) {
+        if (! $user->verifyPassword($args['current_password'])) {
             throw ValidationException::withMessages([
                 'current_password' => ['Incorrect current password given'],
             ]);
-        };
+        }
 
         $user->removePassword();
 

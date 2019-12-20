@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Concerns;
 
 use App\Constants\BanTypeConstants;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 trait HasBans
 {
     /**
-     * Gets all present and historic bans
+     * Gets all present and historic bans.
      *
      * @return HasMany
      */
@@ -26,7 +25,7 @@ trait HasBans
     }
 
     /**
-     * Gets all currently active bans
+     * Gets all currently active bans.
      *
      * @return HasMany
      */
@@ -42,7 +41,7 @@ trait HasBans
     }
 
     /**
-     * Gets the current network ban
+     * Gets the current network ban.
      *
      * @return Ban|null
      */
@@ -52,7 +51,7 @@ trait HasBans
     }
 
     /**
-     * Returns whether the user is banned or not
+     * Returns whether the user is banned or not.
      *
      * @return bool
      */
@@ -62,7 +61,7 @@ trait HasBans
     }
 
     /**
-     * Ban the user locally
+     * Ban the user locally.
      *
      * @param $body
      * @param Ban\Reason $reason
@@ -77,7 +76,7 @@ trait HasBans
     }
 
     /**
-     * Adds a network ban for the user (only affects status on local system)
+     * Adds a network ban for the user (only affects status on local system).
      *
      * @param null $body
      * @return Ban
@@ -89,25 +88,27 @@ trait HasBans
         if ($this->network_ban) {
             throw new AlreadyNetworkBannedException();
         }
-        return $this->ban(BanTypeConstants::NETWORK, $body ? $body : "Network Ban Discovered");
+
+        return $this->ban(BanTypeConstants::NETWORK, $body ? $body : 'Network Ban Discovered');
     }
 
     /**
-     * Ends any current network back
+     * Ends any current network back.
      *
      * @return Ban|null
      */
     public function endNetworkBanIfHas(): ?Ban
     {
-        if (!$ban = $this->network_ban) {
+        if (! $ban = $this->network_ban) {
             return null;
         }
         $ban->end();
+
         return $ban;
     }
 
     /**
-     * Bans the user
+     * Bans the user.
      *
      * @param $type int A BanConstant type
      * @param $body string
@@ -133,7 +134,7 @@ trait HasBans
 
         if ($reason) {
             $ban->reason()->associate($reason);
-            if (!$end) {
+            if (! $end) {
                 // Calculate end time from reason
                 $ban->ends_at = Carbon::now()->add($reason->periodInterval);
             }
@@ -148,6 +149,7 @@ trait HasBans
         $ban->save();
 
         event(new Banned($ban));
+
         return $ban;
     }
 }

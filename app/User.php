@@ -33,11 +33,11 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\CanRese
     ];
 
     protected $casts = [
-        'inactive' => 'bool'
+        'inactive' => 'bool',
     ];
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool)$this->password;
+        return (bool) $this->password;
     }
 }

@@ -24,6 +24,5 @@ class ConstantServiceProvider extends ServiceProvider
         $typeRegistry->register(
             new LaravelEnumType(BanTypeConstants::class, 'BanConstant')
         );
-
     }
 }

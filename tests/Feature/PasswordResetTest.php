@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\Feature;
 
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -16,7 +15,7 @@ class PasswordResetTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user->password = "1234Testing";
+        $this->user->password = '1234Testing';
         $this->user->save();
     }
 
@@ -51,7 +50,7 @@ class PasswordResetTest extends TestCase
 
         $this->get(route('password.request'))
             ->assertOk()
-            ->assertSeeText("Send Password Reset Link");
+            ->assertSeeText('Send Password Reset Link');
     }
 
     public function testUserCanRequestResetLink()
@@ -62,7 +61,7 @@ class PasswordResetTest extends TestCase
 
         $this->followingRedirects()
             ->from(route('password.request'))->post(route('password.email'))
-            ->assertSeeText("We have e-mailed your password reset link!");
+            ->assertSeeText('We have e-mailed your password reset link!');
 
         Notification::assertSentTo($this->user, ResetPassword::class);
     }
@@ -74,9 +73,9 @@ class PasswordResetTest extends TestCase
 
         $this->get(route('password.reset', $token))
             ->assertOk()
-            ->assertSeeText("Password Reset")
-            ->assertSeeText("Confirm Password")
-            ->assertSeeText("Reset Password");
+            ->assertSeeText('Password Reset')
+            ->assertSeeText('Confirm Password')
+            ->assertSeeText('Reset Password');
     }
 
     public function testUserCanResetPassword()
@@ -88,8 +87,8 @@ class PasswordResetTest extends TestCase
             ->from(route('password.reset', $token))
             ->post(route('password.update'), [
                 'token' => $token,
-                'password' => "SecretSt1ng",
-                'password_confirmation' => "SecretSt1ng",
+                'password' => 'SecretSt1ng',
+                'password_confirmation' => 'SecretSt1ng',
             ])->assertLocation('/');
         $this->assertAuthenticatedAs($this->user, 'web');
         $this->assertTrue($this->user->fresh()->verifyPassword('SecretSt1ng'));

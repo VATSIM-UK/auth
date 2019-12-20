@@ -24,9 +24,8 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                "debugMessage" => "Unauthenticated."
+                'debugMessage' => 'Unauthenticated.',
         ]);
-
 
         $this->actingAs($this->user)->graphQL('
         query{
@@ -35,7 +34,7 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                "debugMessage" => "Unauthenticated."
+                'debugMessage' => 'Unauthenticated.',
         ]);
     }
 
@@ -48,11 +47,11 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJson([
-            "data" => [
-                "authUser" => [
-                    "id" => $this->user->id
-                ]
-            ]
+            'data' => [
+                'authUser' => [
+                    'id' => $this->user->id,
+                ],
+            ],
         ]);
     }
 
@@ -67,9 +66,9 @@ class UserRetrievalTest extends TestCase
             }
         }
         ")->assertJson([
-            "data" => [
-                "user" => ["id" => "{$this->user->id}"]
-            ]
+            'data' => [
+                'user' => ['id' => "{$this->user->id}"],
+            ],
         ]);
     }
 
@@ -85,12 +84,12 @@ class UserRetrievalTest extends TestCase
             }
         }
         ")->assertJsonFragment([
-            "data" => [
-                "users" => [
-                    ["id" => "{$this->user->id}"],
-                    ["id" => "$randomUsersId"],
-                ]
-            ]
+            'data' => [
+                'users' => [
+                    ['id' => "{$this->user->id}"],
+                    ['id' => "$randomUsersId"],
+                ],
+            ],
         ]);
     }
 
@@ -109,14 +108,14 @@ class UserRetrievalTest extends TestCase
             }
         }
         ")->assertJsonFragment([
-            "data" => [
-                "user" => [
-                    "ratings" => [
+            'data' => [
+                'user' => [
+                    'ratings' => [
                         ['code' => $ratings->first()->code],
                         ['code' => $ratings->last()->code],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -136,14 +135,14 @@ class UserRetrievalTest extends TestCase
             }
         }
         ")->assertJsonFragment([
-            "data" => [
-                "user" => [
-                    "atcRating" => [
+            'data' => [
+                'user' => [
+                    'atcRating' => [
                         'code' => $rating->code,
-                        "type" => "ATC"
+                        'type' => 'ATC',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -160,13 +159,12 @@ class UserRetrievalTest extends TestCase
             }
         }
         ")->assertJsonFragment([
-            "data" => [
-                "user" => [
-                    "pilotRatings" => [],
-                ]
-            ]
+            'data' => [
+                'user' => [
+                    'pilotRatings' => [],
+                ],
+            ],
         ]);
-
 
         $this->user->ratings()->sync($rating);
 
@@ -180,16 +178,16 @@ class UserRetrievalTest extends TestCase
             }
         }
         ")->assertJsonFragment([
-            "data" => [
-                "user" => [
-                    "pilotRatings" => [
+            'data' => [
+                'user' => [
+                    'pilotRatings' => [
                         [
                             'code' => $rating->code,
-                            'type' => "PILOT"
-                        ]
+                            'type' => 'PILOT',
+                        ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -204,7 +202,7 @@ class UserRetrievalTest extends TestCase
         factory(Ban::class)->create([
             'type' => BanTypeConstants::NETWORK,
             'user_id' => $this->user->id,
-            'ends_at' => null
+            'ends_at' => null,
         ]);
 
         $this->actingAs($this->user, 'api')->graphQL("

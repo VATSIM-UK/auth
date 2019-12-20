@@ -38,7 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            CreateFreshApiToken::class
+            CreateFreshApiToken::class,
         ],
 
         'api' => [
@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.api.multi' => ApiClientOrUserAuthentication::class,
         'password.confirm' => RequirePassword::class,
-        'has_password' => MustHavePassword::class
+        'has_password' => MustHavePassword::class,
     ];
 
     /**
