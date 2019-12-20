@@ -7,6 +7,7 @@
             <text-input name="old_password" :errors="errors" v-model="old_password" placeholder="Old Password"></text-input>
             <text-input name="new_password" :errors="errors" v-model="new_password" placeholder="New Password"></text-input>
             <button class="btn btn-info" @click="updatePassword(false)" :disabled="!old_password || !new_password">Update</button>
+            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and a lowercase letter, as well as a number.</small>
 
             <p>You may also remove your secondary password completely:</p>
             <text-input name="current_password" :errors="errors" v-model="current_password" placeholder="Current Password"></text-input>
@@ -18,6 +19,7 @@
             <text-input name="new_password" :errors="errors" v-model="new_password" placeholder="Password"></text-input>
             <text-input name="new_confirm" v-model="new_password_confirm" placeholder="Password (again)"></text-input>
             <button class="btn btn-info" @click="updatePassword(true)" :disabled="(new_password !== new_password_confirm) || !new_password">Add Password</button>
+            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and a lowercase letter, as well as a number.</small>
         </div>
     </div>
 </template>

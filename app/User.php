@@ -6,11 +6,12 @@ use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
 use App\Concerns\HasRatings;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable implements \Illuminate\Contracts\Auth\CanResetPassword
+class User extends Authenticatable implements CanResetPasswordInterface
 {
     use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, CanResetPassword;
 

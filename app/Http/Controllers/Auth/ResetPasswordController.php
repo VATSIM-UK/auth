@@ -37,7 +37,7 @@ class ResetPasswordController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function reset(Request $request)
@@ -72,5 +72,18 @@ class ResetPasswordController extends Controller
             'token' => 'required',
             'password' => 'required|confirmed|min:8',
         ];
+    }
+
+    /**
+     * Get the password reset credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return $request->only(
+            'password', 'password_confirmation', 'token'
+        );
     }
 }

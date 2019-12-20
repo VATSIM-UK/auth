@@ -11,6 +11,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    /* @var \App\User */
     protected $user;
 
     protected function setUp(): void

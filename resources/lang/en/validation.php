@@ -117,6 +117,12 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
+    // Extension
+
+    'uppercase' => 'The :attribute must contain at least 1 uppercase character.',
+    'lowercase' => 'The :attribute must contain at least 1 lowercase character.',
+    'numbers' => 'The :attribute must contain at least :numbers numerical characters.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -145,6 +151,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'new_password' => 'new password',
+        'old_password' => 'old password',
+        'current_password' => 'current password',
+    ],
 
 ];

@@ -19,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
         // Override Default Client Model
         Passport::useClientModel(Client::class);
 
-        // Enable personal access client on development environments
+        // Enable personal access client where available
         if (Schema::hasTable('oauth_clients') && $client = Client::where('personal_access_client', true)->first(['id'])) {
             Passport::personalAccessClientId($client->id);
         }

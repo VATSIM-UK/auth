@@ -19,9 +19,9 @@ Route::namespace('Auth')->group(function () {
 
     Route::get('/logout', 'LoginController@logout')->name('logout');
 
-    Route::middleware(['auth:partial_web', 'guest:web', 'has_password'])->group(function () {
+    Route::middleware(['auth:partial_web', 'guest:web', 'auth.mandate.password'])->group(function () {
         Route::get('/login/password/forgot', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
-        Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        Route::post('/login/password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
         Route::get('/login/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
         Route::post('/login/password/reset', 'ResetPasswordController@reset')->name('password.update');
     });

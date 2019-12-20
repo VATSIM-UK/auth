@@ -21,6 +21,7 @@
                     @enderror
                 </div>
             </div>
+            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and a lowercase letter, as well as a number.</small>
 
             <div class="form-group row">
                 <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>

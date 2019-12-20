@@ -9,49 +9,45 @@
 </template>
 
 <script>
-    import Errors from './errors'
-    export default {
-        name: "TextInput",
-        props: {
-            name: {
-                type: String,
-                required: true
-            },
-            type: {
-                type: String,
-                default: 'text'
-            },
-            errors: {
-                type: Object,
-                default: function () {
-                    return new Errors()
-                }
-            },
-            value: {
-                type: String,
-                default: null
-            },
-            placeholder: {
-                type: String,
-            },
+import Errors from './errors'
+export default {
+    name: "TextInput",
+    props: {
+        name: {
+            type: String,
+            required: true
         },
-        data() {
-            return {
-                currentValue: null,
+        type: {
+            type: String,
+            default: 'text'
+        },
+        errors: {
+            type: Object,
+            default: function () {
+                return new Errors()
             }
         },
-        updated() {
-            this.currentValue = this.value;
+        value: {
+            type: String,
+            default: null
         },
-        methods: {
-            updateInput(){
-                this.errors.clear(this.name);
-                this.$emit('input', this.currentValue)
-            }
+        placeholder: {
+            type: String,
+        },
+    },
+    data() {
+        return {
+            currentValue: null,
+        }
+    },
+    updated() {
+        this.currentValue = this.value;
+    },
+    methods: {
+        updateInput(){
+            this.errors.clear(this.name);
+            this.$emit('input', this.currentValue)
         }
     }
+}
 </script>
-
-<style scoped>
-
-</style>

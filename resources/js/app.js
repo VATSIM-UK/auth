@@ -5,7 +5,9 @@
  */
 
 require('./bootstrap');
-import axios from 'axios';
+ /*
+    Import Required Classes
+  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ApolloClient from 'apollo-boost'
@@ -14,6 +16,10 @@ import Cookie from 'js-cookie'
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
+
+/*
+   Setup GraphQL Client with Authentication Headers
+ */
 
 const apolloClient = new ApolloClient({
     headers: {
@@ -26,6 +32,10 @@ const apolloClient = new ApolloClient({
 const apolloProvider = new VueApollo({
     defaultClient: apolloClient,
 })
+
+/*
+   Import Router Views
+ */
 
 import App from './views/App'
 import Passwords from './views/Passwords'
@@ -52,6 +62,10 @@ const router = new VueRouter({
     ],
 });
 
+/*
+   Initialise Custom Components
+ */
+
 Vue.component(
     'text-input',
     require('./components/ui/TextInput.vue').default
@@ -61,6 +75,9 @@ Vue.component(
     require('./components/ui/Success.vue').default
 );
 
+/*
+   Create App
+ */
 
 const app = new Vue({
     el: '#app',
@@ -69,40 +86,3 @@ const app = new Vue({
     apolloProvider,
     render: h => h(App),
 });
-
-
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
-
-// Vue.component(
-//     'passport-clients',
-//     require('./components/passport/Clients.vue').default
-// );
-//
-// Vue.component(
-//     'passport-authorized-clients',
-//     require('./components/passport/AuthorizedClients.vue').default
-// );
-//
-// Vue.component(
-//     'passport-personal-access-tokens',
-//     require('./components/passport/PersonalAccessTokens.vue').default
-// );
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-//
-// const app = new Vue({
-//     el: '#app',
-// });

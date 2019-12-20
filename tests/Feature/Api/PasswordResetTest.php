@@ -67,7 +67,26 @@ class PasswordResetTest extends TestCase
                 new_password: "Testin"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', 'The new password must be at least 8 characters.');
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.min.string', ['attribute' => 'new password', 'min' => 8]));
+
+        $this->graphQL('
+        mutation{
+            updatePassword(
+                old_password: "12345678",
+                new_password: "testing1"
+            )
+        }
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.uppercase', ['attribute' => 'new password']));
+
+
+        $this->graphQL('
+        mutation{
+            updatePassword(
+                old_password: "12345678",
+                new_password: "TESTING1"
+            )
+        }
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.lowercase', ['attribute' => 'new password']));
 
         $this->graphQL('
         mutation{
