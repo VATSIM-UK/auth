@@ -20,28 +20,24 @@ class PasswordStrengthRule implements Rule
         // 1: Check for at least 8 characters
         if (strlen($value) < 8) {
             $this->errorMessage = trans('validation.min.string', ['min' => 8]);
-
             return false;
         }
 
         // 2: Check for at least 1 uppercase character
         if (preg_match_all('/[A-Z]/', $value) < 1) {
-            $this->errorMessage = trans('validation.uppercase');
-
+            $this->errorMessage = trans('validation.uppercase', ['min' => 1]);
             return false;
         }
 
         // 3: Check for at least 1 lowercase character
         if (preg_match_all('/[a-z]/', $value) < 1) {
-            $this->errorMessage = trans('validation.lowercase');
-
+            $this->errorMessage = trans('validation.lowercase', ['min' => 1]);
             return false;
         }
 
         // 4: Check for at least 1 numerical character
         if (preg_match_all('/[0-9]/', $value) < 1) {
-            $this->errorMessage = trans('validation.numbers', ['numbers' => 1]);
-
+            $this->errorMessage = trans('validation.numbers', ['min' => 1]);
             return false;
         }
 

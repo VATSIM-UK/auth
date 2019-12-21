@@ -21,7 +21,7 @@ class PasswordStrengthRuleTest extends TestCase
     {
         $outcome = $this->validateAgainstRule('testing89');
         $this->assertFails($outcome);
-        $this->assertMessageEquals($outcome, trans('validation.uppercase', ['attribute' => 'password']));
+        $this->assertMessageEquals($outcome, trans('validation.uppercase', ['attribute' => 'password', 'min' => 1]));
     }
 
     /** @test */
@@ -29,7 +29,7 @@ class PasswordStrengthRuleTest extends TestCase
     {
         $outcome = $this->validateAgainstRule('TESTING89');
         $this->assertFails($outcome);
-        $this->assertMessageEquals($outcome, trans('validation.lowercase', ['attribute' => 'password']));
+        $this->assertMessageEquals($outcome, trans('validation.lowercase', ['attribute' => 'password', 'min' => 1]));
     }
 
     /** @test */
@@ -37,7 +37,7 @@ class PasswordStrengthRuleTest extends TestCase
     {
         $outcome = $this->validateAgainstRule('TeSTINGTE');
         $this->assertFails($outcome);
-        $this->assertMessageEquals($outcome, trans('validation.numbers', ['attribute' => 'password', 'numbers' => 1]));
+        $this->assertMessageEquals($outcome, trans('validation.numbers', ['attribute' => 'password', 'min' => 1]));
     }
 
     /** @test */

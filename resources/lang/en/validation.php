@@ -119,9 +119,9 @@ return [
 
     // Extension
 
-    'uppercase' => 'The :attribute must contain at least 1 uppercase character.',
-    'lowercase' => 'The :attribute must contain at least 1 lowercase character.',
-    'numbers' => 'The :attribute must contain at least :numbers numerical characters.',
+    'uppercase' => 'The :attribute must contain at least :min uppercase characters.',
+    'lowercase' => 'The :attribute must contain at least :min lowercase characters.',
+    'numbers' => 'The :attribute must contain at least :min numerical characters.',
 
     /*
     |--------------------------------------------------------------------------

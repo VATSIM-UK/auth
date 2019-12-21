@@ -76,7 +76,7 @@ class PasswordResetTest extends TestCase
                 new_password: "testing1"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.uppercase', ['attribute' => 'new password']));
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.uppercase', ['attribute' => 'new password', 'min' => 1]));
 
         $this->graphQL('
         mutation{
@@ -85,7 +85,7 @@ class PasswordResetTest extends TestCase
                 new_password: "TESTING1"
             )
         }
-        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.lowercase', ['attribute' => 'new password']));
+        ')->assertJsonPath('errors.0.extensions.validation.new_password.0', trans('validation.lowercase', ['attribute' => 'new password', 'min' => 1]));
 
         $this->graphQL('
         mutation{
