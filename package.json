@@ -8,8 +8,8 @@
         "hot": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
         "production": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "test": "node_modules/mochapack/bin/mochapack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --require tests/vue/setup.js tests/vue/**/*.spec.js",
-        "test-watch": "node_modules/mochapack/bin/mochapack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --watch --require tests/vue/setup.js tests/vue/**/*.spec.js"
+        "test": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=testing node_modules/mochapack/bin/mochapack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --require tests/vue/setup.js tests/vue/**/*.spec.js",
+        "test-watch": "node_modules/cross-env/src/bin/cross-env.js NODE_ENV=testing node_modules/mochapack/bin/mochapack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --watch --require tests/vue/setup.js tests/vue/**/*.spec.js"
     },
     "devDependencies": {
         "@vue/test-utils": "^1.0.0-beta.30",
