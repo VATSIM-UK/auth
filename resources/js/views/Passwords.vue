@@ -2,24 +2,31 @@
     <div>
         <success-message :message="success" v-if="success"></success-message>
         <div v-if="authUser.has_password">
-<!--            v-if="authUser.has_password"-->
             You currently have a secondary password set. You may change it below:
-            <text-input name="old_password" :errors="errors" v-model="old_password" placeholder="Old Password"></text-input>
-            <text-input name="new_password" :errors="errors" v-model="new_password" placeholder="New Password"></text-input>
-            <button class="btn btn-info" @click="updatePassword(false)" :disabled="!old_password || !new_password">Update</button>
-            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and a lowercase letter, as well as a number.</small>
+            <text-input name="old_password" :errors="errors" v-model="old_password"
+                        placeholder="Old Password"></text-input>
+            <text-input name="new_password" :errors="errors" v-model="new_password"
+                        placeholder="New Password"></text-input>
+            <button class="btn btn-info" @click="updatePassword(false)" :disabled="!old_password || !new_password">
+                Update
+            </button>
+            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and
+                a lowercase letter, as well as a number.</small>
 
             <p>You may also remove your secondary password completely:</p>
-            <text-input name="current_password" :errors="errors" v-model="current_password" placeholder="Current Password"></text-input>
+            <text-input name="current_password" :errors="errors" v-model="current_password"
+                        placeholder="Current Password"></text-input>
             <button class="btn btn-info" @click="removePassword()" :disabled="!current_password">Update</button>
         </div>
-<!--         v-else-->
         <div v-else>
             You do not currently have a secondary password set. Add one below:
             <text-input name="new_password" :errors="errors" v-model="new_password" placeholder="Password"></text-input>
             <text-input name="new_confirm" v-model="new_password_confirm" placeholder="Password (again)"></text-input>
-            <button class="btn btn-info" @click="updatePassword(true)" :disabled="(new_password !== new_password_confirm) || !new_password">Add Password</button>
-            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and a lowercase letter, as well as a number.</small>
+            <button class="btn btn-info" @click="updatePassword(true)"
+                    :disabled="(new_password !== new_password_confirm) || !new_password">Add Password
+            </button>
+            <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and
+                a lowercase letter, as well as a number.</small>
         </div>
     </div>
 </template>
@@ -40,7 +47,7 @@
             }
         },
         methods: {
-            removePassword(){
+            removePassword() {
                 this.$apollo.mutate({
                     // Query
                     mutation: gql`mutation ($current_password: String!) {

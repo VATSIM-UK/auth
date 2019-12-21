@@ -5,14 +5,18 @@
  */
 
 require('./bootstrap');
- /*
-    Import Required Classes
-  */
+/*
+  Import Required Classes
+*/
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import Cookie from 'js-cookie'
+import App from './views/App'
+import Passwords from './views/Passwords'
+import NotFound from './views/errors/NotFound'
+import Dashboard from './views/Dashboard'
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
@@ -36,11 +40,6 @@ const apolloProvider = new VueApollo({
 /*
    Import Router Views
  */
-
-import App from './views/App'
-import Passwords from './views/Passwords'
-import NotFound from './views/errors/NotFound'
-import Dashboard from './views/Dashboard'
 
 const router = new VueRouter({
     mode: 'history',
@@ -72,7 +71,7 @@ Vue.component(
 );
 Vue.component(
     'success-message',
-    require('./components/ui/Success.vue').default
+    require('./components/ui/SuccessMessage.vue').default
 );
 
 /*
@@ -81,7 +80,7 @@ Vue.component(
 
 const app = new Vue({
     el: '#app',
-    components: { App },
+    components: {App},
     router,
     apolloProvider,
     render: h => h(App),

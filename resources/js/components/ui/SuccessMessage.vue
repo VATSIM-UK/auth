@@ -5,8 +5,8 @@
 </template>
 
 <script>
-export default {
-    name: "Success",
-    props: ['message']
-}
+    export default {
+        name: "SuccessMessage",
+        props: ['message']
+    }
 </script>
