@@ -16,7 +16,7 @@
             <p>You may also remove your secondary password completely:</p>
             <text-input name="current_password" :errors="errors" v-model="current_password"
                         placeholder="Current Password"></text-input>
-            <button class="btn btn-info" @click="removePassword()" :disabled="!current_password">Update</button>
+            <button class="btn btn-info" @click="removePassword()" :disabled="!current_password">Remove</button>
         </div>
         <div v-else>
             You do not currently have a secondary password set. Add one below:
