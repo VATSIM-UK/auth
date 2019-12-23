@@ -11,6 +11,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    /* @var User */
     protected $user;
 
     protected function setUp(): void
@@ -22,5 +23,10 @@ abstract class TestCase extends BaseTestCase
         MockCoreDatabase::create();
 
         $this->user = factory(User::class)->create();
+    }
+
+    public function assertCollectionSubset($subset, $collection)
+    {
+        $this->assertEquals($subset, $subset->intersect($collection));
     }
 }

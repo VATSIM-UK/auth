@@ -2,14 +2,14 @@
 
 $factory->define(\App\Models\Ban::class, function (Faker\Generator $faker) {
     return [
-        'user_id' => function (){
-            return factory(\App\User::class)->create();
+        'user_id' => function () {
+            return factory(\App\User::class)->create()->id;
         },
-        'banner_id' => function (){
-            return factory(\App\User::class)->create();
+        'banner_id' => function () {
+            return factory(\App\User::class)->create()->id;
         },
-        'reason_id' => function (){
-            return factory(\App\Models\Ban\Reason::class)->create();
+        'reason_id' => function () {
+            return factory(\App\Models\Ban\Reason::class)->create()->id;
         },
         'type' => \App\Constants\BanTypeConstants::getRandomValue(),
         'body' => $faker->paragraph,

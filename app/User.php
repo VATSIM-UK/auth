@@ -5,16 +5,14 @@ namespace App;
 use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
 use App\Concerns\HasRatings;
-use App\Models\Rating;
-use App\Models\RatingPivot;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Concerns\HasPermissionsAndRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans;
+    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, HasPermissionsAndRoles;
 
     protected $table = 'users';
 
@@ -40,6 +38,6 @@ class User extends Authenticatable
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool) $this->password;
+        return (bool)$this->password;
     }
 }

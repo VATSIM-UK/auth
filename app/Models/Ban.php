@@ -8,8 +8,9 @@ use App\Models\Ban\Reason;
 use App\User;
 use BenSampo\Enum\Traits\CastsEnums;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ban extends Model
 {
@@ -25,62 +26,65 @@ class Ban extends Model
         'repealed_at'
     ];
 
-    public function scopeLocal(Builder $query)
+    public function scopeLocal(Builder $query): Builder
     {
         return $query->where('type', BanTypeConstants::LOCAL);
     }
 
-    public function scopeNetwork(Builder $query)
+    public function scopeNetwork(Builder $query): Builder
     {
         return $query->where('type', BanTypeConstants::NETWORK);
     }
 
-    public function scopeNotRepealed(Builder $query)
+    public function scopeNotRepealed(Builder $query): Builder
     {
         return $query->whereNull('repealed_at');
     }
 
-    public function scopeRepealed(Builder $query)
+    public function scopeRepealed(Builder $query): Builder
     {
         return $query->whereNotNull('repealed_at');
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function banner()
+    public function banner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'banner_id');
     }
 
-    public function reason()
+    public function reason(): BelongsTo
     {
         return $this->belongsTo(Reason::class);
     }
 
-    public function end()
+    public function end(): bool
     {
-        if (!$this->ends_at){
+        if (!$this->ends_at) {
             $this->ends_at = Carbon::now();
             $this->save();
+            return true;
         }
+        return false;
     }
 
-    public function repeal()
+    public function repeal(): bool
     {
         $this->repealed_at = Carbon::now();
         $this->save();
         event(new BanRepealed($this));
+        return true;
     }
 
-    public function getIsLocalAttribute()
+    public function getIsLocalAttribute(): bool
     {
         return $this->type->is(BanTypeConstants::LOCAL);
     }
 
-    public function getIsNetworkAttribute()
+    public function getIsNetworkAttribute(): bool
     {
         return $this->type->is(BanTypeConstants::NETWORK);
     }

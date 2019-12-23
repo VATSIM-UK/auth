@@ -18,7 +18,7 @@ class UserRatingTest extends TestCase
     public function itCantHaveNoRatings()
     {
         $this->assertEquals('OBS', $this->user->atcRating->code);
-        $this->assertEquals(true, $this->user->pilotRatings->isEmpty());
+        $this->assertTrue($this->user->pilotRatings->isEmpty());
     }
 
     /** @test */
@@ -26,7 +26,7 @@ class UserRatingTest extends TestCase
     {
 
         $ratings = factory(Rating::class, 'pilot', 3)->create();
-        $this->assertEquals(true, $this->user->pilotRatings->isEmpty());
+        $this->assertTrue($this->user->pilotRatings->isEmpty());
         $this->user->ratings()->sync([$ratings->first()->id, $ratings->last()->id]);
 
         $this->assertEquals(2, count($this->user->fresh()->pilotRatings));
