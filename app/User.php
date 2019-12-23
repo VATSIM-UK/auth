@@ -5,14 +5,14 @@ namespace App;
 use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
 use App\Concerns\HasRatings;
-use App\Models\Concerns\HasPermissionsAndRoles;
+use App\Models\Concerns\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, HasPermissionsAndRoles;
+    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, HasRoles;
 
     protected $table = 'users';
 

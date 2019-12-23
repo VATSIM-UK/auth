@@ -2,21 +2,31 @@
 
 namespace App\Models;
 
-use App\Models\Permissions\Assignment;
+use App\Models\Concerns\HasPermissions;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Role extends Model
 {
+    use HasPermissions;
+
+    protected $fillable = [
+        'name'
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_roles');
     }
 
-    public function permissions(): MorphMany
+    public static function findByName(string $name): self
     {
-        return $this->morphMany(Assignment::class, 'related');
+        return self::where('name', $name)->findOrFail();
+    }
+
+    public function hasPermissionTo($permission): bool
+    {
+        return $this->hasDirectPermission($permission);
     }
 }
