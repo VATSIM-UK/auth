@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit;
-
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -13,7 +11,8 @@ class UserPasswordTest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function itCanHaveAPasswordSet(){
+    public function itCanHaveAPasswordSet()
+    {
         $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'password' => null,
@@ -32,7 +31,8 @@ class UserPasswordTest extends TestCase
     }
 
     /** @test */
-    public function itCanHaveAPasswordVerified(){
+    public function itCanHaveAPasswordVerified()
+    {
         $this->user->setPassword('test12345');
 
         $this->assertTrue($this->user->verifyPassword('test12345'));
@@ -40,7 +40,8 @@ class UserPasswordTest extends TestCase
     }
 
     /** @test */
-    public function itCanHavePassword(){
+    public function itCanHavePassword()
+    {
         $this->assertNull($this->user->password);
         $this->assertFalse($this->user->hasPassword());
 
@@ -49,7 +50,8 @@ class UserPasswordTest extends TestCase
     }
 
     /** @test */
-    public function itCanHavePasswordRemoved(){
+    public function itCanHavePasswordRemoved()
+    {
         $this->user->setPassword('test12345');
         $this->assertNotNull($this->user->password);
 

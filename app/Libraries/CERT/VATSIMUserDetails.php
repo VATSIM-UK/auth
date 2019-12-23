@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\CERT;
-
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -10,16 +8,16 @@ use GuzzleHttp\Exception\ConnectException;
 class VATSIMUserDetails
 {
     /* Information on previous ratings (mainly for I1+ / ADM) */
-    const idstatusprat = "https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=";
+    const idstatusprat = 'https://cert.vatsim.net/vatsimnet/idstatusprat.php?cid=';
 
     /* Information on a user's controlling times */
-    const idstatusrat = "https://cert.vatsim.net/vatsimnet/idstatusrat.php?cid=";
+    const idstatusrat = 'https://cert.vatsim.net/vatsimnet/idstatusrat.php?cid=';
 
     /* General information for a VATSIM user */
-    const idstatusint = "https://cert.vatsim.net/vatsimnet/idstatusint.php?cid=";
+    const idstatusint = 'https://cert.vatsim.net/vatsimnet/idstatusint.php?cid=';
 
     /* Same as above, but with ratings converted into textual representations */
-    const idstatus = "https://cert.vatsim.net/vatsimnet/idstatus.php?cid=";
+    const idstatus = 'https://cert.vatsim.net/vatsimnet/idstatus.php?cid=';
 
     public static function getPreviousRatingsInfo($cid)
     {
@@ -46,23 +44,23 @@ class VATSIMUserDetails
         $client = resolve(Client::class);
 
         try {
-            $response = $client->get($url . $cid);
+            $response = $client->get($url.$cid);
 
             $xml = new \SimpleXMLElement($response->getBody()->getContents());
 
-            if (!$xml->user) {
+            if (! $xml->user) {
                 //TODO: Log exception
-                return null;
+                return;
             }
         } catch (ConnectException $e) {
             //TODO: Log exception
-            return null;
+            return;
         }
 
         $values = json_decode(json_encode($xml->user), false);
-        $values->cid = $values->{"@attributes"}->cid;
-        unset($values->{"@attributes"});
+        $values->cid = $values->{'@attributes'}->cid;
+        unset($values->{'@attributes'});
+
         return $values;
     }
-
 }

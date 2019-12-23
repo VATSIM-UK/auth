@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit;
-
 
 use App\Models\Rating;
 use App\Models\RatingPivot;
@@ -24,7 +22,6 @@ class UserRatingTest extends TestCase
     /** @test */
     public function itCanHaveMultiplePilotRatings()
     {
-
         $ratings = factory(Rating::class, 'pilot', 3)->create();
         $this->assertTrue($this->user->pilotRatings->isEmpty());
         $this->user->ratings()->sync([$ratings->first()->id, $ratings->last()->id]);
@@ -55,7 +52,7 @@ class UserRatingTest extends TestCase
 
         $this->user->ratings()->sync([$firstRating->id, $secondRating->id, $thirdRating->id]);
         RatingPivot::where('user_id', $this->user->id)->where('rating_id', $secondRating->id)->update([
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
 
         $this->assertEquals($thirdRating->id, $this->user->specialRating->id);
@@ -81,7 +78,7 @@ class UserRatingTest extends TestCase
         $this->assertDatabaseHas('user_ratings', [
             'user_id' => $this->user->id,
             'rating_id' => $secondRating->id,
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
 
         // Go from having special rating to not having special rating
@@ -93,7 +90,7 @@ class UserRatingTest extends TestCase
         $this->assertDatabaseHas('user_ratings', [
             'user_id' => $this->user->id,
             'rating_id' => $thirdRating->id,
-            'deleted_at' => Carbon::now()
+            'deleted_at' => Carbon::now(),
         ]);
     }
 }

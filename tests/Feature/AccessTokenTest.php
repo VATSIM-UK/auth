@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Feature;
-
 
 use App\Passport\Client;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -26,7 +24,6 @@ class AccessTokenTest extends TestCase
         ]);
     }
 
-
     public function testCanRequestAuthorization()
     {
         $state = Str::random(40);
@@ -42,7 +39,6 @@ class AccessTokenTest extends TestCase
         $this->get('oauth/authorize?'.$query)
             ->assertRedirect('login');
     }
-
 
     public function testGetsSentBackToCallbackWithoutApprovalForFirstParty()
     {
@@ -76,8 +72,7 @@ class AccessTokenTest extends TestCase
             'token_type',
             'expires_in',
             'access_token',
-            'refresh_token'
+            'refresh_token',
         ]);
     }
-
 }

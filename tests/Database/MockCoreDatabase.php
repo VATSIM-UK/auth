@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Database;
-
 
 use Illuminate\Support\Facades\DB;
 
@@ -59,7 +57,7 @@ class MockCoreDatabase
         );
 
         DB::connection('mysql_core')->statement(
-            "create table if not exists mship_account_qualification
+            'create table if not exists mship_account_qualification
                     (
                         id bigint unsigned auto_increment
                             primary key,
@@ -68,20 +66,20 @@ class MockCoreDatabase
                         created_at timestamp null,
                         updated_at timestamp null,
                         deleted_at timestamp null
-                    );"
+                    );'
         );
     }
 
     public static function destroy()
     {
         DB::connection('mysql_core')->statement(
-            "drop table if exists mship_account"
+            'drop table if exists mship_account'
         );
         DB::connection('mysql_core')->statement(
-            "drop table if exists mship_qualification"
+            'drop table if exists mship_qualification'
         );
         DB::connection('mysql_core')->statement(
-            "drop table if exists mship_account_qualification"
+            'drop table if exists mship_account_qualification'
         );
     }
 }

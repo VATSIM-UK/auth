@@ -2,7 +2,7 @@
 
 $factory->define(\App\Models\Role::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->words(3, true)
+        'name' => $faker->words(3, true),
     ];
 });
 
@@ -12,7 +12,7 @@ $factory->define(\App\Models\Permissions\Assignment::class, function (Faker\Gene
         'related_id' => function () {
             return factory(\App\Models\Role::class)->create()->id;
         },
-        'permission' => '*'
+        'permission' => '*',
     ];
 });
 
@@ -22,6 +22,6 @@ $factory->defineAS(\App\Models\Permissions\Assignment::class, 'user', function (
         'related_id' => function () {
             return factory(\App\User::class)->create()->id;
         },
-        'permission' => '*'
+        'permission' => '*',
     ];
 });

@@ -16,14 +16,14 @@ class Ban extends Model
 {
     use CastsEnums;
 
-    protected $table = "bans";
+    protected $table = 'bans';
     protected $enumCasts = [
         'type' => BanTypeConstants::class,
     ];
     public $timestamps = [
         'starts_at',
         'ends_at',
-        'repealed_at'
+        'repealed_at',
     ];
 
     public function scopeLocal(Builder $query): Builder
@@ -63,11 +63,13 @@ class Ban extends Model
 
     public function end(): bool
     {
-        if (!$this->ends_at) {
+        if (! $this->ends_at) {
             $this->ends_at = Carbon::now();
             $this->save();
+
             return true;
         }
+
         return false;
     }
 
@@ -76,6 +78,7 @@ class Ban extends Model
         $this->repealed_at = Carbon::now();
         $this->save();
         event(new BanRepealed($this));
+
         return true;
     }
 
