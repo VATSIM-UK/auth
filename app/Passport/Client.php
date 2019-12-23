@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Passport;
-
 
 class Client extends \Laravel\Passport\Client
 {

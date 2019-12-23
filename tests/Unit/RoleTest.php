@@ -28,7 +28,6 @@ class RoleTest extends TestCase
 
         $this->assertEquals(2, $this->role->permissions->count());
         $this->assertEquals('auth.permission.example', $this->role->permissions->first()->permission);
-
     }
 
     /** @test */
@@ -40,6 +39,5 @@ class RoleTest extends TestCase
         $this->role->users()->sync([$this->user->id, $user2->id]);
 
         $this->assertEquals(2, $this->role->users->count());
-
     }
 }

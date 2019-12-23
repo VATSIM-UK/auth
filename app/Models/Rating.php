@@ -58,7 +58,7 @@ class Rating extends Model
             ->withTimestamps();
     }
 
-    public static function atcRatingFromID(int $networkID): ?Rating
+    public static function atcRatingFromID(int $networkID): ?self
     {
         if ($networkID < 1) {
             return null;
@@ -74,7 +74,7 @@ class Rating extends Model
         return self::ofType($type)->networkValue($networkID)->first();
     }
 
-    public static function pilotRatingFromID(int $networkID): Rating
+    public static function pilotRatingFromID(int $networkID): self
     {
         $ratingsOutput = [];
         // Let's check each bitmask....
@@ -87,6 +87,7 @@ class Rating extends Model
                 }
             }
         }
+
         return $ratingsOutput;
     }
 

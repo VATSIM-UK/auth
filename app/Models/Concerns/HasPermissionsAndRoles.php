@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models\Concerns;
-
 
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
