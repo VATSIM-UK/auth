@@ -80,6 +80,7 @@ class UserRoleTest extends TestCase
         $user2->roles()->attach($this->role3);
 
         $this->assertEquals($this->user->id, User::role($this->role1)->pluck('id')->implode(' '));
+        $this->assertEquals($this->user->id, User::role(collect([$this->role1]))->pluck('id')->implode(' '));
         $this->assertEquals(collect([$this->user->id, $user2->id])->sort()->values(), User::role($this->role2->id)->pluck('id')->sort()->values());
         $this->assertEquals($user2->id, User::role([$this->role3])->pluck('id')->implode(' '));
     }
@@ -89,11 +90,12 @@ class UserRoleTest extends TestCase
     {
         $newRoles = factory(Role::class, 3)->create();
 
-        $this->user->assignRole($newRoles->first());
+        $this->user->assignRole([$newRoles->first(), null]);
         $this->assertTrue($this->user->hasRole($newRoles->first()));
 
         $this->user->assignRole($newRoles->take(-2));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(2)));
+        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id . '|' . $newRoles->get(2)->id));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->last()));
     }
 

@@ -5,9 +5,10 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Http\Request;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 /*
  * Note: This middleware is a merge of the \Illuminate\Auth\Middleware\Authenticate and Laravel\Passport\Http\Middleware\CheckClientCredentials middlewares
@@ -28,8 +29,6 @@ class ApiClientOrUserAuthentication
      */
     protected $server;
 
-    private $exceptions = [];
-
     /**
      * Create a new middleware instance.
      *
@@ -45,12 +44,11 @@ class ApiClientOrUserAuthentication
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string[]  ...$guards
+     * @param Request $request
+     * @param \Closure $next
      * @return mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @throws AuthenticationException
      */
     public function handle($request, Closure $next)
     {
@@ -59,7 +57,7 @@ class ApiClientOrUserAuthentication
             return $next($request);
         }
 
-        $psr = (new DiactorosFactory)->createRequest($request);
+        $psr = (new PsrHttpFactory)->createRequest($request);
 
         try {
             $psr = $this->server->validateAuthenticatedRequest($psr);
@@ -73,11 +71,10 @@ class ApiClientOrUserAuthentication
     /**
      * Determine if the user is logged in to any of the given guards.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array  $guards
-     * @return void
+     * @param Request $request
+     * @param array $guards
+     * @return mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
      */
     protected function authenticate($request, array $guards)
     {
@@ -90,10 +87,6 @@ class ApiClientOrUserAuthentication
                 return $this->auth->shouldUse($guard);
             }
         }
-
-        $this->exceptions[] = new AuthenticationException(
-            'Unauthenticated.', $guards
-        );
 
         return false;
     }

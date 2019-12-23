@@ -22,7 +22,7 @@ class Role extends Model
 
     public static function findByName(string $name): self
     {
-        return self::where('name', $name)->findOrFail();
+        return self::where('name', $name)->firstOrFail();
     }
 
     public function hasPermissionTo($permission): bool

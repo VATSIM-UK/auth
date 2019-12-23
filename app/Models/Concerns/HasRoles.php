@@ -14,9 +14,6 @@ trait HasRoles
     public static function bootHasRoles()
     {
         static::deleting(function ($model) {
-            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
-                return;
-            }
             $model->roles()->detach();
         });
     }
@@ -43,7 +40,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (! is_array($roles)) {
+        if (!is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -88,23 +85,9 @@ trait HasRoles
             ->map->id
             ->all();
         $model = $this->getModel();
-        if ($model->exists) {
-            $this->roles()->sync($roles, false);
-            $model->load('roles');
-        } else {
-            $class = \get_class($model);
-            $class::saved(
-                function ($object) use ($roles, $model) {
-                    static $modelLastFiredOn;
-                    if ($modelLastFiredOn !== null && $modelLastFiredOn === $model) {
-                        return;
-                    }
-                    $object->roles()->sync($roles, false);
-                    $object->load('roles');
-                    $modelLastFiredOn = $object;
-                });
-        }
 
+        $this->roles()->sync($roles, false);
+        $model->load('roles');
         return $this;
     }
 
@@ -148,11 +131,11 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
+        if (is_numeric($roles) && $roles = (int)$roles) {
+            return $this->roles->contains('id', $roles);
+        }
         if (is_string($roles)) {
             return $this->roles->contains('name', $roles);
-        }
-        if (is_int($roles)) {
-            return $this->roles->contains('id', $roles);
         }
         if ($roles instanceof Role) {
             return $this->roles->contains('id', $roles->id);
@@ -160,14 +143,10 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                if ($this->hasRole($role)) {
-                    return true;
-                }
+        foreach ($roles as $role) {
+            if ($this->hasRole($role)) {
+                return true;
             }
-
-            return false;
         }
 
         return false;
@@ -245,7 +224,7 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (! in_array($quoteCharacter, ["'", '"'])) {
+        if (!in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 
