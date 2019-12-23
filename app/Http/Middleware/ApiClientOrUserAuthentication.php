@@ -74,7 +74,6 @@ class ApiClientOrUserAuthentication
      * @param Request $request
      * @param array $guards
      * @return mixed
-     *
      */
     protected function authenticate($request, array $guards)
     {
