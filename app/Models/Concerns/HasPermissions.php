@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models\Concerns;
-
 
 use App\Models\Permissions\Assignment;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -14,7 +12,7 @@ trait HasPermissions
     public static function bootHasPermissions()
     {
         static::deleting(function ($model) {
-            if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
+            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
                 return;
             }
             $model->permissions()->delete();
@@ -55,6 +53,7 @@ trait HasPermissions
                 return true;
             }
         }
+
         return false;
     }
 
@@ -71,10 +70,11 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (!$this->hasPermissionTo($permission)) {
+            if (! $this->hasPermissionTo($permission)) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -115,12 +115,12 @@ trait HasPermissions
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-            }) !== false;
+            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+        }) !== false;
     }
 
     /**
-     * Check whether a given permission is satisfied by a list of permissions
+     * Check whether a given permission is satisfied by a list of permissions.
      *
      * @param string $permission
      * @param Collection $permissions
@@ -145,8 +145,8 @@ trait HasPermissions
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-            }) !== false;
+            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+        }) !== false;
     }
 
     /**
@@ -162,7 +162,6 @@ trait HasPermissions
 
     /**
      * Return all the permissions the model has, both directly and via roles.
-     *
      */
     public function getAllPermissions(): Collection
     {
@@ -170,6 +169,7 @@ trait HasPermissions
         if ($this->roles) {
             $permissions = $permissions->merge($this->getPermissionsViaRoles());
         }
+
         return $permissions->unique()->sort()->values();
     }
 
@@ -189,11 +189,12 @@ trait HasPermissions
                 if (empty($permission)) {
                     return false;
                 }
+
                 return $permission;
             })
             ->each(function ($permission) {
                 $this->permissions()->where('permission', $permission)->firstOrCreate([
-                    'permission' => $permission
+                    'permission' => $permission,
                 ]);
             });
 
@@ -210,6 +211,7 @@ trait HasPermissions
     public function syncPermissions(...$permissions)
     {
         $this->permissions()->delete();
+
         return $this->givePermissionTo($permissions);
     }
 
@@ -224,6 +226,7 @@ trait HasPermissions
     {
         $this->permissions()->whereIn('permission', collect($permission))->delete();
         $this->load('permissions');
+
         return $this;
     }
 

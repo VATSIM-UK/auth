@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit;
-
 
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
@@ -49,7 +47,7 @@ class UserPermissionTest extends TestCase
         $this->assertDatabaseMissing('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.assign.false'
+            'permission' => 'auth.assign.false',
         ]);
     }
 
@@ -84,14 +82,12 @@ class UserPermissionTest extends TestCase
         $this->assertFalse($this->user->hasPermissionTo('auth.users.list'));
         $this->assertFalse($this->user->hasPermissionTo('auth.users.slack.view'));
 
-
         $this->user->permissions()->createMany([
             ['permission' => '*'],
         ]);
 
         $this->assertTrue($this->user->hasPermissionTo('can.do.anything'));
     }
-
 
     /** @test */
     public function itCanDetermineIfHasAnyOfGivenPermissions()
@@ -107,7 +103,6 @@ class UserPermissionTest extends TestCase
         $this->assertFalse($this->user->hasAllPermissions(['auth.permission.example', 'auth.permission.example5']));
         $this->assertFalse($this->user->hasAllPermissions(['auth.permission.example10', 'auth.permission.example5']));
 
-
         $assignment = factory(Assignment::class)->create(['permission' => 'auth.permission.*']);
         $this->user->assignRole($assignment->related_id);
 
@@ -120,7 +115,6 @@ class UserPermissionTest extends TestCase
     {
         $this->assertTrue($this->user->hasPermissionViaRole('auth.permission.example2'));
         $this->assertFalse($this->user->hasPermissionViaRole('auth.permission.example4'));
-
 
         $assignment = factory(Assignment::class)->create(['permission' => 'auth.permission.extended.*']);
         factory(Assignment::class, 'user')->create(['related_id' => $this->user->id, 'permission' => 'auth.permission.intended.*']);
@@ -137,7 +131,6 @@ class UserPermissionTest extends TestCase
     {
         $this->assertTrue($this->user->hasDirectPermission('auth.permission.example4'));
         $this->assertFalse($this->user->hasDirectPermission('auth.permission.example2'));
-
 
         $assignment = factory(Assignment::class)->create(['permission' => 'auth.permission.extended.*']);
         factory(Assignment::class, 'user')->create(['related_id' => $this->user->id, 'permission' => 'auth.permission.intended.*']);
@@ -161,7 +154,7 @@ class UserPermissionTest extends TestCase
         $this->assertEquals(collect([
             'auth.permission.example',
             'auth.permission.example2',
-            'auth.permission.example4'
+            'auth.permission.example4',
         ]), $this->user->getAllPermissions());
     }
 
@@ -175,17 +168,17 @@ class UserPermissionTest extends TestCase
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.test.*'
+            'permission' => 'auth.test.*',
         ]);
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.test.2'
+            'permission' => 'auth.test.2',
         ]);
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.test.3'
+            'permission' => 'auth.test.3',
         ]);
     }
 
@@ -200,17 +193,17 @@ class UserPermissionTest extends TestCase
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.test.2'
+            'permission' => 'auth.test.2',
         ]);
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.test.3'
+            'permission' => 'auth.test.3',
         ]);
         $this->assertDatabaseMissing('permission_assignments', [
             'related_type' => User::class,
             'related_id' => $this->user->id,
-            'permission' => 'auth.test.1'
+            'permission' => 'auth.test.1',
         ]);
     }
 

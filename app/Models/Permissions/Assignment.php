@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Assignment extends Model
 {
-    protected $table = "permission_assignments";
+    protected $table = 'permission_assignments';
     protected $fillable = [
-        'permission'
+        'permission',
     ];
     public $timestamps = false;
 

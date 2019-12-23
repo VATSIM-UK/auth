@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit;
-
 
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
@@ -46,11 +44,11 @@ class UserRoleTest extends TestCase
 
         $this->assertDatabaseMissing('user_roles', [
             'role_id' => $this->role1->id,
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
         $this->assertDatabaseMissing('user_roles', [
             'role_id' => $this->role2->id,
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
     }
 
@@ -69,7 +67,6 @@ class UserRoleTest extends TestCase
         $this->assertTrue($this->user->hasRole($this->role1));
         $this->assertTrue($this->user->hasRole([$this->role1]));
         $this->assertTrue($this->user->hasRole([$this->role1, $this->role2->id]));
-
 
         $this->assertFalse($this->user->hasRole($this->role3));
         $this->assertFalse($this->user->hasRole([factory(Role::class)->create(), $this->role3]));
@@ -94,7 +91,6 @@ class UserRoleTest extends TestCase
 
         $this->user->assignRole($newRoles->first());
         $this->assertTrue($this->user->hasRole($newRoles->first()));
-
 
         $this->user->assignRole($newRoles->take(-2));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(2)));

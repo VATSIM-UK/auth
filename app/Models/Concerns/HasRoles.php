@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models\Concerns;
-
 
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +14,7 @@ trait HasRoles
     public static function bootHasRoles()
     {
         static::deleting(function ($model) {
-            if (method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
+            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
                 return;
             }
             $model->roles()->detach();
@@ -45,7 +43,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (!is_array($roles)) {
+        if (! is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -53,8 +51,10 @@ trait HasRoles
                 return $role;
             }
             $method = is_numeric($role) ? 'find' : 'findByName';
+
             return Role::{$method}($role);
         }, $roles);
+
         return $query->whereHas('roles', function ($query) use ($roles) {
             $query->where(function ($query) use ($roles) {
                 foreach ($roles as $role) {
@@ -79,6 +79,7 @@ trait HasRoles
                 if (empty($role)) {
                     return false;
                 }
+
                 return $this->getStoredRole($role);
             })
             ->filter(function ($role) {
@@ -103,6 +104,7 @@ trait HasRoles
                     $modelLastFiredOn = $object;
                 });
         }
+
         return $this;
     }
 
@@ -117,6 +119,7 @@ trait HasRoles
     {
         $this->roles()->detach($this->getStoredRole($role));
         $this->load('roles');
+
         return $this;
     }
 
@@ -130,6 +133,7 @@ trait HasRoles
     public function syncRoles(...$roles)
     {
         $this->roles()->detach();
+
         return $this->assignRole($roles);
     }
 
@@ -162,8 +166,10 @@ trait HasRoles
                     return true;
                 }
             }
+
             return false;
         }
+
         return false;
     }
 
@@ -199,6 +205,7 @@ trait HasRoles
         $roles = collect()->make($roles)->map(function ($role) {
             return $role instanceof Role ? $role->id : $role;
         });
+
         return $roles->intersect($this->roles()->pluck('id')) == $roles;
     }
 
@@ -223,6 +230,7 @@ trait HasRoles
         if (is_string($role)) {
             return Role::findByName($role);
         }
+
         return $role;
     }
 
@@ -237,9 +245,10 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (!in_array($quoteCharacter, ["'", '"'])) {
+        if (! in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
+
         return explode('|', trim($pipeString, $quoteCharacter));
     }
 }

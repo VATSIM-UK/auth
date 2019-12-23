@@ -12,7 +12,7 @@ class Role extends Model
     use HasPermissions;
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     public function users(): BelongsToMany
