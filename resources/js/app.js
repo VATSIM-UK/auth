@@ -1,4 +1,3 @@
-import {camelCase, upperFirst} from "lodash";
 /*
   Import Required Classes
 */
@@ -8,6 +7,8 @@ import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import Cookie from 'js-cookie'
 import App from './views/App'
+
+import Routes from './routes'
 
 require('./bootstrap');
 
@@ -34,42 +35,23 @@ const apolloProvider = new VueApollo({
    Import Router Views
  */
 
-require('./routes');
+const router = new VueRouter({
+    mode: 'history',
+    routes: Routes
+});
 
 /*
    Initialise Custom Components
  */
 
-const requireComponent = require.context(
-    // The relative path of the components folder
-    './components/ui',
-    // Whether or not to look in subfolders
-    false,
-    // The regular expression used to match base component filenames
-    /Base[A-Z]\w+\.(vue|js)$/
-)
-
-requireComponent.keys().forEach(fileName => {
-    // Get component config
-    const componentConfig = requireComponent(fileName);
-
-    // Get PascalCase name of component
-    const componentName = upperFirst(
-        camelCase(
-            fileName
-                .split('/')
-                .pop()
-                .replace(/\.\w+$/, '')
-        )
-    )
-
-
-    // Register component globally
-    Vue.component(
-        componentName,
-        componentConfig.default || componentConfig
-    )
-});
+Vue.component(
+    'text-input',
+    require('./components/ui/TextInput').default
+);
+Vue.component(
+    'success-message',
+    require('./components/ui/SuccessMessage').default
+);
 
 /*
    Create App
