@@ -8,10 +8,6 @@ class SpaController extends Controller
 {
     public function index()
     {
-        if (! Auth::check()) {
-            return view('splash');
-        }
-
-        return view('spa');
+        return Auth::check() ? view('spa') : view('splash');
     }
 }

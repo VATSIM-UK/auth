@@ -7,6 +7,7 @@
 <script>
     export default {
         name: "SuccessMessage",
+        functional: true,
         props: ['message']
     }
 </script>

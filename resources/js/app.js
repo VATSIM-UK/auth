@@ -1,10 +1,4 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-require('./bootstrap');
+import {camelCase, upperFirst} from "lodash";
 /*
   Import Required Classes
 */
@@ -14,9 +8,8 @@ import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import Cookie from 'js-cookie'
 import App from './views/App'
-import Passwords from './views/Passwords'
-import NotFound from './views/errors/NotFound'
-import Dashboard from './views/Dashboard'
+
+require('./bootstrap');
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
@@ -41,38 +34,42 @@ const apolloProvider = new VueApollo({
    Import Router Views
  */
 
-const router = new VueRouter({
-    mode: 'history',
-    routes: [
-        {
-            path: '/',
-            name: 'dashboard',
-            component: Dashboard
-        },
-        {
-            path: '/settings/password',
-            name: 'settings.password',
-            component: Passwords,
-        },
-        {
-            path: '*',
-            component: NotFound,
-        }
-    ],
-});
+require('./routes');
 
 /*
    Initialise Custom Components
  */
 
-Vue.component(
-    'text-input',
-    require('./components/ui/TextInput.vue').default
-);
-Vue.component(
-    'success-message',
-    require('./components/ui/SuccessMessage.vue').default
-);
+const requireComponent = require.context(
+    // The relative path of the components folder
+    './components/ui',
+    // Whether or not to look in subfolders
+    false,
+    // The regular expression used to match base component filenames
+    /Base[A-Z]\w+\.(vue|js)$/
+)
+
+requireComponent.keys().forEach(fileName => {
+    // Get component config
+    const componentConfig = requireComponent(fileName);
+
+    // Get PascalCase name of component
+    const componentName = upperFirst(
+        camelCase(
+            fileName
+                .split('/')
+                .pop()
+                .replace(/\.\w+$/, '')
+        )
+    )
+
+
+    // Register component globally
+    Vue.component(
+        componentName,
+        componentConfig.default || componentConfig
+    )
+});
 
 /*
    Create App
