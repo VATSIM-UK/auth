@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Passport\Client;
+use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\Passport;
 
@@ -12,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->registerPermissions();
         $this->registerPolicies();
 
         // Register passport routes
@@ -24,5 +27,14 @@ class AuthServiceProvider extends ServiceProvider
         if (App::environment('local') && Schema::hasTable('oauth_clients') && $client = Client::where('personal_access_client', true)->first(['id'])) {
             Passport::personalAccessClientId($client->id);
         }
+    }
+
+    public function registerPermissions()
+    {
+        Gate::before(function (Authorizable $user, string $permission) {
+            if (method_exists($user, 'hasPermissionTo')) {
+                return $user->hasPermissionTo($permission) ?: null;
+            }
+        });
     }
 }
