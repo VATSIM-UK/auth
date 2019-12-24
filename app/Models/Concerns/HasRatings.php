@@ -73,7 +73,7 @@ trait HasRatings
 
         $currentRatingIds = $this->ratings()->distinct()->pluck('ratings.id');
 
-        if (!empty($idsToSync = $ratingIds->diff($currentRatingIds))) {
+        if (! empty($idsToSync = $ratingIds->diff($currentRatingIds))) {
             $this->ratings()->syncWithoutDetaching($idsToSync);
             event(new Updated($this));
         }

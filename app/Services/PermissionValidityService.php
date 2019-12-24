@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services;
-
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
@@ -10,11 +8,10 @@ use Illuminate\Support\Str;
 
 class PermissionValidityService
 {
-
     private $jsonPermissions;
 
     /**
-     * Determines whether the permission exists as defined by the permissions files
+     * Determines whether the permission exists as defined by the permissions files.
      *
      * @param string $permission
      * @return bool
@@ -30,9 +27,9 @@ class PermissionValidityService
 
         // 3: Check if the file has the permission
         return (is_array(data_get($permissions, $permission)) && $count > 0) // If it is a wildcard, the result should be an array
-            || collect(data_get($permissions, str_replace('.' . $permissionSplit->last(), '', $permission)))
+            || collect(data_get($permissions, str_replace('.'.$permissionSplit->last(), '', $permission)))
                 ->filter(function ($item) {
-                    return !is_array($item);
+                    return ! is_array($item);
                 })
                 ->search($permissionSplit->last()) !== false;
     }
@@ -58,7 +55,6 @@ class PermissionValidityService
             return Str::contains($value, '*');
         });
 
-
         // 2: Check for wildcard
         if ($wildcardPermissions->isEmpty()) {
             return false;
@@ -66,12 +62,12 @@ class PermissionValidityService
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-            }) !== false;
+            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+        }) !== false;
     }
 
     /**
-     * Loads the JSON permissions
+     * Loads the JSON permissions.
      *
      * @return array
      */

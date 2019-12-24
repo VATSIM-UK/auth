@@ -99,7 +99,7 @@ trait HasBans
      */
     public function endNetworkBanIfHas(): ?Ban
     {
-        if (!$ban = $this->network_ban) {
+        if (! $ban = $this->network_ban) {
             return null;
         }
         $ban->end();
@@ -134,7 +134,7 @@ trait HasBans
 
         if ($reason) {
             $ban->reason()->associate($reason);
-            if (!$end) {
+            if (! $end) {
                 // Calculate end time from reason
                 $ban->ends_at = Carbon::now()->add($reason->periodInterval);
             }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Unit\Services;
-
 
 use App\Models\Permissions\Assignment;
 use App\Services\PermissionValidityService;
@@ -23,21 +21,21 @@ class PermissionValidityServiceTest extends TestCase
         $this->mock(PermissionValidityService::class, function ($mock) {
             $mock->shouldReceive('loadJsonPermissions')
                 ->andReturn([
-                    "auth" => [
-                        "permissions" => [
-                            "assign",
-                            "view"
+                    'auth' => [
+                        'permissions' => [
+                            'assign',
+                            'view',
                         ],
-                        "users" => [
-                            "create",
-                            "update",
-                            "delete",
-                            "modify" => [
-                                "name",
-                                "age"
-                            ]
-                        ]
-                    ]
+                        'users' => [
+                            'create',
+                            'update',
+                            'delete',
+                            'modify' => [
+                                'name',
+                                'age',
+                            ],
+                        ],
+                    ],
                 ]);
         })->makePartial();
 
@@ -68,22 +66,22 @@ class PermissionValidityServiceTest extends TestCase
     public function itReportsIfPermissionIsGrantedFromListOfHeldPermissions()
     {
         $assignment = factory(Assignment::class)->create([
-            'permission' => 'auth.permissions.view'
+            'permission' => 'auth.permissions.view',
         ]);
         factory(Assignment::class)->create([
             'related_id' => $assignment->related_id,
-            'permission' => 'auth.users.*'
+            'permission' => 'auth.users.*',
         ]);
         $this->user->givePermissionTo(['auth.permissions.view', 'auth.users.*']);
 
         $validPermissions = [
             'auth.permissions.view',
-            'auth.users.*'
+            'auth.users.*',
         ];
 
         $invalidPermissions = [
             'auth.permissions.view',
-            'auth.users.edit'
+            'auth.users.edit',
         ];
         // Array Input
         $this->assertTrue($this->service->permissionSatisfiedByPermissions('auth.users.create', $validPermissions));
@@ -104,8 +102,8 @@ class PermissionValidityServiceTest extends TestCase
     public function itCanDetermineIfPermissionFulfilledByWildcard()
     {
         $permissions = [
-            "auth.user.*",
-            "auth.permission.modify.*"
+            'auth.user.*',
+            'auth.permission.modify.*',
         ];
 
         $this->assertTrue($this->service->permissionSatisfiedByPermissions('auth.users', $permissions));
