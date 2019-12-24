@@ -13,17 +13,18 @@ class BanTest extends TestCase
     use DatabaseTransactions;
 
     /* @var Ban */
-    private $ban1, $ban2;
+    private $ban1;
+    private $ban2;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->ban1 = factory(Ban::class)->create([
-            'type' => BanTypeConstants::LOCAL
+            'type' => BanTypeConstants::LOCAL,
         ]);
         $this->ban2 = factory(Ban::class)->create([
             'type' => BanTypeConstants::NETWORK,
-            'repealed_at' => Carbon::now()
+            'repealed_at' => Carbon::now(),
         ]);
     }
 
