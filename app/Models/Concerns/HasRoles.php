@@ -42,7 +42,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (!is_array($roles)) {
+        if (! is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -79,10 +79,9 @@ trait HasRoles
         $changes = $this->roles()->sync($roles, false);
         $model->load('roles');
 
-
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-                return count($value);
-            }) > 0) {
+            return count($value);
+        }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -121,8 +120,8 @@ trait HasRoles
         $changes = $this->roles()->sync($roles);
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-                return count($value);
-            }) > 0) {
+            return count($value);
+        }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -140,7 +139,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int)$roles) {
+        if (is_numeric($roles) && $roles = (int) $roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {
@@ -225,7 +224,7 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (!in_array($quoteCharacter, ["'", '"'])) {
+        if (! in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 

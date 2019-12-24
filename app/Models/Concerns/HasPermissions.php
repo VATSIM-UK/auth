@@ -69,7 +69,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (!$this->hasPermissionTo($permission)) {
+            if (! $this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -147,7 +147,7 @@ trait HasPermissions
                 return $permission;
             })
             ->each(function ($permission) use ($validityService, &$altered) {
-                if (!$validityService->isValidPermission($permission)) {
+                if (! $validityService->isValidPermission($permission)) {
                     return;
                 }
                 $altered = true;
