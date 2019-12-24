@@ -40,7 +40,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (!is_array($roles)) {
+        if (! is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -88,6 +88,7 @@ trait HasRoles
 
         $this->roles()->sync($roles, false);
         $model->load('roles');
+
         return $this;
     }
 
@@ -131,7 +132,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int)$roles) {
+        if (is_numeric($roles) && $roles = (int) $roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {
@@ -216,7 +217,7 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (!in_array($quoteCharacter, ["'", '"'])) {
+        if (! in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 

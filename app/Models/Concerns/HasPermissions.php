@@ -67,7 +67,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (!$this->hasPermissionTo($permission)) {
+            if (! $this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -112,8 +112,8 @@ trait HasPermissions
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-            }) !== false;
+            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+        }) !== false;
     }
 
     /**
@@ -142,8 +142,8 @@ trait HasPermissions
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-            }) !== false;
+            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+        }) !== false;
     }
 
     /**
