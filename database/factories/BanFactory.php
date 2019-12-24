@@ -2,15 +2,9 @@
 
 $factory->define(\App\Models\Ban::class, function (Faker\Generator $faker) {
     return [
-        'user_id' => function () {
-            return factory(\App\User::class)->create();
-        },
-        'banner_id' => function () {
-            return factory(\App\User::class)->create();
-        },
-        'reason_id' => function () {
-            return factory(\App\Models\Ban\Reason::class)->create();
-        },
+        'user_id' => factory(\App\User::class),
+        'banner_id' => factory(\App\User::class),
+        'reason_id' => factory(\App\Models\Ban\Reason::class),
         'type' => \App\Constants\BanTypeConstants::getRandomValue(),
         'body' => $faker->paragraph,
         'starts_at' => \Carbon\Carbon::now(),
