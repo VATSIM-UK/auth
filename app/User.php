@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\Concerns\HasBans;
-use App\Concerns\HasPassword;
-use App\Concerns\HasRatings;
+use App\Models\Concerns\HasBans;
+use App\Models\Concerns\HasPassword;
+use App\Models\Concerns\HasRatings;
 use App\Models\Concerns\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -38,6 +38,6 @@ class User extends Authenticatable
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool) $this->password;
+        return (bool)$this->password;
     }
 }
