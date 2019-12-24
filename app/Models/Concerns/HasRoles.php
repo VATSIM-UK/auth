@@ -188,14 +188,6 @@ trait HasRoles
         return $roles->intersect($this->roles()->pluck('id')) == $roles;
     }
 
-    /**
-     * Return all permissions directly coupled to the model.
-     */
-    public function getDirectPermissions(): Collection
-    {
-        return $this->permissions;
-    }
-
     public function getRoleNames(): Collection
     {
         return $this->roles->pluck('name');

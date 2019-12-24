@@ -162,7 +162,7 @@ class UserPermissionTest extends TestCase
     public function itCanAddPermissionsToIt()
     {
         $this->user->givePermissionTo('auth.test.*');
-        $this->user->givePermissionTo(['auth.test.2', 'auth.test.3']);
+        $this->user->givePermissionTo(['auth.test.2', 'auth.test.3', '']);
 
         $this->assertTrue($this->user->hasAllPermissions(['auth.test.*', 'auth.test.2', 'auth.test.3']));
         $this->assertDatabaseHas('permission_assignments', [

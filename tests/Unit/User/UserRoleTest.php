@@ -136,6 +136,9 @@ class UserRoleTest extends TestCase
         $this->user->assignRole($newRoles->first());
 
         $this->assertFalse($this->user->hasAllRoles($newRoles));
+        $this->assertTrue($this->user->hasAllRoles($newRoles->first()));
+        $this->assertTrue($this->user->hasAllRoles($newRoles->first()->name));
+        $this->assertFalse($this->user->hasAllRoles('roles|that|dont|exist'));
         $this->assertTrue($this->user->hasAllRoles([$this->role1->id, $newRoles->first()->id]));
         $this->assertFalse($this->user->hasAllRoles([$this->role3, $newRoles->last()]));
     }
