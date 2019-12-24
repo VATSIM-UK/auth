@@ -56,8 +56,9 @@ class BanTest extends TestCase
     public function itCanBeEndedEarly()
     {
         $this->ban1->ends_at = null;
+        $this->ban1->save();
         $this->assertTrue($this->ban1->end());
-        $this->assertFalse($this->ban1->end()); // false if already ended
+        $this->assertFalse($this->ban1->fresh()->end()); // false if already ended
     }
 
     /** @test */

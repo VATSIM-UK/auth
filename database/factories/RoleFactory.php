@@ -9,9 +9,7 @@ $factory->define(\App\Models\Role::class, function (Faker\Generator $faker) {
 $factory->define(\App\Models\Permissions\Assignment::class, function (Faker\Generator $faker) {
     return [
         'related_type' => \App\Models\Role::class,
-        'related_id' => function () {
-            return factory(\App\Models\Role::class)->create()->id;
-        },
+        'related_id' => factory(\App\Models\Role::class),
         'permission' => '*',
     ];
 });
@@ -19,9 +17,7 @@ $factory->define(\App\Models\Permissions\Assignment::class, function (Faker\Gene
 $factory->defineAS(\App\Models\Permissions\Assignment::class, 'user', function (Faker\Generator $faker) {
     return [
         'related_type' => \App\User::class,
-        'related_id' => function () {
-            return factory(\App\User::class)->create()->id;
-        },
+        'related_id' => factory(\App\User::class),
         'permission' => '*',
     ];
 });

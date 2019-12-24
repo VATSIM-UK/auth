@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
+use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -20,6 +21,11 @@ class UserPermissionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->mock(PermissionValidityService::class, function ($mock) {
+            $mock->shouldReceive('isValidPermission')
+                ->andReturn(true);
+        })->makePartial();
 
         $this->role1 = factory(Role::class)->create(['name' => 'Super Admin']);
         $this->role2 = factory(Role::class)->create(['name' => 'Member']);
@@ -75,12 +81,9 @@ class UserPermissionTest extends TestCase
         ]);
         $this->assertTrue($this->user->hasPermissionTo('auth.bans.add'));
         $this->assertTrue($this->user->hasPermissionTo('auth.bans.list.filter'));
-        $this->assertTrue($this->user->hasPermissionTo('auth.users.emails.add'));
         $this->assertTrue($this->user->hasPermissionTo('auth.users.emails'));
-        $this->assertTrue($this->user->hasPermissionTo('auth.users.emails.edit'));
 
         $this->assertFalse($this->user->hasPermissionTo('auth.users.list'));
-        $this->assertFalse($this->user->hasPermissionTo('auth.users.slack.view'));
 
         $this->user->permissions()->createMany([
             ['permission' => '*'],

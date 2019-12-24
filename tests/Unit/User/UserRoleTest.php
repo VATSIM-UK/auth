@@ -95,7 +95,7 @@ class UserRoleTest extends TestCase
 
         $this->user->assignRole($newRoles->take(-2));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(2)));
-        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id.'|'.$newRoles->get(2)->id));
+        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id . '|' . $newRoles->get(2)->id));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->last()));
     }
 

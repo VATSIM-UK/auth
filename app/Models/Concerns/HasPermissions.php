@@ -3,9 +3,9 @@
 namespace App\Models\Concerns;
 
 use App\Models\Permissions\Assignment;
+use App\Services\PermissionValidityService;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 trait HasPermissions
 {
@@ -67,7 +67,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (! $this->hasPermissionTo($permission)) {
+            if (!$this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -84,7 +84,7 @@ trait HasPermissions
      */
     public function hasPermissionViaRole($permission): bool
     {
-        return $this->permissionsSatisfyPermission($permission, $this->getPermissionsViaRoles());
+        return resolve(PermissionValidityService::class)->permissionSatisfiedByPermissions($permission, $this->getPermissionsViaRoles());
     }
 
     /**
@@ -96,54 +96,7 @@ trait HasPermissions
      */
     public function hasDirectPermission($permission): bool
     {
-        // 1: Check for exact match
-        if ($this->permissions()->where('permission', $permission)->exists()) {
-            return true;
-        }
-
-        $wildcardPermissions = $this->permissions()->where('permission', 'like', '%*%')->pluck('permission')->filter(function ($value) {
-            return Str::contains($value, '*');
-        });
-
-        // 2: Check for wildcard
-        if ($wildcardPermissions->isEmpty()) {
-            return false;
-        }
-
-        // 3: Have some wildcard permissions. Check if they match the required permission
-        return $wildcardPermissions->search(function ($value) use ($permission) {
-            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-        }) !== false;
-    }
-
-    /**
-     * Check whether a given permission is satisfied by a list of permissions.
-     *
-     * @param string $permission
-     * @param Collection $permissions
-     *
-     * @return bool
-     */
-    protected function permissionsSatisfyPermission(string $permission, Collection $permissions): bool
-    {
-        // 1: Check for exact match
-        if ($permissions->search($permission) !== false) {
-            return true;
-        }
-
-        $wildcardPermissions = $permissions->filter(function ($value) {
-            return Str::contains($value, '*');
-        });
-
-        // 2: Check for wildcard
-        if ($wildcardPermissions->isEmpty()) {
-            return false;
-        }
-
-        // 3: Have some wildcard permissions. Check if they match the required permission
-        return $wildcardPermissions->search(function ($value) use ($permission) {
-            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-        }) !== false;
+        return resolve(PermissionValidityService::class)->permissionSatisfiedByPermissions($permission, $this->permissions());
     }
 
     /**
@@ -179,7 +132,7 @@ trait HasPermissions
      */
     public function givePermissionTo(...$permissions)
     {
-        // TODO: Check is valid permission
+        $validityService = resolve(PermissionValidityService::class);
         collect($permissions)
             ->flatten()
             ->map(function ($permission) {
@@ -189,7 +142,11 @@ trait HasPermissions
 
                 return $permission;
             })
-            ->each(function ($permission) {
+            ->each(function ($permission) use ($validityService) {
+                if (!$validityService->isValidPermission($permission)) {
+                    return;
+                }
+
                 $this->permissions()->where('permission', $permission)->firstOrCreate([
                     'permission' => $permission,
                 ]);
