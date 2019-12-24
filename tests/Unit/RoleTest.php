@@ -2,10 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Events\User\PermissionsChanged;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
+use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class RoleTest extends TestCase
@@ -40,6 +43,35 @@ class RoleTest extends TestCase
 
         $this->assertEquals(2, $this->role->permissions->count());
         $this->assertEquals('auth.permission.example', $this->role->permissions->first()->permission);
+    }
+
+    /** @test */
+    public function itCanAddPermissions()
+    {
+        $this->mock(PermissionValidityService::class, function ($mock) {
+            $mock->shouldReceive('isValidPermission')
+                ->andReturn(true);
+        })->makePartial();
+        Event::fake();
+
+        $this->role->givePermissionTo('do.one.thing');
+
+        Event::assertNotDispatched(PermissionsChanged::class);
+    }
+
+    /** @test */
+    public function itCanRemovePermissions()
+    {
+        $this->mock(PermissionValidityService::class, function ($mock) {
+            $mock->shouldReceive('isValidPermission')
+                ->andReturn(true);
+        })->makePartial();
+        factory(Assignment::class)->create(['related_id' => $this->role->id, 'permission' => 'do.one.thing']);
+        Event::fake();
+
+        $this->role->revokePermissionTo('do.one.thing');
+
+        Event::assertNotDispatched(PermissionsChanged::class);
     }
 
     /** @test */

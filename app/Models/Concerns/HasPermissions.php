@@ -2,8 +2,10 @@
 
 namespace App\Models\Concerns;
 
+use App\Events\User\PermissionsChanged;
 use App\Models\Permissions\Assignment;
 use App\Services\PermissionValidityService;
+use App\User;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 
@@ -67,7 +69,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (! $this->hasPermissionTo($permission)) {
+            if (!$this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -132,6 +134,8 @@ trait HasPermissions
      */
     public function givePermissionTo(...$permissions)
     {
+        $altered = false;
+
         $validityService = resolve(PermissionValidityService::class);
         collect($permissions)
             ->flatten()
@@ -142,15 +146,19 @@ trait HasPermissions
 
                 return $permission;
             })
-            ->each(function ($permission) use ($validityService) {
-                if (! $validityService->isValidPermission($permission)) {
+            ->each(function ($permission) use ($validityService, &$altered) {
+                if (!$validityService->isValidPermission($permission)) {
                     return;
                 }
-
+                $altered = true;
                 $this->permissions()->where('permission', $permission)->firstOrCreate([
                     'permission' => $permission,
                 ]);
             });
+
+        if ($this instanceof User && $altered) {
+            event(new PermissionsChanged($this));
+        }
 
         return $this;
     }
@@ -166,6 +174,10 @@ trait HasPermissions
     {
         $this->permissions()->delete();
 
+        if ($this instanceof User) {
+            event(new PermissionsChanged($this));
+        }
+
         return $this->givePermissionTo($permissions);
     }
 
@@ -178,8 +190,12 @@ trait HasPermissions
      */
     public function revokePermissionTo($permission)
     {
-        $this->permissions()->whereIn('permission', collect($permission))->delete();
+        $count = $this->permissions()->whereIn('permission', collect($permission))->delete();
         $this->load('permissions');
+
+        if ($this instanceof User && $count > 0) {
+            event(new PermissionsChanged($this));
+        }
 
         return $this;
     }

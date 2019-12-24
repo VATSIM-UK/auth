@@ -2,7 +2,9 @@
 
 namespace App\Models\Concerns;
 
+use App\Events\User\RolesChanged;
 use App\Models\Role;
+use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -40,7 +42,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (! is_array($roles)) {
+        if (!is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -70,24 +72,19 @@ trait HasRoles
      */
     public function assignRole(...$roles)
     {
-        $roles = collect($roles)
-            ->flatten()
-            ->map(function ($role) {
-                if (empty($role)) {
-                    return false;
-                }
+        $roles = $this->roleInputToIds($roles)->all();
 
-                return $this->getStoredRole($role);
-            })
-            ->filter(function ($role) {
-                return $role instanceof Role;
-            })
-            ->map->id
-            ->all();
         $model = $this->getModel();
 
-        $this->roles()->sync($roles, false);
+        $changes = $this->roles()->sync($roles, false);
         $model->load('roles');
+
+
+        if ($this instanceof User && collect($changes)->sum(function ($value) {
+                return count($value);
+            }) > 0) {
+            event(new RolesChanged($this));
+        }
 
         return $this;
     }
@@ -101,8 +98,12 @@ trait HasRoles
      */
     public function removeRole($role)
     {
-        $this->roles()->detach($this->getStoredRole($role));
+        $count = $this->roles()->detach($this->getStoredRole($role));
         $this->load('roles');
+
+        if ($this instanceof User && $count > 0) {
+            event(new RolesChanged($this));
+        }
 
         return $this;
     }
@@ -116,9 +117,16 @@ trait HasRoles
      */
     public function syncRoles(...$roles)
     {
-        $this->roles()->detach();
+        $roles = $this->roleInputToIds($roles);
+        $changes = $this->roles()->sync($roles);
 
-        return $this->assignRole($roles);
+        if ($this instanceof User && collect($changes)->sum(function ($value) {
+                return count($value);
+            }) > 0) {
+            event(new RolesChanged($this));
+        }
+
+        return $this;
     }
 
     /**
@@ -132,7 +140,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int) $roles) {
+        if (is_numeric($roles) && $roles = (int)$roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {
@@ -217,10 +225,31 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (! in_array($quoteCharacter, ["'", '"'])) {
+        if (!in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 
         return explode('|', trim($pipeString, $quoteCharacter));
+    }
+
+    /**
+     * @param array|Role|string $roles
+     * @return Collection
+     */
+    private function roleInputToIds($roles): Collection
+    {
+        return collect($roles)
+            ->flatten()
+            ->map(function ($role) {
+                if (empty($role)) {
+                    return false;
+                }
+
+                return $this->getStoredRole($role);
+            })
+            ->filter(function ($role) {
+                return $role instanceof Role;
+            })
+            ->map->id;
     }
 }

@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
+use App\Events\User\RolesChanged;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserRoleTest extends TestCase
@@ -38,7 +40,7 @@ class UserRoleTest extends TestCase
     }
 
     /** @test */
-    public function itDeletesRolesWhenDeleted()
+    public function itDeletesRolesWhenUserDeleted()
     {
         $this->user->delete();
 
@@ -88,6 +90,8 @@ class UserRoleTest extends TestCase
     /** @test */
     public function itCanAssignRoles()
     {
+        Event::fake();
+
         $newRoles = factory(Role::class, 3)->create();
 
         $this->user->assignRole([$newRoles->first(), null]);
@@ -95,27 +99,35 @@ class UserRoleTest extends TestCase
 
         $this->user->assignRole($newRoles->take(-2));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(2)));
-        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id.'|'.$newRoles->get(2)->id));
+        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id . '|' . $newRoles->get(2)->id));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->last()));
+        Event::assertDispatchedTimes(RolesChanged::class, 2);
     }
 
     /** @test */
     public function itCanRemoveRoles()
     {
+        Event::fake();
+
         $this->user->removeRole($this->role2);
         $this->assertFalse($this->user->hasRole($this->role2));
 
         $this->user->removeRole($this->role1->id);
         $this->assertFalse($this->user->hasRole($this->role1));
+
+        Event::assertDispatchedTimes(RolesChanged::class, 2);
     }
 
     /** @test */
     public function itCanSyncRoles()
     {
+        Event::fake();
+
         $newRoles = factory(Role::class, 2)->create();
         $this->user->syncRoles($newRoles);
 
         $this->assertEquals($newRoles->pluck('id')->sort()->values(), $this->user->roles()->pluck('id')->sort()->values());
+        Event::assertDispatchedTimes(RolesChanged::class, 1);
     }
 
     /** @test */

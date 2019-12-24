@@ -2,11 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Events\User\PermissionsChanged;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserPermissionTest extends TestCase
@@ -164,6 +166,8 @@ class UserPermissionTest extends TestCase
     /** @test */
     public function itCanAddPermissionsToIt()
     {
+        Event::fake();
+
         $this->user->givePermissionTo('auth.test.*');
         $this->user->givePermissionTo(['auth.test.2', 'auth.test.3', '']);
 
@@ -183,11 +187,15 @@ class UserPermissionTest extends TestCase
             'related_id' => $this->user->id,
             'permission' => 'auth.test.3',
         ]);
+
+        Event::assertDispatchedTimes(PermissionsChanged::class, 2);
     }
 
     /** @test */
     public function itCanSyncPermissions()
     {
+        Event::fake();
+
         $this->user->givePermissionTo('auth.test.1');
         $this->user->syncPermissions(['auth.test.2', 'auth.test.3']);
 
@@ -208,26 +216,33 @@ class UserPermissionTest extends TestCase
             'related_id' => $this->user->id,
             'permission' => 'auth.test.1',
         ]);
+        Event::assertDispatchedTimes(PermissionsChanged::class, 3);
     }
 
     /** @test */
     public function itCanRevokeAPermission()
     {
+        Event::fake();
+
         $this->assertTrue($this->user->hasPermissionTo('auth.permission.example4'));
 
         $this->user->revokePermissionTo('auth.permission.example4');
 
         $this->assertFalse($this->user->hasPermissionTo('auth.permission.example4'));
+        Event::assertDispatchedTimes(PermissionsChanged::class, 1);
     }
 
     /** @test */
     public function itCantRevokeARolePermission()
     {
+        Event::fake();
+
         $this->assertTrue($this->user->hasPermissionTo('auth.permission.example2'));
 
         $this->user->revokePermissionTo('auth.permission.example2');
 
         $this->assertTrue($this->user->hasPermissionTo('auth.permission.example2'));
+        Event::assertNotDispatched(PermissionsChanged::class);
     }
 
     /** @test */
