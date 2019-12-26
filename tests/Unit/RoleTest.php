@@ -62,10 +62,6 @@ class RoleTest extends TestCase
     /** @test */
     public function itCanRemovePermissions()
     {
-        $this->mock(PermissionValidityService::class, function ($mock) {
-            $mock->shouldReceive('isValidPermission')
-                ->andReturn(true);
-        })->makePartial();
         factory(Assignment::class)->create(['related_id' => $this->role->id, 'permission' => 'do.one.thing']);
         Event::fake();
 
