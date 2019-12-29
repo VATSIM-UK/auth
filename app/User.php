@@ -8,6 +8,7 @@ use App\Models\Concerns\HasRatings;
 use App\Models\Concerns\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -38,6 +39,11 @@ class User extends Authenticatable
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool) $this->password;
+        return (bool)$this->password;
+    }
+
+    public function getAllPermissionsAttribute(): Collection
+    {
+        return $this->getAllPermissions();
     }
 }

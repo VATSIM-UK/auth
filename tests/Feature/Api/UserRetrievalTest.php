@@ -4,7 +4,9 @@ namespace Tests\Feature\Api;
 
 use App\Constants\BanTypeConstants;
 use App\Models\Ban;
+use App\Models\Permissions\Assignment;
 use App\Models\Rating;
+use App\Models\Role;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -24,7 +26,7 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                'debugMessage' => 'Unauthenticated.',
+            'debugMessage' => 'Unauthenticated.',
         ]);
 
         $this->actingAs($this->user)->graphQL('
@@ -34,7 +36,7 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                'debugMessage' => 'Unauthenticated.',
+            'debugMessage' => 'Unauthenticated.',
         ]);
     }
 
@@ -227,5 +229,65 @@ class UserRetrievalTest extends TestCase
             ->assertJsonCount(1, 'data.user.currentBans')
             ->assertJsonPath('data.network_ban.ends_at', null)
             ->assertJsonPath('data.user.banned', true);
+    }
+
+    public function testCanRetrieveUsersRolesAndPermissions()
+    {
+        $roles = factory(Role::class, 2)->create();
+        $this->user->syncRoles($roles->pluck('id')->all());
+        factory(Assignment::class)->create([
+            'related_id' => $roles->first()->id,
+            'permission' => 'ukts.users.manage'
+        ]);
+        factory(Assignment::class)->create([
+            'related_id' => $roles->last()->id,
+            'permission' => 'ukts.emails.manage'
+        ]);
+        factory(Assignment::class, 'user')->create([
+            'related_id' => $this->user->id,
+            'permission' => 'ukts.people.manage'
+        ]);
+
+        $this->actingAs($this->user, 'api')->graphQL("
+        query{
+            user(id: {$this->user->id}){
+                roles {
+                    name
+                }
+                all_permissions
+            }
+        }
+        ")->assertJsonFragment([
+            'roles' => [
+                ['name' => $roles->first()->name],
+                ['name' => $roles->last()->name],
+            ]
+        ])->assertJsonFragment([
+            'all_permissions' => [
+                'ukts.users.manage',
+                'ukts.emails.manage',
+                'ukts.people.manage',
+            ]
+        ]);
+    }
+
+    public function testCanCheckIfUserAuthorisedForPermission()
+    {
+        factory(Assignment::class, 'user')->create([
+            'related_id' => $this->user->id,
+            'permission' => 'ukts.people.manage'
+        ]);
+
+        $this->actingAs($this->user, 'api')->graphQL('
+        query{
+            authUserCan(permission: "ukts.people.manage")
+        }
+        ')->assertJsonPath('data.authUserCan', true);
+
+        $this->actingAs($this->user, 'api')->graphQL('
+        query{
+            authUserCan(permission: "ukts.people.mutate")
+        }
+        ')->assertJsonPath('data.authUserCan', false);
     }
 }

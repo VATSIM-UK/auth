@@ -6,6 +6,7 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 type Query @middleware(checks: ["auth:api"]){
     authUser: User @auth
+    authUserCan(permission: String!): Boolean @field(resolver: "AuthorizeUser")
 }
 
 extend type Query @middleware(checks: ["auth.api.multi"]){
@@ -39,6 +40,9 @@ type User {
     currentBans: [Ban!]
     network_ban: Ban
     banned: Boolean
+
+    all_permissions: [String!]
+    roles: [Role!]
 }
 
 type Rating {
@@ -78,4 +82,9 @@ type BanReason {
 
     created_at: DateTime!
     updated_at: DateTime!
+}
+
+type Role {
+    id: ID!
+    name: String!
 }
