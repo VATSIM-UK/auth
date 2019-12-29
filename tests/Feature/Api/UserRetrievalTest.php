@@ -237,15 +237,15 @@ class UserRetrievalTest extends TestCase
         $this->user->syncRoles($roles->pluck('id')->all());
         factory(Assignment::class)->create([
             'related_id' => $roles->first()->id,
-            'permission' => 'ukts.users.manage'
+            'permission' => 'ukts.users.manage',
         ]);
         factory(Assignment::class)->create([
             'related_id' => $roles->last()->id,
-            'permission' => 'ukts.emails.manage'
+            'permission' => 'ukts.emails.manage',
         ]);
         factory(Assignment::class, 'user')->create([
             'related_id' => $this->user->id,
-            'permission' => 'ukts.people.manage'
+            'permission' => 'ukts.people.manage',
         ]);
 
         $this->actingAs($this->user, 'api')->graphQL("
@@ -261,13 +261,13 @@ class UserRetrievalTest extends TestCase
             'roles' => [
                 ['name' => $roles->first()->name],
                 ['name' => $roles->last()->name],
-            ]
+            ],
         ])->assertJsonFragment([
             'all_permissions' => [
                 'ukts.users.manage',
                 'ukts.emails.manage',
                 'ukts.people.manage',
-            ]
+            ],
         ]);
     }
 
@@ -275,7 +275,7 @@ class UserRetrievalTest extends TestCase
     {
         factory(Assignment::class, 'user')->create([
             'related_id' => $this->user->id,
-            'permission' => 'ukts.people.manage'
+            'permission' => 'ukts.people.manage',
         ]);
 
         $this->actingAs($this->user, 'api')->graphQL('
