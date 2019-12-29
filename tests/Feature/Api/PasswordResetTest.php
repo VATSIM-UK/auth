@@ -52,7 +52,7 @@ class PasswordResetTest extends TestCase
                 new_password: "Testing12345"
             )
         }
-        ')->assertJsonPath('data.updatePassword', true);
+        ')->dump()->assertJsonPath('data.updatePassword', true);
         $this->assertTrue($this->user->fresh()->verifyPassword('Testing12345'));
     }
 

@@ -6,6 +6,7 @@ use App\Http\Middleware\ApiClientOrUserAuthentication;
 use App\Http\Middleware\MustHavePassword;
 use App\Http\Middleware\PasswordConfirmation;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 
 class Kernel extends HttpKernel
 {

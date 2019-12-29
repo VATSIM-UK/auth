@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\Concerns\HasBans;
-use App\Concerns\HasPassword;
-use App\Concerns\HasRatings;
+use App\Models\Concerns\HasBans;
+use App\Models\Concerns\HasPassword;
+use App\Models\Concerns\HasRatings;
 use App\Models\Concerns\HasRoles;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
@@ -41,7 +41,7 @@ class User extends Authenticatable implements CanResetPasswordInterface
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool) $this->password;
+        return (bool)$this->password;
     }
 
     public function getAllPermissionsAttribute(): Collection

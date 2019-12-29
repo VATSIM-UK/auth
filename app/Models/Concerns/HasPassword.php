@@ -3,9 +3,9 @@
 namespace App\Models\Concerns;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Laravel\Passport\Token;
 
 trait HasPassword
@@ -40,7 +40,7 @@ trait HasPassword
         // else password needs hashing, hash and store it
         if ($password === null) {
             $this->attributes['password'] = null;
-        } elseif (! Hash::needsRehash($password)) {
+        } elseif (!Hash::needsRehash($password)) {
             $this->attributes['password'] = $password;
         } else {
             $this->attributes['password'] = Hash::make($password);
