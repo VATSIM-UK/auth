@@ -210,7 +210,7 @@ trait HasRoles
     /**
      * Return a role model from an id or name
      *
-     * @param int|string $role
+     * @param int|string|Role $role
      * @return Role
      * @throws ModelNotFoundException
      */
@@ -223,7 +223,7 @@ trait HasRoles
             return Role::findByName($role);
         }
 
-        return null;
+        return $role;
     }
 
     /**

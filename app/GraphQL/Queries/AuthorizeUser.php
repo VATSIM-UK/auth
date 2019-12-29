@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\User;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Auth;
 use Nuwave\Lighthouse\Exceptions\AuthorizationException;
@@ -21,10 +22,12 @@ class AuthorizeUser
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
+        /* @var User */
         $user = Auth::user();
         if (!$user) {
             throw new AuthorizationException();
         }
-        return $user->can($args['permission']);
+
+        return $user->hasAllPermissions($args['permissions']);
     }
 }

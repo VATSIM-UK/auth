@@ -277,16 +277,27 @@ class UserRetrievalTest extends TestCase
             'related_id' => $this->user->id,
             'permission' => 'ukts.people.manage'
         ]);
+        factory(Assignment::class, 'user')->create([
+            'related_id' => $this->user->id,
+            'permission' => 'ukts.people.move'
+        ]);
 
         $this->actingAs($this->user, 'api')->graphQL('
         query{
-            authUserCan(permission: "ukts.people.manage")
+            authUserCan(permissions: ["ukts.people.manage"])
+        }
+        ')->assertJsonPath('data.authUserCan', true);
+
+
+        $this->actingAs($this->user, 'api')->graphQL('
+        query{
+            authUserCan(permissions: ["ukts.people.manage", "ukts.people.move"])
         }
         ')->assertJsonPath('data.authUserCan', true);
 
         $this->actingAs($this->user, 'api')->graphQL('
         query{
-            authUserCan(permission: "ukts.people.mutate")
+            authUserCan(permissions: ["ukts.people.mutate"])
         }
         ')->assertJsonPath('data.authUserCan', false);
     }

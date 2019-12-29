@@ -6,7 +6,7 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 type Query @middleware(checks: ["auth:api"]){
     authUser: User @auth
-    authUserCan(permission: String!): Boolean @field(resolver: "AuthorizeUser")
+    authUserCan(permissions: [String!]!): Boolean @field(resolver: "AuthorizeUser")
 }
 
 extend type Query @middleware(checks: ["auth.api.multi"]){
