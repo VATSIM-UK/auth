@@ -2,10 +2,10 @@
 
 namespace App;
 
-use App\Models\Concerns\HasRoles;
 use App\Concerns\HasBans;
 use App\Concerns\HasPassword;
 use App\Concerns\HasRatings;
+use App\Models\Concerns\HasRoles;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Foundation\Auth\User as Authenticatable;

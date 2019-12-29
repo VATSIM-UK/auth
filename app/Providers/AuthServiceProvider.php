@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Passport\Client;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\Passport;
