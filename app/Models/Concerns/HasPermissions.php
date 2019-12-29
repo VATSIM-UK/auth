@@ -69,7 +69,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (! $this->hasPermissionTo($permission)) {
+            if (!$this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -132,7 +132,7 @@ trait HasPermissions
      *
      * @return $this
      */
-    public function givePermissionTo(...$permissions)
+    public function givePermissionTo(...$permissions): self
     {
         $altered = false;
 
@@ -147,7 +147,7 @@ trait HasPermissions
                 return $permission;
             })
             ->each(function ($permission) use ($validityService, &$altered) {
-                if (! $validityService->isValidPermission($permission)) {
+                if (!$validityService->isValidPermission($permission)) {
                     return;
                 }
                 $altered = true;
@@ -170,7 +170,7 @@ trait HasPermissions
      *
      * @return $this
      */
-    public function syncPermissions(...$permissions)
+    public function syncPermissions(...$permissions): self
     {
         $this->permissions()->delete();
 
@@ -188,7 +188,7 @@ trait HasPermissions
      *
      * @return $this
      */
-    public function revokePermissionTo($permission)
+    public function revokePermissionTo($permission): self
     {
         $count = $this->permissions()->whereIn('permission', collect($permission))->delete();
         $this->load('permissions');
@@ -200,6 +200,11 @@ trait HasPermissions
         return $this;
     }
 
+    /**
+     * Returns a collection of unique, local permissions assigned to this model
+     *
+     * @return Collection
+     */
     public function getPermissions(): Collection
     {
         return $this->permissions->pluck('permission')->unique();

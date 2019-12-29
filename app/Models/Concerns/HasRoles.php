@@ -6,6 +6,7 @@ use App\Events\User\RolesChanged;
 use App\Models\Role;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
@@ -42,7 +43,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (! is_array($roles)) {
+        if (!is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -70,7 +71,7 @@ trait HasRoles
      *
      * @return $this
      */
-    public function assignRole(...$roles)
+    public function assignRole(...$roles): self
     {
         $roles = $this->roleInputToIds($roles)->all();
 
@@ -80,8 +81,8 @@ trait HasRoles
         $model->load('roles');
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -95,7 +96,7 @@ trait HasRoles
      *
      * @return self
      */
-    public function removeRole($role)
+    public function removeRole($role): self
     {
         $count = $this->roles()->detach($this->getStoredRole($role));
         $this->load('roles');
@@ -114,14 +115,14 @@ trait HasRoles
      *
      * @return $this
      */
-    public function syncRoles(...$roles)
+    public function syncRoles(...$roles): self
     {
         $roles = $this->roleInputToIds($roles);
         $changes = $this->roles()->sync($roles);
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -139,7 +140,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int) $roles) {
+        if (is_numeric($roles) && $roles = (int)$roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {
@@ -196,11 +197,23 @@ trait HasRoles
         return $roles->intersect($this->roles()->pluck('id')) == $roles;
     }
 
+    /**
+     * Get the names of the roles assigned to the model
+     *
+     * @return Collection
+     */
     public function getRoleNames(): Collection
     {
         return $this->roles->pluck('name');
     }
 
+    /**
+     * Return a role model from an id or name
+     *
+     * @param int|string $role
+     * @return Role
+     * @throws ModelNotFoundException
+     */
     protected function getStoredRole($role): Role
     {
         if (is_numeric($role)) {
@@ -210,10 +223,16 @@ trait HasRoles
             return Role::findByName($role);
         }
 
-        return $role;
+        return null;
     }
 
-    protected function convertPipeToArray(string $pipeString)
+    /**
+     * Converts a glued string into an array of parts
+     *
+     * @param string $pipeString
+     * @return array
+     */
+    protected function convertPipeToArray(string $pipeString): array
     {
         $pipeString = trim($pipeString);
         if (strlen($pipeString) <= 2) {
@@ -224,7 +243,7 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (! in_array($quoteCharacter, ["'", '"'])) {
+        if (!in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 
@@ -232,6 +251,8 @@ trait HasRoles
     }
 
     /**
+     * Converts an input list of role identifiers, and returns a collection of their id's
+     *
      * @param array|Role|string $roles
      * @return Collection
      */
