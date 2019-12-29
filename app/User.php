@@ -39,7 +39,7 @@ class User extends Authenticatable
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool)$this->password;
+        return (bool) $this->password;
     }
 
     public function getAllPermissionsAttribute(): Collection

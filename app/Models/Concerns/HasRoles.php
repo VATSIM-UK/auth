@@ -43,7 +43,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (!is_array($roles)) {
+        if (! is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -81,8 +81,8 @@ trait HasRoles
         $model->load('roles');
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-                return count($value);
-            }) > 0) {
+            return count($value);
+        }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -121,8 +121,8 @@ trait HasRoles
         $changes = $this->roles()->sync($roles);
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-                return count($value);
-            }) > 0) {
+            return count($value);
+        }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -140,7 +140,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int)$roles) {
+        if (is_numeric($roles) && $roles = (int) $roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {
@@ -198,7 +198,7 @@ trait HasRoles
     }
 
     /**
-     * Get the names of the roles assigned to the model
+     * Get the names of the roles assigned to the model.
      *
      * @return Collection
      */
@@ -208,7 +208,7 @@ trait HasRoles
     }
 
     /**
-     * Return a role model from an id or name
+     * Return a role model from an id or name.
      *
      * @param int|string|Role $role
      * @return Role
@@ -227,7 +227,7 @@ trait HasRoles
     }
 
     /**
-     * Converts a glued string into an array of parts
+     * Converts a glued string into an array of parts.
      *
      * @param string $pipeString
      * @return array
@@ -243,7 +243,7 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (!in_array($quoteCharacter, ["'", '"'])) {
+        if (! in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 
@@ -251,7 +251,7 @@ trait HasRoles
     }
 
     /**
-     * Converts an input list of role identifiers, and returns a collection of their id's
+     * Converts an input list of role identifiers, and returns a collection of their id's.
      *
      * @param array|Role|string $roles
      * @return Collection

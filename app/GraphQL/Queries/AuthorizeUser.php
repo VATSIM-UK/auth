@@ -11,7 +11,7 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 class AuthorizeUser
 {
     /**
-     * Checks if the authenticated user is able to perform a permission or not
+     * Checks if the authenticated user is able to perform a permission or not.
      *
      * @param null $rootValue Usually contains the result returned from the parent field. In this case, it is always `null`.
      * @param mixed[] $args The arguments that were passed into the field.
@@ -24,7 +24,7 @@ class AuthorizeUser
     {
         /* @var User */
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             throw new AuthorizationException();
         }
 
