@@ -2,7 +2,7 @@
 
 use App\Passport\Client;
 
-$factory->define(Client::class, function ($faker) {
+$factory->define(Client::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->sentence(2),
         'secret' => $faker->sha256,

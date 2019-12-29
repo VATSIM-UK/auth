@@ -2,18 +2,20 @@
 
 namespace App;
 
-use App\Models\Concerns\HasBans;
-use App\Models\Concerns\HasPassword;
-use App\Models\Concerns\HasRatings;
 use App\Models\Concerns\HasRoles;
+use App\Concerns\HasBans;
+use App\Concerns\HasPassword;
+use App\Concerns\HasRatings;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordInterface;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPasswordInterface
 {
-    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, HasRoles;
+    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, CanResetPassword, HasRoles;
 
     protected $table = 'users';
 

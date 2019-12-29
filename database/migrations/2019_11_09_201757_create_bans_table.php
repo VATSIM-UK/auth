@@ -19,7 +19,7 @@ class CreateBansTable extends Migration
             $table->unsignedInteger('banner_id')->nullable();
             $table->unsignedTinyInteger('reason_id')->nullable();
             $table->unsignedTinyInteger('type');
-            $table->string('body')->nullable();
+            $table->text('body')->nullable();
 
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();

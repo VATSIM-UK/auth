@@ -47,10 +47,14 @@ class LoginController extends Controller
         }
 
         if (Auth::guard('partial_web')->check()) {
-            if (Auth::guard('partial_web')->user()->hasPassword()) {
+            $user = Auth::guard('partial_web')->user();
+            if ($user->hasPassword()) {
                 return redirect()->route('login.secondary');
             } else {
-                return redirect()->intended('/home');
+                Auth::loginUsingId($user->id, true);
+                Auth::guard('partial_web')->logout();
+
+                return $this->authDone($user);
             }
         }
 
@@ -61,7 +65,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate: '.$error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
@@ -101,7 +105,7 @@ class LoginController extends Controller
 
                 Auth::loginUsingId($vatsimUser->id, true);
 
-                return redirect()->intended('/home');
+                return $this->authDone($user);
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -118,10 +122,10 @@ class LoginController extends Controller
         $user = Auth::guard('partial_web')->user();
 
         if (! $user->hasPassword()) {
-            redirect()->intended('/home');
+            return $this->authDone($user);
         }
 
-        return view('auth.secondary');
+        return view('auth.secondary')->with('user', $user);
     }
 
     /*
@@ -133,7 +137,7 @@ class LoginController extends Controller
         $user = Auth::guard('partial_web')->user();
 
         if (! $user->hasPassword()) {
-            return redirect()->route('login');
+            return $this->authDone($user);
         }
 
         $this->validate($request, [
@@ -146,8 +150,12 @@ class LoginController extends Controller
             ]);
             throw $error;
         }
-        Auth::guard('partial_web')->logout();
 
-        return redirect()->intended('/home');
+        return $this->authDone($user);
+    }
+
+    public function authDone(User $user)
+    {
+        return redirect()->intended('/');
     }
 }
