@@ -6,12 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Libraries\SSO\VATSIMSSO;
 use App\User;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Request as RequestFacade;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -33,6 +32,7 @@ class LoginController extends Controller
     {
         Auth::logout();
         Auth::guard('partial_web')->logout();
+
         return redirect('/');
     }
 
@@ -41,26 +41,31 @@ class LoginController extends Controller
      */
     public function loginWithVatsimSSO()
     {
-		// Check we have necessary information
-		if(!VATSIMSSO::isEnabled()){
-			return back()->with('error', 'VATSIM SSO Authentication is not currently available');
-		}
+        // Check we have necessary information
+        if (! VATSIMSSO::isEnabled()) {
+            return back()->with('error', 'VATSIM SSO Authentication is not currently available');
+        }
 
-
-        if(Auth::guard('partial_web')->check()){
-            if(Auth::guard('partial_web')->user()->hasPassword()){
+        if (Auth::guard('partial_web')->check()) {
+            $user = Auth::guard('partial_web')->user();
+            if ($user->hasPassword()) {
                 return redirect()->route('login.secondary');
-            }else{
-                return redirect()->intended('/home');
+            } else {
+                Auth::loginUsingId($user->id, true);
+                Auth::guard('partial_web')->logout();
+
+                return $this->authDone($user);
             }
         }
 
         $sso = new VATSIMSSO();
+
         return $sso->login(url('/login/sso/verify'), function ($key, $secret, $url) {
             Session::put('vatsimauth', compact('key', 'secret'));
+
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
@@ -94,11 +99,13 @@ class LoginController extends Controller
 
                 if ($user->hasPassword()) {
                     Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+
                     return redirect()->route('login.secondary');
                 }
 
                 Auth::loginUsingId($vatsimUser->id, true);
-                return redirect()->intended('/home');
+
+                return $this->authDone($user);
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -114,11 +121,11 @@ class LoginController extends Controller
     {
         $user = Auth::guard('partial_web')->user();
 
-        if (!$user->hasPassword()) {
-            redirect()->intended('/home');
+        if (! $user->hasPassword()) {
+            return $this->authDone($user);
         }
 
-        return view('auth.secondary');
+        return view('auth.secondary')->with('user', $user);
     }
 
     /*
@@ -129,21 +136,26 @@ class LoginController extends Controller
     {
         $user = Auth::guard('partial_web')->user();
 
-        if (!$user->hasPassword()) {
-            return redirect()->route('login');
+        if (! $user->hasPassword()) {
+            return $this->authDone($user);
         }
 
         $this->validate($request, [
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
-			$error = \Illuminate\Validation\ValidationException::withMessages([
-			   'password' => ['The supplied password did not match our records'],
-			]);
-			throw $error;
+        if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+               'password' => ['The supplied password did not match our records'],
+            ]);
+            throw $error;
         }
-        Auth::guard('partial_web')->logout();
-        return redirect()->intended('/home');
+
+        return $this->authDone($user);
+    }
+
+    public function authDone(User $user)
+    {
+        return redirect()->intended('/');
     }
 }

@@ -6,5 +6,5 @@ use Exception;
 
 class BanEndsBeforeStartException extends Exception
 {
-    protected $message = "The selected end date for the ban is before or equal to the start date!";
+    protected $message = 'The selected end date for the ban is before or equal to the start date!';
 }

@@ -1,29 +1,21 @@
 <?php
 
-
 namespace App\Concerns;
 
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Contracts\Session\Session;
 use Laravel\Passport\Token;
 
 trait HasPassword
 {
     /**
-     * Verify if supplied password is correct for user
+     * Verify if supplied password is correct for user.
      *
      * @param $password
      * @return bool
      */
-    public function verifyPassword(String $password): bool
+    public function verifyPassword(string $password): bool
     {
-        if ($this->password === sha1(sha1($password))) {
-            $this->password = $password;
-            $this->save();
-        }
-
         return Hash::check($password, $this->password);
     }
 
@@ -41,7 +33,7 @@ trait HasPassword
         // else password needs hashing, hash and store it
         if ($password === null) {
             $this->attributes['password'] = null;
-        } elseif (!Hash::needsRehash($password)) {
+        } elseif (! Hash::needsRehash($password)) {
             $this->attributes['password'] = $password;
         } else {
             $this->attributes['password'] = Hash::make($password);
@@ -49,7 +41,7 @@ trait HasPassword
     }
 
     /**
-     * Returns the Carbon instance for when the set password expires
+     * Returns the Carbon instance for when the set password expires.
      *
      * @return Carbon|null
      */
@@ -75,24 +67,16 @@ trait HasPassword
      * @param string $password The password string.
      * @return bool
      */
-    public function setPassword(String $password): bool
+    public function setPassword(string $password): bool
     {
         //TODO: Implement expiry
-
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
         ])->save();
 
-        // if the password is being reset by its owner...
-        if ($save && Auth::check() && Auth::user()->id === $this->id) {
-            Session::put([
-                'password_hash' => Auth::user()->getAuthPassword(),
-            ]);
-        }
-
         // Invalidate tokens
-        $this->tokens->each(function(Token $token){
+        $this->tokens->each(function (Token $token) {
             $token->revoke();
         });
 

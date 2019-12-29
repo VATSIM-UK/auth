@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBansTable extends Migration
 {
@@ -19,7 +19,7 @@ class CreateBansTable extends Migration
             $table->unsignedInteger('banner_id')->nullable();
             $table->unsignedTinyInteger('reason_id')->nullable();
             $table->unsignedTinyInteger('type');
-            $table->string('body')->nullable();
+            $table->text('body')->nullable();
 
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();

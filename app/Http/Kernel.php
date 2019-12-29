@@ -3,8 +3,10 @@
 namespace App\Http;
 
 use App\Http\Middleware\ApiClientOrUserAuthentication;
+use App\Http\Middleware\MustHavePassword;
+use App\Http\Middleware\PasswordConfirmation;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Laravel\Passport\Http\Middleware\CheckClientCredentials;
+use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 
 class Kernel extends HttpKernel
 {
@@ -36,6 +38,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            CreateFreshApiToken::class,
         ],
 
         'api' => [
@@ -61,7 +64,9 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'auth.api.multi' => ApiClientOrUserAuthentication::class
+        'auth.api.multi' => ApiClientOrUserAuthentication::class,
+        'auth.password.confirm' => PasswordConfirmation::class,
+        'auth.mandate.password' => MustHavePassword::class,
     ];
 
     /**

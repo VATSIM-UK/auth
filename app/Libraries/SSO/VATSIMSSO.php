@@ -10,7 +10,6 @@ use Illuminate\Container\Container;
 
 class VATSIMSSO
 {
-
     /*
      * Location of the VATSIM SSO system
      * Set in __construct
@@ -62,11 +61,11 @@ class VATSIMSSO
      * The signing method being used to encrypt your request signature.
      * Set the 'signature' method
      */
-    private $error = array(
+    private $error = [
         'type' => false,
         'message' => false,
-        'code' => false
-    );
+        'code' => false,
+    ];
 
     /*
      * A request token genereted by (or saved to) the class
@@ -80,7 +79,7 @@ class VATSIMSSO
     private $consumer = false;
 
     /**
-     * Configure instance with credentials
+     * Configure instance with credentials.
      */
     public function __construct()
     {
@@ -92,20 +91,18 @@ class VATSIMSSO
 
         $this->signature(config('vatsimsso.method'), config('vatsimsso.cert'));
     }
-	
-	public static function isEnabled()
-	{
-		return config('vatsimsso.base') && config('vatsimsso.key') && config('vatsimsso.secret') && config('vatsimsso.method') && config('vatsimsso.cert');
-	}
 
+    public static function isEnabled()
+    {
+        return config('vatsimsso.base') && config('vatsimsso.key') && config('vatsimsso.secret') && config('vatsimsso.method') && config('vatsimsso.cert');
+    }
 
     /*
      * SSO Base Authentication Methods
      */
 
     /**
-     *
-     * Attempt redirection to SSO login
+     * Attempt redirection to SSO login.
      *
      * @param $returnUrl
      * @param $success
@@ -116,20 +113,21 @@ class VATSIMSSO
     {
         if ($ssoToken = $this->requestToken($returnUrl, false, false)) {
             return $this->callResponse($success, [
-                (string)$ssoToken->token->oauth_token,
-                (string)$ssoToken->token->oauth_token_secret,
-                $this->sendToVatsim()
+                (string) $ssoToken->token->oauth_token,
+                (string) $ssoToken->token->oauth_token_secret,
+                $this->sendToVatsim(),
             ]);
         }
 
-        if (is_null($error)){
+        if (is_null($error)) {
             return false;
         }
+
         return $this->callResponse($error, [$this->getError()]);
     }
 
     /**
-     * Validate user returning from SSO
+     * Validate user returning from SSO.
      *
      * @param $key
      * @param $secret
@@ -143,49 +141,49 @@ class VATSIMSSO
         if ($request = $this->checkLogin($key, $secret, $verifier)) {
             return $this->callResponse($success, [
                 $request->user,
-                $request->request
+                $request->request,
             ]);
         } else {
-            if (is_null($error)){
+            if (is_null($error)) {
                 return false;
             }
+
             return $this->callResponse($error, [$this->getError()]);
         }
     }
 
-
     /**
-     * Request a login token from VATSIM (required to send someone for an SSO login)
+     * Request a login token from VATSIM (required to send someone for an SSO login).
      *
      * @param string $return_url URL for VATSIM to return memers to after login
-     * @param boolean $allow_sus true to allow suspended VATSIM accounts to log in
-     * @param boolean $allow_ina true to allow inactive VATSIM accounts to log in
-     * @return object|boolean
+     * @param bool $allow_sus true to allow suspended VATSIM accounts to log in
+     * @param bool $allow_ina true to allow inactive VATSIM accounts to log in
+     * @return object|bool
      */
     public function requestToken($return_url = false, $allow_sus = false, $allow_ina = false)
     {
         // if the return URL isn't specified, assume this file (though don't consider GET data)
-        if (!$return_url) {
+        if (! $return_url) {
             // using https or http?
             $http = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https://' : 'http://';
             // the current URL
-            $return_url = $http . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
+            $return_url = $http.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
         }
 
-        $tokenUrl = $this->base . $this->loc_api . $this->loc_token . $this->format . '/';
+        $tokenUrl = $this->base.$this->loc_api.$this->loc_token.$this->format.'/';
 
         // generate a token request from the consumer details
-        $req = Request::from_consumer_and_token($this->consumer, false, "POST", $tokenUrl, array(
-            'oauth_callback' => (String)$return_url,
+        $req = Request::from_consumer_and_token($this->consumer, false, 'POST', $tokenUrl, [
+            'oauth_callback' => (string) $return_url,
             'oauth_allow_suspended' => (bool) $allow_sus,
-            'oauth_allow_inactive' => (bool) $allow_ina
-        ));
+            'oauth_allow_inactive' => (bool) $allow_ina,
+        ]);
         // sign the request using the specified signature/encryption method (set in this class)
         $req->sign_request($this->signature, $this->consumer, false);
 
         $response = $this->curlRequest($tokenUrl, $req->to_postdata());
 
-        if(!$response){
+        if (! $response) {
             // cURL response failed
             return false;
         }
@@ -207,7 +205,7 @@ class VATSIMSSO
                 $this->error = [
                     'type' => 'callback_confirm',
                     'code' => false,
-                    'message' => 'Callback confirm flag missing - protocol mismatch'
+                    'message' => 'Callback confirm flag missing - protocol mismatch',
                 ];
             }
         } else {
@@ -215,14 +213,15 @@ class VATSIMSSO
             $this->error = [
                 'type' => 'oauth_response',
                 'code' => false,
-                'message' => $sso->request->message
+                'message' => $sso->request->message,
             ];
         }
+
         return false;
     }
 
     /**
-     * Obtains a user's login details from a token key and secret
+     * Obtains a user's login details from a token key and secret.
      *
      * @param string $tokenKey The token key provided by VATSIM
      * @param secret $tokenSecret The secret associated with the token
@@ -230,17 +229,16 @@ class VATSIMSSO
      */
     public function checkLogin($tokenKey, $tokenSecret, $tokenVerifier)
     {
-
         $this->token = new Consumer($tokenKey, $tokenSecret);
 
         // the location to send a cURL request to to obtain this user's details
-        $returnUrl = $this->base . $this->loc_api . $this->loc_return . $this->format . '/';
+        $returnUrl = $this->base.$this->loc_api.$this->loc_return.$this->format.'/';
 
         // generate a token request call using post data
-        $req = Request::from_consumer_and_token($this->consumer, $this->token, "POST", $returnUrl, array(
+        $req = Request::from_consumer_and_token($this->consumer, $this->token, 'POST', $returnUrl, [
             'oauth_token' => $tokenKey,
-            'oauth_verifier' => $tokenVerifier
-        ));
+            'oauth_verifier' => $tokenVerifier,
+        ]);
 
         // sign the request using the specified signature/encryption method (set in this class)
         $req->sign_request($this->signature, $this->consumer, $this->token);
@@ -248,7 +246,7 @@ class VATSIMSSO
         // post the details to VATSIM and obtain the result
         $response = $this->curlRequest($returnUrl, $req->to_postdata());
 
-        if (!$response) {
+        if (! $response) {
             // cURL response failed
             return false;
         }
@@ -267,26 +265,26 @@ class VATSIMSSO
         } else {
 
             // oauth returned a failed request, store the error details
-            $this->error = array(
+            $this->error = [
                 'type' => 'oauth_response',
                 'code' => false,
-                'message' => $sso->request->message
-            );
+                'message' => $sso->request->message,
+            ];
         }
+
         return false;
     }
-
 
     /*
      * Utilities
      */
 
     /**
-     * Perform a (post) cURL request
+     * Perform a (post) cURL request.
      *
      * @param type $url Destination of request
      * @param type $bodu Query string of data to be posted
-     * @return boolean              true if able to make request
+     * @return bool              true if able to make request
      */
     private function curlRequest($url, $body)
     {
@@ -294,27 +292,26 @@ class VATSIMSSO
         $ch = curl_init();
 
         // configure the post request to VATSIM
-        curl_setopt_array($ch, array(
+        curl_setopt_array($ch, [
             CURLOPT_URL => $url, // the url to make the request to
             CURLOPT_RETURNTRANSFER => 1, // do not output the returned data to the user
             CURLOPT_TIMEOUT => $this->timeout, // time out the request after this number of seconds
             CURLOPT_POST => 1, // we are sending this via post
-            CURLOPT_POSTFIELDS => $body // a query string to be posted (key1=value1&key2=value2)
-        ));
+            CURLOPT_POSTFIELDS => $body, // a query string to be posted (key1=value1&key2=value2)
+        ]);
 
         // perform the request
         $response = curl_exec($ch);
 
         // request failed?
-        if (!$response) {
-            $this->error = array(
+        if (! $response) {
+            $this->error = [
                 'type' => 'curl_response',
                 'code' => curl_errno($ch),
-                'message' => curl_error($ch)
-            );
+                'message' => curl_error($ch),
+            ];
 
             return false;
-
         }
 
         return $response;
@@ -326,19 +323,19 @@ class VATSIMSSO
     }
 
     /**
-     * Redirect the user to VATSIM to log in/confirm login
+     * Redirect the user to VATSIM to log in/confirm login.
      *
-     * @return boolean              false if failed
+     * @return bool              false if failed
      */
     public function sendToVatsim()
     {
         // a token must have been returned to redirect this user
-        if (!$this->token) {
+        if (! $this->token) {
             return false;
         }
 
         // redirect to the SSO login location, appending the token
-        return $this->base . $this->loc_login . $this->token->key;
+        return $this->base.$this->loc_login.$this->token->key;
     }
 
     /**
@@ -346,11 +343,10 @@ class VATSIMSSO
      *
      * @param string $signature Signature encryption method: RSA|HMAC
      * @param string $private_key openssl RSA private key (only needed if using RSA)
-     * @return boolean                  true if able to use this signing type
+     * @return bool                  true if able to use this signing type
      */
     public function signature($signature, $private_key = false)
     {
-
         $signature = strtoupper($signature);
 
         // RSA-SHA1 public key/private key encryption
@@ -359,7 +355,6 @@ class VATSIMSSO
             $this->signature = new RsaSha1($private_key);
 
             return true;
-
         } elseif ($signature == 'HMAC' || $signature == 'HMAC-SHA1') {
 
             // signature method set to HMAC-SHA1 - no private key
@@ -370,7 +365,6 @@ class VATSIMSSO
 
         return false;
     }
-
 
     protected function callResponse($callback, $parameters)
     {
@@ -383,8 +377,9 @@ class VATSIMSSO
 
     protected function callClassBasedResponse($callback, $parameters)
     {
-        list($class, $method) = explode('@', $callback);
-        return call_user_func_array(array($this->container->make($class), $method), $parameters);
+        [$class, $method] = explode('@', $callback);
+
+        return call_user_func_array([$this->container->make($class), $method], $parameters);
     }
 
     /*
@@ -392,7 +387,7 @@ class VATSIMSSO
      */
 
     /**
-     * Obtain the last generated error from this class
+     * Obtain the last generated error from this class.
      *
      * @return array                Array of the latest error
      */
@@ -400,5 +395,4 @@ class VATSIMSSO
     {
         return $this->error;
     }
-
 }

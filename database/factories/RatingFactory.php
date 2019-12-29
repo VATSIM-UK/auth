@@ -12,6 +12,7 @@ $factory->define(\App\Models\Rating::class, function (Faker\Generator $faker) {
 
 $factory->defineAs(\App\Models\Rating::class, 'atc', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(\App\Models\Rating::class);
+
     return array_merge($atc, [
         'code' => $faker->bothify('C##'),
         'code_long' => $faker->bothify('STU##'),
@@ -20,6 +21,7 @@ $factory->defineAs(\App\Models\Rating::class, 'atc', function (Faker\Generator $
 });
 $factory->defineAs(\App\Models\Rating::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(\App\Models\Rating::class);
+
     return array_merge($atc, [
         'code' => $faker->bothify('P##'),
         'code_long' => $faker->bothify('P##'),

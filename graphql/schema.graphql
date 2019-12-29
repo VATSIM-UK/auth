@@ -8,6 +8,17 @@ type Query @middleware(checks: ["auth:api"]){
     authUser: User @auth
 }
 
+type Mutation @middleware(checks: ["auth:api"]){
+    updatePassword(
+        old_password: String @rules(apply: ["different:new_password"])
+        new_password: String! @rules(apply: ["App\\Rules\\PasswordStrengthRule"])
+    ): Boolean
+
+    removePassword(
+        current_password: String! @rules(apply: ["required"])
+    ): Boolean
+}
+
 extend type Query @middleware(checks: ["auth.api.multi"]){
     user(id: Int! @eq): User @find
     users(ids: [Int!] @in(key: "id")): [User!]! @all
