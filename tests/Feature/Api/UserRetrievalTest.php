@@ -12,20 +12,12 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Passport\Passport;
-use Laravel\Passport\PersonalAccessClient;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
 class UserRetrievalTest extends TestCase
 {
     use DatabaseTransactions, MakesGraphQLRequests;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Passport::actingAsClient(new Client(), ['machine-only']);
-    }
 
     public function testUnauthenticatedCantAccessMethods()
     {
@@ -52,6 +44,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveAuthenticatedUser()
     {
+        $this->asUserOnAPI();
         $this->graphQL('
         query{
             authUser{
@@ -69,18 +62,19 @@ class UserRetrievalTest extends TestCase
 
     public function testNonMachineTokenCantAccessOtherUsers()
     {
-        Passport::actingAsClient(new PersonalAccessClient());
+        $this->asUserOnAPI();
         $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 id
             }
         }
-        ")->assertJsonPath('errors.0.debugMessage', 'Invalid scope(s) provided.');
+        ")->assertJsonPath('errors.0.debugMessage', 'Unauthenticated');
     }
 
     public function testCanRetrieveUserByID()
     {
+        $this->asMachineMachine();
         $users = factory(User::class)->create();
 
         $this->graphQL("
@@ -98,6 +92,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersByIDs()
     {
+        $this->asMachineMachine();
         $users = factory(User::class, 5)->create();
         $randomUsersId = $users->random()->id;
 
@@ -119,6 +114,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersRatings()
     {
+        $this->asMachineMachine();
         $ratings = factory(Rating::class, 'atc', 2)->create();
 
         $this->user->ratings()->sync($ratings);
@@ -145,6 +141,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersATCRating()
     {
+        $this->asMachineMachine();
         $rating = factory(Rating::class, 'atc')->create();
 
         $this->user->ratings()->sync($rating);
@@ -172,6 +169,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersPilotRatings()
     {
+        $this->asMachineMachine();
         $rating = factory(Rating::class, 'pilot')->create();
 
         $this->graphQL("
@@ -217,6 +215,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersBans()
     {
+        $this->asMachineMachine();
         factory(Ban::class)->create([
             'type' => BanTypeConstants::LOCAL,
             'user_id' => $this->user->id,
@@ -255,6 +254,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanRetrieveUsersRolesAndPermissions()
     {
+        $this->asMachineMachine();
         $roles = factory(Role::class, 2)->create();
         $this->user->syncRoles($roles->pluck('id')->all());
         factory(Assignment::class)->create([
@@ -295,6 +295,7 @@ class UserRetrievalTest extends TestCase
 
     public function testCanCheckIfUserAuthorisedForPermission()
     {
+        $this->asUserOnAPI();
         factory(Assignment::class, 'user')->create([
             'related_id' => $this->user->id,
             'permission' => 'ukts.people.manage',
@@ -321,5 +322,15 @@ class UserRetrievalTest extends TestCase
             authUserCan(permissions: ["ukts.people.mutate"])
         }
         ')->assertJsonPath('data.authUserCan', false);
+    }
+
+    private function asMachineMachine()
+    {
+        Passport::actingAsClient(new Client(), ['machine-only']);
+    }
+
+    private function asUserOnAPI()
+    {
+        Passport::actingAs($this->user);
     }
 }
