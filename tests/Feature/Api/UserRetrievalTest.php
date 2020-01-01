@@ -69,7 +69,7 @@ class UserRetrievalTest extends TestCase
                 id
             }
         }
-        ")->assertJsonPath('errors.0.debugMessage', 'Unauthenticated');
+        ")->assertJsonPath('errors.0.debugMessage', 'Unauthenticated.');
     }
 
     public function testCanRetrieveUserByID()
