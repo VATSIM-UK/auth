@@ -21,6 +21,7 @@ class SyncRolesWithUser
     {
         $user = User::findOrFail($args['user_id']);
         $user->syncRoles($args['role_ids']);
+
         return true;
     }
 }

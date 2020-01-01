@@ -21,6 +21,7 @@ class TakePermissionFromUser
     {
         $user = User::findOrFail($args['user_id']);
         $user->revokePermissionTo($args['permission']);
+
         return true;
     }
 }

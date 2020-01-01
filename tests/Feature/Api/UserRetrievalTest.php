@@ -76,7 +76,7 @@ class UserRetrievalTest extends TestCase
                 id
             }
         }
-        ")->assertJsonPath('errors.0.debugMessage', "Invalid scope(s) provided.");
+        ")->assertJsonPath('errors.0.debugMessage', 'Invalid scope(s) provided.');
     }
 
     public function testCanRetrieveUserByID()

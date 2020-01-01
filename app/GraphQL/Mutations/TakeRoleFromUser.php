@@ -24,6 +24,7 @@ class TakeRoleFromUser
         $role = Role::findOrFail($args['role_id']);
 
         $user->removeRole($role);
+
         return true;
     }
 }

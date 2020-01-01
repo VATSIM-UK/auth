@@ -21,6 +21,7 @@ class GenerateAuthTokenCommandTest extends TestCase
         if (Passport::$personalAccessClientId != null) {
             fwrite(STDOUT, "Personal Access Client Installed. Skipped test 'itFailsSafelyWithNoClient'.");
             $this->expectNotToPerformAssertions();
+
             return;
         }
 

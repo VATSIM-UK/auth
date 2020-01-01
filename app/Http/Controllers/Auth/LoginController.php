@@ -146,7 +146,7 @@ class LoginController extends Controller
 
         if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
-               'password' => ['The supplied password did not match our records'],
+                'password' => ['The supplied password did not match our records'],
             ]);
             throw $error;
         }

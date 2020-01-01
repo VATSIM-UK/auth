@@ -21,6 +21,7 @@ class GivePermissionToUser
     {
         $user = User::findOrFail($args['user_id']);
         $user->givePermissionTo($args['permission']);
+
         return true;
     }
 }

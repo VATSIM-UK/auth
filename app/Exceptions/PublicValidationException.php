@@ -1,14 +1,11 @@
 <?php
 
-
 namespace App\Exceptions;
-
 
 use Nuwave\Lighthouse\Exceptions\RendersErrorsExtensions;
 
 class PublicValidationException extends \Exception implements RendersErrorsExtensions
 {
-
     /**
      * Returns true when exception message is safe to be displayed to a client.
      *
@@ -32,7 +29,7 @@ class PublicValidationException extends \Exception implements RendersErrorsExten
      */
     public function getCategory()
     {
-        return "validation";
+        return 'validation';
     }
 
     /**
@@ -44,9 +41,9 @@ class PublicValidationException extends \Exception implements RendersErrorsExten
     public function extensionsContent(): array
     {
         return [
-            "validation" => [
-                $this->message
-            ]
+            'validation' => [
+                $this->message,
+            ],
         ];
     }
 }

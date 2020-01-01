@@ -24,6 +24,7 @@ class GiveRoleToUser
         $role = Role::findOrFail($args['role_id']);
 
         $user->assignRole($role);
+
         return true;
     }
 }

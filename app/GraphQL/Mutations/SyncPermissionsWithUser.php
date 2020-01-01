@@ -21,6 +21,7 @@ class SyncPermissionsWithUser
     {
         $user = User::findOrFail($args['user_id']);
         $user->syncPermissions($args['permissions']);
+
         return true;
     }
 }

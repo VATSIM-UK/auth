@@ -27,7 +27,7 @@ class PermissionValidityService
 
         // 3: Check if the file has the permission
         return (is_array(data_get($permissions, $permission)) && $count > 0) // If it is a wildcard, the result should be an array
-            || collect(data_get($permissions, str_replace('.' . $permissionSplit->last(), '', $permission)))
+            || collect(data_get($permissions, str_replace('.'.$permissionSplit->last(), '', $permission)))
                 ->filter(function ($item) {
                     return ! is_array($item);
                 })
@@ -71,8 +71,8 @@ class PermissionValidityService
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-            }) !== false;
+            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+        }) !== false;
     }
 
     /**

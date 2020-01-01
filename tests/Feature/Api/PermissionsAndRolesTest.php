@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Feature\Api;
-
 
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
@@ -16,7 +14,8 @@ class PermissionsAndRolesTest extends TestCase
 {
     use DatabaseTransactions, MakesGraphQLRequests;
 
-    private $role, $subject;
+    private $role;
+    private $subject;
 
     protected function setUp(): void
     {
@@ -24,7 +23,7 @@ class PermissionsAndRolesTest extends TestCase
 
         $this->withoutMiddleware();
         $this->withoutPermissions();
-        $this->actingAs($this->user, "api");
+        $this->actingAs($this->user, 'api');
 
         $this->mock(PermissionValidityService::class, function ($mock) {
             $mock->shouldReceive('isValidPermission')
@@ -34,16 +33,16 @@ class PermissionsAndRolesTest extends TestCase
         $this->subject = factory(User::class)->create();
 
         // Give the user a direct permission
-        $this->subject->givePermissionTo("auth.direct.permission");
+        $this->subject->givePermissionTo('auth.direct.permission');
 
         // Create a role with a permission
         $assignment = factory(Assignment::class)->create([
-            'permission' => "auth.role.permission"
+            'permission' => 'auth.role.permission',
         ]);
         $this->subject->assignRole($assignment->related);
 
         $this->role = factory(Role::class)->create([
-            'name' => "My Role"
+            'name' => 'My Role',
         ]);
     }
 
@@ -61,7 +60,7 @@ class PermissionsAndRolesTest extends TestCase
                     name
                 }
             }
-        ")->assertJsonPath('data.role.name', "My Role")
+        ")->assertJsonPath('data.role.name', 'My Role')
             ->assertJsonCount(2, 'data.roles')
             ->assertJsonCount(1, 'data.userRoles');
     }
@@ -174,7 +173,6 @@ class PermissionsAndRolesTest extends TestCase
             mutation {
                 givePermissionToUser(user_id: {$this->subject->id}, permission: \"auth.invalid.permission\")
             }
-        ")->assertJsonPath('errors.0.extensions.validation.0', "The given permission, auth.invalid.permission, is not defined as a valid permission");
+        ")->assertJsonPath('errors.0.extensions.validation.0', 'The given permission, auth.invalid.permission, is not defined as a valid permission');
     }
-
 }
