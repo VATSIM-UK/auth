@@ -4,7 +4,7 @@ namespace App\Exceptions\Ban;
 
 use App\Exceptions\PublicValidationException;
 
-class AlreadyNetworkBannedValidationException extends PublicValidationException
+class AlreadyNetworkBannedException extends PublicValidationException
 {
     protected $message = 'This user is already network banned';
 }

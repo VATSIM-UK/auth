@@ -11,14 +11,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "ext-simplexml": "*",
         "bensampo/laravel-enum": "^1.26",
         "bonroyage/oauth": "1.*",
         "laravel/framework": "^6.8",
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
-        "nuwave/lighthouse": "^4.7",
-        "ext-json": "*"
+        "mll-lab/graphql-php-scalars": "^2.1",
+        "nuwave/lighthouse": "^4.7"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

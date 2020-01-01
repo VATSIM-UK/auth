@@ -3,6 +3,7 @@
 namespace App\Models\Concerns;
 
 use App\Events\User\PermissionsChanged;
+use App\Exceptions\InvalidPermissionException;
 use App\Models\Permissions\Assignment;
 use App\Services\PermissionValidityService;
 use App\User;
@@ -148,7 +149,7 @@ trait HasPermissions
             })
             ->each(function ($permission) use ($validityService, &$altered) {
                 if (! $validityService->isValidPermission($permission)) {
-                    return;
+                    throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
                 }
                 $altered = true;
                 $this->permissions()->where('permission', $permission)->firstOrCreate([

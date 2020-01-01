@@ -1,0 +1,37 @@
+extend type Query @middleware(checks: ["auth:api"]){
+    role(id: ID! @eq): Role @find @can(ability: "auth.roles")
+    roles: [Role!] @all @can(ability: "auth.roles")
+    userRoles(user_id: ID! @rules(apply: ["exists:users,id"])): [Role!] @can(ability: "auth.roles")
+
+    permissions: Mixed @can(ability: "auth.permissions", model: "App\\Models\\Permissions\\Assignment")
+    userRolePermissions(user_id: ID! @rules(apply: ["exists:users,id"])): [String!] @can(ability: "auth.permissions", model: "App\\Models\\Permissions\\Assignment")
+    userDirectPermissions(user_id: ID! @rules(apply: ["exists:users,id"])): [String!] @can(ability: "auth.permissions", model: "App\\Models\\Permissions\\Assignment")
+}
+
+extend type Mutation  @middleware(checks: ["auth:api"]){
+    giveRoleToUser(
+        user_id: ID! @rules(apply: ["exists:users,id"])
+        role_id: ID! @rules(apply: ["exists:roles,id"])
+    ): Boolean
+    takeRoleFromUser(
+        user_id: ID! @rules(apply: ["exists:users,id"])
+        role_id: ID! @rules(apply: ["exists:roles,id"])
+    ): Boolean
+    syncRolesWithUser(
+        user_id: ID! @rules(apply: ["exists:users,id"])
+        role_ids: [ID!]! @rulesForArray(apply: ["exists:roles,id"])
+    ): Boolean
+
+    givePermissionToUser(
+        user_id: ID! @rules(apply: ["exists:users,id"])
+        permission: String!
+    ): Boolean
+    takePermissionFromUser(
+        user_id: ID! @rules(apply: ["exists:users,id"])
+        permission: String!
+    ): Boolean
+    syncPermissionsWithUser(
+        user_id: ID! @rules(apply: ["exists:users,id"])
+        permissions: [String!]!
+    ): Boolean
+}
