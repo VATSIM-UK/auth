@@ -26,6 +26,11 @@ class AuthServiceProvider extends ServiceProvider
         if (Schema::hasTable('oauth_clients') && $client = Client::where('personal_access_client', true)->first(['id'])) {
             Passport::personalAccessClientId($client->id);
         }
+
+        // Register Token Scopes
+        Passport::tokensCan([
+            'machine-only' => 'Access 1st Party Machine-Machine Protected Routes',
+        ]);
     }
 
     public function registerPermissions()

@@ -27,7 +27,7 @@ class PermissionValidityService
 
         // 3: Check if the file has the permission
         return (is_array(data_get($permissions, $permission)) && $count > 0) // If it is a wildcard, the result should be an array
-            || collect(data_get($permissions, str_replace('.'.$permissionSplit->last(), '', $permission)))
+            || collect(data_get($permissions, str_replace('.' . $permissionSplit->last(), '', $permission)))
                 ->filter(function ($item) {
                     return ! is_array($item);
                 })
@@ -37,11 +37,11 @@ class PermissionValidityService
     /**
      * Check if a permission is satisfied by a given list of permissions.
      *
-     * @param $permission
+     * @param string $permission
      * @param Collection|MorphMany|array $permissions
      * @return bool
      */
-    public function permissionSatisfiedByPermissions($permission, $permissions): bool
+    public function permissionSatisfiedByPermissions(string $permission, $permissions): bool
     {
         if (is_array($permissions)) {
             $permissions = collect($permissions);
@@ -53,19 +53,26 @@ class PermissionValidityService
             return true;
         }
 
+        // 2: If the user has, for example, auth.permissions.create, they should have the top-level permission auth.permissions
+        if ($permissions instanceof MorphMany ? (clone $permissions)->where('permission', 'like', "$permission.%")->exists() : $permissions->filter(function ($value) use ($permission) {
+            return Str::startsWith($value, $permission);
+        })->isNotEmpty()) {
+            return true;
+        }
+
+        // 3: Check for wildcard
         $wildcardPermissions = $permissions instanceof MorphMany ? $permissions->where('permission', 'like', '%*%')->pluck('permission') : $permissions->filter(function ($value) {
             return Str::contains($value, '*');
         });
 
-        // 2: Check for wildcard
         if ($wildcardPermissions->isEmpty()) {
             return false;
         }
 
         // 3: Have some wildcard permissions. Check if they match the required permission
         return $wildcardPermissions->search(function ($value) use ($permission) {
-            return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
-        }) !== false;
+                return fnmatch($value, $permission) || fnmatch(str_replace('.*', '*', $value), $permission);
+            }) !== false;
     }
 
     /**

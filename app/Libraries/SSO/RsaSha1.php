@@ -2,8 +2,8 @@
 
 namespace App\Libraries\SSO;
 
-use Eher\OAuth\OAuthException;
 use Eher\OAuth\RsaSha1 as BaseRsaSha1;
+use League\OAuth2\Server\Exception\OAuthServerException;
 
 class RsaSha1 extends BaseRsaSha1
 {
@@ -29,10 +29,10 @@ class RsaSha1 extends BaseRsaSha1
      * Fetch the public RSA certificate (we do not use this functionality).
      *
      * @param $request
-     * @throws OAuthException
+     * @throws OAuthServerException
      */
     public function fetch_public_cert(&$request)
     {
-        throw new OAuthException('fetch_public_cert not implemented');
+        throw new OAuthServerException('fetch_public_cert not implemented');
     }
 }
