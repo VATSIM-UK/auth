@@ -7,15 +7,25 @@ use App\Models\Ban;
 use App\Models\Permissions\Assignment;
 use App\Models\Rating;
 use App\Models\Role;
+use App\Passport\Client;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Laravel\Passport\Passport;
+use Laravel\Passport\PersonalAccessClient;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
 class UserRetrievalTest extends TestCase
 {
     use DatabaseTransactions, MakesGraphQLRequests;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Passport::actingAsClient(new Client(), ['machine-only']);
+    }
 
     public function testUnauthenticatedCantAccessMethods()
     {
@@ -26,7 +36,7 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                'debugMessage' => 'Unauthenticated.',
+            'debugMessage' => 'Unauthenticated.',
         ]);
 
         $this->actingAs($this->user)->graphQL('
@@ -36,13 +46,13 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                'debugMessage' => 'Unauthenticated.',
+            'debugMessage' => 'Unauthenticated.',
         ]);
     }
 
     public function testCanRetrieveAuthenticatedUser()
     {
-        $this->actingAs($this->user, 'api')->graphQL('
+        $this->graphQL('
         query{
             authUser{
                 id
@@ -57,11 +67,23 @@ class UserRetrievalTest extends TestCase
         ]);
     }
 
+    public function testNonMachineTokenCantAccessOtherUsers()
+    {
+        Passport::actingAsClient(new PersonalAccessClient());
+        $this->graphQL("
+        query{
+            user(id: {$this->user->id}){
+                id
+            }
+        }
+        ")->assertJsonPath('errors.0.debugMessage', "Invalid scope(s) provided.");
+    }
+
     public function testCanRetrieveUserByID()
     {
         $users = factory(User::class)->create();
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 id
@@ -79,7 +101,7 @@ class UserRetrievalTest extends TestCase
         $users = factory(User::class, 5)->create();
         $randomUsersId = $users->random()->id;
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             users(ids: [{$this->user->id},{$randomUsersId}]){
                 id
@@ -101,7 +123,7 @@ class UserRetrievalTest extends TestCase
 
         $this->user->ratings()->sync($ratings);
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 ratings {
@@ -127,7 +149,7 @@ class UserRetrievalTest extends TestCase
 
         $this->user->ratings()->sync($rating);
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 atcRating {
@@ -152,7 +174,7 @@ class UserRetrievalTest extends TestCase
     {
         $rating = factory(Rating::class, 'pilot')->create();
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 pilotRatings {
@@ -170,7 +192,7 @@ class UserRetrievalTest extends TestCase
 
         $this->user->ratings()->sync($rating);
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 pilotRatings {
@@ -207,7 +229,7 @@ class UserRetrievalTest extends TestCase
             'ends_at' => null,
         ]);
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 banned
@@ -248,7 +270,7 @@ class UserRetrievalTest extends TestCase
             'permission' => 'ukts.people.manage',
         ]);
 
-        $this->actingAs($this->user, 'api')->graphQL("
+        $this->graphQL("
         query{
             user(id: {$this->user->id}){
                 roles {
@@ -282,19 +304,19 @@ class UserRetrievalTest extends TestCase
             'permission' => 'ukts.people.move',
         ]);
 
-        $this->actingAs($this->user, 'api')->graphQL('
+        $this->graphQL('
         query{
             authUserCan(permissions: ["ukts.people.manage"])
         }
         ')->assertJsonPath('data.authUserCan', true);
 
-        $this->actingAs($this->user, 'api')->graphQL('
+        $this->graphQL('
         query{
             authUserCan(permissions: ["ukts.people.manage", "ukts.people.move"])
         }
         ')->assertJsonPath('data.authUserCan', true);
 
-        $this->actingAs($this->user, 'api')->graphQL('
+        $this->graphQL('
         query{
             authUserCan(permissions: ["ukts.people.mutate"])
         }

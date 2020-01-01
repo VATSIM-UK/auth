@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Events\User\PermissionsChanged;
+use App\Exceptions\InvalidPermissionException;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\Services\PermissionValidityService;
@@ -189,6 +190,18 @@ class UserPermissionTest extends TestCase
         ]);
 
         Event::assertDispatchedTimes(PermissionsChanged::class, 2);
+    }
+
+    /** @test */
+    public function itThrowsAnExceptionIfPermissionInvalid()
+    {
+        $this->mock(PermissionValidityService::class, function ($mock) {
+            $mock->shouldReceive('isValidPermission')
+                ->andReturn(false);
+        })->makePartial();
+        $this->expectException(InvalidPermissionException::class);
+
+        $this->user->givePermissionTo('auth.test.*');
     }
 
     /** @test */

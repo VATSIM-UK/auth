@@ -5,6 +5,7 @@ namespace Tests;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Gate;
 use Tests\Database\MockCoreDatabase;
 
 abstract class TestCase extends BaseTestCase
@@ -23,6 +24,13 @@ abstract class TestCase extends BaseTestCase
         MockCoreDatabase::create();
 
         $this->user = factory(User::class)->create();
+    }
+
+    public function withoutPermissions()
+    {
+        Gate::before(function () {
+            return true;
+        });
     }
 
     public function assertCollectionSubset($subset, $collection)

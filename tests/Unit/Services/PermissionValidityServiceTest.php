@@ -116,4 +116,13 @@ class PermissionValidityServiceTest extends TestCase
 
         $this->assertTrue($this->service->permissionSatisfiedByPermissions('can.do.anything', ['*']));
     }
+
+    /** @test */
+    public function itAllowsTopLevelPermissionIfChildHeld()
+    {
+        $this->assertFalse($this->user->can('auth.permissions'));
+        $this->user->givePermissionTo('auth.permissions.assign');
+        $this->assertTrue($this->user->can('auth.permissions'));
+        $this->assertFalse($this->user->can('auth.permissions.create'));
+    }
 }
