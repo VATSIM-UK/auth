@@ -48,7 +48,6 @@ class RoleTest extends TestCase
     /** @test */
     public function itCanAddPermissions()
     {
-
         PermissionValidity::shouldReceive('isValidPermission')
             ->andReturn(true);
         Event::fake();

@@ -70,7 +70,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (!$this->hasPermissionTo($permission)) {
+            if (! $this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -147,7 +147,7 @@ trait HasPermissions
                 return $permission;
             })
             ->each(function ($permission) use (&$altered) {
-                if (!PermissionValidity::isValidPermission($permission)) {
+                if (! PermissionValidity::isValidPermission($permission)) {
                     throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
                 }
                 $altered = true;

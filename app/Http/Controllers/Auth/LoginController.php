@@ -42,7 +42,7 @@ class LoginController extends Controller
     public function loginWithVatsimSSO()
     {
         // Check we have necessary information
-        if (!VATSIMSSO::isEnabled()) {
+        if (! VATSIMSSO::isEnabled()) {
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
@@ -121,7 +121,7 @@ class LoginController extends Controller
     {
         $user = Auth::guard('partial_web')->user();
 
-        if (!$user->hasPassword()) {
+        if (! $user->hasPassword()) {
             return $this->authDone($user);
         }
 
@@ -136,7 +136,7 @@ class LoginController extends Controller
     {
         $user = Auth::guard('partial_web')->user();
 
-        if (!$user->hasPassword()) {
+        if (! $user->hasPassword()) {
             return $this->authDone($user);
         }
 
@@ -144,7 +144,7 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
+        if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 'password' => ['The supplied password did not match our records'],
             ]);
