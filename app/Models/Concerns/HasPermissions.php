@@ -5,10 +5,10 @@ namespace App\Models\Concerns;
 use App\Events\User\PermissionsChanged;
 use App\Exceptions\InvalidPermissionException;
 use App\Models\Permissions\Assignment;
-use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 trait HasPermissions
 {
@@ -70,7 +70,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (! $this->hasPermissionTo($permission)) {
+            if (!$this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -87,7 +87,7 @@ trait HasPermissions
      */
     public function hasPermissionViaRole($permission): bool
     {
-        return resolve(PermissionValidityService::class)->permissionSatisfiedByPermissions($permission, $this->getPermissionsViaRoles());
+        return PermissionValidity::permissionSatisfiedByPermissions($permission, $this->getPermissionsViaRoles());
     }
 
     /**
@@ -99,7 +99,7 @@ trait HasPermissions
      */
     public function hasDirectPermission($permission): bool
     {
-        return resolve(PermissionValidityService::class)->permissionSatisfiedByPermissions($permission, $this->permissions());
+        return PermissionValidity::permissionSatisfiedByPermissions($permission, $this->permissions());
     }
 
     /**
@@ -137,7 +137,6 @@ trait HasPermissions
     {
         $altered = false;
 
-        $validityService = resolve(PermissionValidityService::class);
         collect($permissions)
             ->flatten()
             ->map(function ($permission) {
@@ -147,8 +146,8 @@ trait HasPermissions
 
                 return $permission;
             })
-            ->each(function ($permission) use ($validityService, &$altered) {
-                if (! $validityService->isValidPermission($permission)) {
+            ->each(function ($permission) use (&$altered) {
+                if (!PermissionValidity::isValidPermission($permission)) {
                     throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
                 }
                 $altered = true;

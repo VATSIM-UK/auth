@@ -4,11 +4,11 @@ namespace Tests\Feature\Api;
 
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
-use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
+use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class PermissionsAndRolesTest extends TestCase
 {
@@ -25,10 +25,9 @@ class PermissionsAndRolesTest extends TestCase
         $this->withoutPermissions();
         $this->actingAs($this->user, 'api');
 
-        $this->mock(PermissionValidityService::class, function ($mock) {
-            $mock->shouldReceive('isValidPermission')
-                ->andReturn(true);
-        })->makePartial();
+        PermissionValidity::partialMock()
+            ->shouldReceive('isValidPermission')
+            ->andReturn(true)->byDefault();
 
         $this->subject = factory(User::class)->create();
 
@@ -75,10 +74,9 @@ class PermissionsAndRolesTest extends TestCase
                 ],
             ],
         ];
-        $this->mock(PermissionValidityService::class, function ($mock) use ($permissions) {
-            $mock->shouldReceive('loadJsonPermissions')
-                ->andReturn($permissions);
-        })->makePartial();
+        PermissionValidity::partialMock()
+            ->shouldReceive('loadJsonPermissions')
+            ->andReturn($permissions);
 
         $this->graphQL("
             query {
@@ -164,10 +162,9 @@ class PermissionsAndRolesTest extends TestCase
 
     public function testItFailsWhenPermissionIsNotValid()
     {
-        $this->mock(PermissionValidityService::class, function ($mock) {
-            $mock->shouldReceive('isValidPermission')
-                ->andReturn(false);
-        })->makePartial();
+        PermissionValidity::partialMock()
+            ->shouldReceive('isValidPermission')
+            ->andReturn(false);
 
         $this->graphQL("
             mutation {

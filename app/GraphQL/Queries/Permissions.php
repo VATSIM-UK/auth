@@ -2,22 +2,12 @@
 
 namespace App\GraphQL\Queries;
 
-use App\Services\PermissionValidityService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class Permissions
 {
-    /**
-     * @var PermissionValidityService
-     */
-    private $permissionService;
-
-    public function __construct(PermissionValidityService $permissionService)
-    {
-        $this->permissionService = $permissionService;
-    }
-
     /**
      * Return a value for the field.
      *
@@ -29,6 +19,6 @@ class Permissions
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->permissionService->loadJsonPermissions();
+        return PermissionValidity::loadJsonPermissions();
     }
 }

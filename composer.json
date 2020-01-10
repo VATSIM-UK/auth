@@ -6,7 +6,6 @@
         "OAuth",
         "VATSIM UK",
         "Authentication"
-
     ],
     "license": "MIT",
     "require": {
@@ -19,7 +18,8 @@
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
         "mll-lab/graphql-php-scalars": "^2.1",
-        "nuwave/lighthouse": "^4.7"
+        "nuwave/lighthouse": "^4.7",
+        "vatsimuk/auth-package": "dev-master"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -71,5 +71,11 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/VATSIM-UK/auth-package"
+        }
+    ]
 }

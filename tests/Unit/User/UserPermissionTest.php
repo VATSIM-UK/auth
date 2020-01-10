@@ -6,11 +6,11 @@ use App\Events\User\PermissionsChanged;
 use App\Exceptions\InvalidPermissionException;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
-use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
+use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class UserPermissionTest extends TestCase
 {
@@ -25,10 +25,9 @@ class UserPermissionTest extends TestCase
     {
         parent::setUp();
 
-        $this->mock(PermissionValidityService::class, function ($mock) {
-            $mock->shouldReceive('isValidPermission')
-                ->andReturn(true);
-        })->makePartial();
+        PermissionValidity::partialMock()
+            ->shouldReceive('isValidPermission')
+            ->andReturn(true)->byDefault();
 
         $this->role1 = factory(Role::class)->create(['name' => 'Super Admin']);
         $this->role2 = factory(Role::class)->create(['name' => 'Member']);
@@ -195,10 +194,10 @@ class UserPermissionTest extends TestCase
     /** @test */
     public function itThrowsAnExceptionIfPermissionInvalid()
     {
-        $this->mock(PermissionValidityService::class, function ($mock) {
-            $mock->shouldReceive('isValidPermission')
-                ->andReturn(false);
-        })->makePartial();
+        PermissionValidity::partialMock()
+            ->shouldReceive('isValidPermission')
+            ->andReturn(false);
+
         $this->expectException(InvalidPermissionException::class);
 
         $this->user->givePermissionTo('auth.test.*');

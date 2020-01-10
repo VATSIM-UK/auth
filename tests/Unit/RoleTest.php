@@ -5,11 +5,11 @@ namespace Tests\Unit;
 use App\Events\User\PermissionsChanged;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
-use App\Services\PermissionValidityService;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
+use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class RoleTest extends TestCase
 {
@@ -48,10 +48,9 @@ class RoleTest extends TestCase
     /** @test */
     public function itCanAddPermissions()
     {
-        $this->mock(PermissionValidityService::class, function ($mock) {
-            $mock->shouldReceive('isValidPermission')
-                ->andReturn(true);
-        })->makePartial();
+
+        PermissionValidity::shouldReceive('isValidPermission')
+            ->andReturn(true);
         Event::fake();
 
         $this->role->givePermissionTo('do.one.thing');
