@@ -24,7 +24,7 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                'debugMessage' => 'Unauthenticated.',
+            'debugMessage' => 'Unauthenticated.',
         ]);
 
         $this->actingAs($this->user)->graphQL('
@@ -34,7 +34,7 @@ class UserRetrievalTest extends TestCase
             }
         }
         ')->assertJsonFragment([
-                'debugMessage' => 'Unauthenticated.',
+            'debugMessage' => 'Unauthenticated.',
         ]);
     }
 

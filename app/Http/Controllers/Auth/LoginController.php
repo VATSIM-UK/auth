@@ -67,7 +67,7 @@ class LoginController extends Controller
         }, function ($error) {
             // TODO: Log to bugsnag
             return view('auth.alternative_sso');
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
@@ -148,7 +148,7 @@ class LoginController extends Controller
 
         if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
-               'password' => ['The supplied password did not match our records'],
+                'password' => ['The supplied password did not match our records'],
             ]);
             throw $error;
         }
