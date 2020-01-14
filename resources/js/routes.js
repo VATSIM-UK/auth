@@ -2,6 +2,7 @@ import Passwords from './views/Passwords'
 import NotFound from './views/errors/NotFound'
 import Dashboard from './views/Dashboard'
 import Roles from './views/Roles'
+import Role from "./views/Role";
 
 export default [
     {
@@ -18,6 +19,11 @@ export default [
         path: '/admin/roles',
         name: 'admin.roles',
         component: Roles,
+    },
+    {
+        path: '/admin/role/:id',
+        name: 'admin.role',
+        component: Role,
     },
     {
         path: '*',

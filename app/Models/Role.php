@@ -7,6 +7,9 @@ use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/*
+ * Note: the 'password_refresh_rate' attribute is in days
+ */
 class Role extends Model
 {
     use HasPermissions;

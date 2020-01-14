@@ -72,6 +72,10 @@ Vue.component(
     'success-message',
     require('./components/ui/SuccessMessage').default
 );
+Vue.component(
+    'editable-text',
+    require('./components/ui/EditableText').default
+);
 
 /*
    Create App
