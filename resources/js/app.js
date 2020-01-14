@@ -11,6 +11,7 @@ import App from './views/App'
 import Routes from './routes'
 
 require('./bootstrap');
+require('../../node_modules/nprogress/nprogress');
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
@@ -27,18 +28,37 @@ const apolloClient = new ApolloClient({
     },
     uri: apiUri
 });
+
 const apolloProvider = new VueApollo({
     defaultClient: apolloClient,
-})
+    watchLoading(isLoading) {
+        this.$root.dataIsLoading = isLoading;
+    }
+});
 
 /*
-   Import Router Views
+   Import and Setup Router
  */
 
 const router = new VueRouter({
     mode: 'history',
     routes: Routes
 });
+
+router.beforeResolve((to, from, next) => {
+    // If this isn't an initial page load.
+    if (to.name) {
+        // Start the route progress bar.
+        NProgress.start()
+    }
+    next()
+});
+
+router.afterEach((to, from) => {
+    // Complete the animation of the route progress bar.
+    NProgress.done()
+});
+
 
 /*
    Initialise Custom Components
@@ -59,6 +79,9 @@ Vue.component(
 
 const app = new Vue({
     el: '#app',
+    data: {
+        dataIsLoading: false
+    },
     components: {App},
     router,
     apolloProvider,

@@ -12,11 +12,19 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+    .extract(['vue', 'vue-router', 'apollo-boost', 'vue-apollo'])
+    .sass('resources/sass/app.scss', 'public/css')
+    .styles([
+        'node_modules/nprogress/nprogress.css'
+    ], 'public/css/libraries.css')
+    .scripts([
+        'node_modules/nprogress/nprogress.js'
+    ], 'public/js/libraries.js');
 
 if (mix.inProduction()) {
     mix.version();
 }
+
 
 if (process.env.NODE_ENV === 'testing') {
     Mix.manifest.refresh = () => {
