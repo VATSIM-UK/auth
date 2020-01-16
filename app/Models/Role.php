@@ -18,7 +18,7 @@ class Role extends Model
     protected $fillable = [
         'name',
         'require_password',
-        'password_refresh_rate'
+        'password_refresh_rate',
     ];
 
     public function users(): BelongsToMany
