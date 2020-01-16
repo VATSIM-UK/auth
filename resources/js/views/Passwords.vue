@@ -3,28 +3,60 @@
         <success-message v-if="success">{{success}}</success-message>
         <div v-if="authUser.has_password">
             You currently have a secondary password set. You may change it below:
-            <text-input name="old_password" :errors="errors" v-model="old_password"
+            <text-input type="password" name="old_password" :errors="errors" v-model="old_password"
                         placeholder="Old Password"></text-input>
-            <text-input name="new_password" :errors="errors" v-model="new_password"
+            <text-input type="password" name="new_password" :errors="errors" v-model="new_password"
                         placeholder="New Password"></text-input>
-            <button class="btn btn-info" @click="updatePassword(false)" :disabled="!old_password || !new_password">
-                Update
-            </button>
+
+            <mutation-button class="btn-info" :mutation-query="mutations.updatePassword"
+                             :variables="{
+                                    old_password: old_password,
+                                    new_password: new_password,
+                                }"
+                             :disabled="!old_password || !new_password"
+                             @loading="errors.clear()"
+                             @done="onPasswordUpdated"
+                             @error="recordErrors"
+            >Update
+            </mutation-button>
+
             <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and
                 a lowercase letter, as well as a number.</small>
 
             <p>You may also remove your secondary password completely:</p>
-            <text-input name="current_password" :errors="errors" v-model="current_password"
+            <text-input type="password" name="current_password" :errors="errors" v-model="current_password"
                         placeholder="Current Password"></text-input>
-            <button class="btn btn-info" @click="removePassword()" :disabled="!current_password">Remove</button>
+            <mutation-button class="btn-info" :mutation-query="mutations.removePassword"
+                             :variables="{
+                                    current_password: current_password,
+                                }"
+                             :disabled="!current_password"
+                             @loading="errors.clear()"
+                             @done="onPasswordRemoved"
+                             @error="recordErrors"
+            >Remove
+            </mutation-button>
+
         </div>
         <div v-else>
             You do not currently have a secondary password set. Add one below:
-            <text-input name="new_password" :errors="errors" v-model="new_password" placeholder="Password"></text-input>
-            <text-input name="new_confirm" v-model="new_password_confirm" placeholder="Password (again)"></text-input>
-            <button class="btn btn-info" @click="updatePassword(true)"
-                    :disabled="(new_password !== new_password_confirm) || !new_password">Add Password
-            </button>
+            <text-input type="password" name="new_password" :errors="errors" v-model="new_password"
+                        placeholder="Password"></text-input>
+            <text-input type="password" name="new_confirm" v-model="new_password_confirm"
+                        placeholder="Password (again)"></text-input>
+
+            <mutation-button class="btn-info" :mutation-query="mutations.updatePassword"
+                             :variables="{
+                                    old_password: null,
+                                    new_password: new_password,
+                                }"
+                             :disabled="(new_password !== new_password_confirm) || !new_password"
+                             @loading="errors.clear()"
+                             @done="onPasswordUpdated"
+                             @error="recordErrors"
+            >Update
+            </mutation-button>
+
             <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and
                 a lowercase letter, as well as a number.</small>
         </div>
@@ -33,8 +65,10 @@
 <script>
     import gql from 'graphql-tag'
     import Errors from '../components/ui/errors'
+    import MutationButton from "../components/MutationButton";
 
     export default {
+        components: {MutationButton},
         data() {
             return {
                 authUser: {},
@@ -43,45 +77,27 @@
                 new_password_confirm: null,
                 current_password: null,
                 errors: new Errors(),
-                success: null
+                success: null,
+                mutations: {
+                    removePassword: gql`mutation ($current_password: String!) {
+                    removePassword(current_password: $current_password)
+                  }`,
+                    updatePassword: gql`mutation ($old_password: String, $new_password: String!) {
+                    updatePassword(old_password: $old_password, new_password: $new_password)
+                  }`,
+                }
             }
         },
         methods: {
-            removePassword() {
-                this.$apollo.mutate({
-                    // Query
-                    mutation: gql`mutation ($current_password: String!) {
-                    removePassword(current_password: $current_password)
-                  }`,
-                    // Parameters
-                    variables: {
-                        current_password: this.current_password,
-                    },
-                }).then((data) => {
-                    // Result
-                    this.authUser.has_password = false;
-                    this.new_password = this.old_password = null;
-                    this.success = "Secondary Password Removed!";
-                }).catch(error => this.recordErrors(error))
+            onPasswordRemoved() {
+                this.authUser.has_password = false;
+                this.current_password = null;
+                this.success = "Secondary Password Removed!";
             },
-            updatePassword(isNew) {
-                this.errors.clear();
-                this.$apollo.mutate({
-                    // Query
-                    mutation: gql`mutation ($old_password: String, $new_password: String!) {
-                    updatePassword(old_password: $old_password, new_password: $new_password)
-                  }`,
-                    // Parameters
-                    variables: {
-                        old_password: isNew ? null : this.old_password,
-                        new_password: this.new_password,
-                    },
-                }).then((data) => {
-                    // Result
-                    this.authUser.has_password = true;
-                    this.new_password = this.new_password_confirm = null;
-                    this.success = "Secondary Password Set!";
-                }).catch(error => this.recordErrors(error))
+            onPasswordUpdated() {
+                this.authUser.has_password = true;
+                this.new_password = this.new_password_confirm = this.old_password = null;
+                this.success = "Secondary Password Set!";
             },
             recordErrors(errors) {
                 let {graphQLErrors} = errors;
@@ -92,6 +108,6 @@
             authUser: gql`{authUser {
                 has_password
               }}`,
-        }
+        },
     }
 </script>

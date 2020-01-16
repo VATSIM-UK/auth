@@ -5,14 +5,14 @@
         <div v-if="!$apolloData.loading && role">
             <template v-if="!editingPermissions">
 
-                <editable-text class="h1" name="Role Name" v-model="role.name" :min-length="2"></editable-text>
+                <editable-text class="h1" name="Role Name" v-model.trim="role.name" :min-length="2"></editable-text>
 
                 <mutation-button class="btn-warning" :mutation-query="updateMutationQuery"
                                  :variables="getUpdateParameters()"
                                  loadingText="Updating..."
                                  @loading="success = null; errors.clear()"
                                  @done="success = 'Role Updated!'; $apollo.queries.role.refetch()"
-                                 @error="onUpdateError"><i class="fa fa-save"></i> Update
+                                 @error="onUpdateError"><span class="fa fa-save"></span> Update
                 </mutation-button>
 
                 <table class="table table-sm table-dark text-center mt-1">
@@ -65,7 +65,7 @@
             </template>
             <template v-else>
                 <button class="btn btn-info" @click="editingPermissions = false">
-                    <i class="fa fa-arrow-left"></i> Done
+                    <span class="fa fa-arrow-left"></span> Done
                 </button>
                 <permissions-assignment-matrix :assigned-permissions="perms" :available-permissions="availPerms"
                                                @permissionAdded="permissionAdded"

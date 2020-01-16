@@ -7,12 +7,12 @@
                 <li class="list-group-item">
                     <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, '*'))"
                            @change="onPermissionChange($event, generateFullPermissionName(key, '*'))">
-                    <b>All in this category</b> ({{generateFullPermissionName(key, '*')}})
+                    <strong>All in this category</strong> ({{generateFullPermissionName(key, '*')}})
                 </li>
                 <li class="list-group-item">
                     <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, null))"
                            @change="onPermissionChange($event, generateFullPermissionName(key, null))">
-                    <b>Index this category</b> ({{generateFullPermissionName(key, null)}})
+                    <strong>Index this category</strong> ({{generateFullPermissionName(key, null)}})
                 </li>
                 <li class="list-group-item" v-if="!isArray(group)">
                     <div class="row no-gutters">

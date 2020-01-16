@@ -37,10 +37,10 @@ describe('Passwords', () => {
     });
     it('shows a success message', async () => {
         wrapper.setData({
-            success: "You have set your password!"
+            success: "Secondary Password Set!"
         });
         await vue.nextTick();
         expect(wrapper.find('successmessage-stub').exists()).toBeTruthy();
-        expect(wrapper.find('successmessage-stub').attributes().message).toBe("You have set your password!");
+        expect(wrapper.find('successmessage-stub').text()).toBe("Secondary Password Set!");
     });
 });

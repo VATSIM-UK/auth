@@ -1,15 +1,16 @@
 <template>
-    <div class="btn d-inline-block" :class="{'btn-danger': error}" @click="performAction" :disabled="loading">
+    <button class="btn" :class="{'btn-danger': error}" @click="performAction"
+            :disabled="loading || disabled">
         <template v-if="!loading">
             <slot v-if="!error"></slot>
-            <span v-else><i class="fa fa-times"></i> Error. Try Again?</span>
+            <span v-else><span class="fa fa-times"></span> Error. Try Again?</span>
         </template>
         <span v-else>
             <div class="spinner-grow spinner-grow-sm" role="status">
             </div>
             {{loadingText}}
         </span>
-    </div>
+    </button>
 </template>
 
 <script>
@@ -24,6 +25,10 @@
             },
             loadingText: {
                 default: 'Loading...'
+            },
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
         data: function () {

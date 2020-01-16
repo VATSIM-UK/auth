@@ -1,6 +1,7 @@
 <template>
     <div>
         <table class="table">
+            <caption>A table showing the available roles</caption>
             <thead class="thead-dark">
             <tr>
                 <th scope="col">Name</th>
@@ -14,7 +15,9 @@
                 <td>{{role.require_password ? "Yes" : "No"}}</td>
                 <td>{{role.password_refresh_rate}}</td>
                 <td>
-                    <router-link :to="{ name: 'admin.role', params: { id: role.id } }" class="btn btn-sm btn-info">Alter Role</router-link>
+                    <router-link :to="{ name: 'admin.role', params: { id: role.id } }" class="btn btn-sm btn-info">Alter
+                        Role
+                    </router-link>
                 </td>
             </tr>
             </tbody>
