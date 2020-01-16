@@ -33,7 +33,7 @@ class AccessTokenTest extends TestCase
             'state' => $state,
         ]);
 
-        $this->get('oauth/authorize?' . $query)
+        $this->get('oauth/authorize?'.$query)
             ->assertRedirect('login');
     }
 
@@ -50,7 +50,7 @@ class AccessTokenTest extends TestCase
         ]);
 
         $res = $this->actingAs($this->user)
-            ->get('/oauth/authorize?' . $query);
+            ->get('/oauth/authorize?'.$query);
 
         $this->assertStringContainsString('http://example.org/callback', $res->headers->get('location'));
 

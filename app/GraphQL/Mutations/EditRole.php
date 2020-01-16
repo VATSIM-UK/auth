@@ -24,6 +24,7 @@ class EditRole
         $role->save();
 
         $role->syncPermissions($args['permissions']);
+
         return true;
     }
 }

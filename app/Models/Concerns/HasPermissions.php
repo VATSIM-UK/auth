@@ -70,7 +70,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (!$this->hasPermissionTo($permission)) {
+            if (! $this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -149,7 +149,7 @@ trait HasPermissions
 
             return empty($permission);
         })->each(function ($permission) use (&$altered) {
-            if (!PermissionValidity::isValidPermission($permission)) {
+            if (! PermissionValidity::isValidPermission($permission)) {
                 throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
             }
             $altered = true;
@@ -157,7 +157,6 @@ trait HasPermissions
                 'permission' => $permission,
             ]);
         });
-
 
         if ($this instanceof User && $altered) {
             event(new PermissionsChanged($this));
