@@ -5,13 +5,10 @@ namespace Tests\Unit;
 use App\Models\Rating;
 use App\Models\RatingPivot;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class UserRatingTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function itCantHaveNoRatings()
     {

@@ -3,14 +3,11 @@
 namespace Tests\Unit\Services;
 
 use App\Models\Permissions\Assignment;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class PermissionValidityServiceTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function itCanLoadPermissionsFile()
     {

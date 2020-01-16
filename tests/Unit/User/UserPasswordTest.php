@@ -3,13 +3,10 @@
 namespace Tests\Unit;
 
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class UserPasswordTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function itCanHaveAPasswordSet()
     {

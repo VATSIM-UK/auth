@@ -2,15 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['mysql', 'mysql_core'];
-
     public function testUserCanLogout()
     {
         $this->actingAs($this->user, 'web');

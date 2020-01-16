@@ -7,15 +7,12 @@ use App\Exceptions\InvalidPermissionException;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class UserPermissionTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /* @var Role */
     private $role1;
     private $role2;
@@ -208,8 +205,8 @@ class UserPermissionTest extends TestCase
     {
         Event::fake();
 
-        $this->user->givePermissionTo('auth.test.1');
-        $this->user->syncPermissions(['auth.test.2', 'auth.test.3']);
+        $this->user->givePermissionTo('auth.test.1'); // Event #1
+        $this->user->syncPermissions(['auth.test.2', 'auth.test.3']); // Event #2
 
         $this->assertTrue($this->user->hasAllPermissions(['auth.test.2', 'auth.test.3']));
         $this->assertFalse($this->user->hasPermissionTo('auth.test.1'));
@@ -228,7 +225,7 @@ class UserPermissionTest extends TestCase
             'related_id' => $this->user->id,
             'permission' => 'auth.test.1',
         ]);
-        Event::assertDispatchedTimes(PermissionsChanged::class, 3);
+        Event::assertDispatchedTimes(PermissionsChanged::class, 2);
     }
 
     /** @test */

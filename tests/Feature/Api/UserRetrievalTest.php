@@ -10,14 +10,13 @@ use App\Models\Role;
 use App\Passport\Client;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Passport\Passport;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
 class UserRetrievalTest extends TestCase
 {
-    use DatabaseTransactions, MakesGraphQLRequests;
+    use MakesGraphQLRequests;
 
     public function testUnauthenticatedCantAccessMethods()
     {

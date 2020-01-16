@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Passport\Client;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AccessTokenTest extends TestCase
 {
-    use DatabaseTransactions;
-
     private $client;
 
     public function setUp(): void
@@ -36,7 +33,7 @@ class AccessTokenTest extends TestCase
             'state' => $state,
         ]);
 
-        $this->get('oauth/authorize?'.$query)
+        $this->get('oauth/authorize?' . $query)
             ->assertRedirect('login');
     }
 
@@ -53,9 +50,9 @@ class AccessTokenTest extends TestCase
         ]);
 
         $res = $this->actingAs($this->user)
-            ->get('/oauth/authorize?'.$query);
+            ->get('/oauth/authorize?' . $query);
 
-        $this->assertContains('http://example.org/callback', $res->headers->get('location'));
+        $this->assertStringContainsString('http://example.org/callback', $res->headers->get('location'));
 
         $parts = parse_url($res->headers->get('location'));
         parse_str($parts['query'], $query);

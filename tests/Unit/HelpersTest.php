@@ -2,14 +2,11 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class HelpersTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function testAuthenticatedOnAnyGuardFunction()
     {

@@ -5,14 +5,13 @@ namespace Tests\Feature\Api;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class PermissionsAndRolesTest extends TestCase
 {
-    use DatabaseTransactions, MakesGraphQLRequests;
+    use MakesGraphQLRequests;
 
     private $role;
     private $subject;

@@ -174,7 +174,7 @@ trait HasPermissions
     {
         $this->permissions()->delete();
 
-        if ($this instanceof User) {
+        if ($this instanceof User && is_array($permissions) && count($permissions) == 0) {
             event(new PermissionsChanged($this));
         }
 
