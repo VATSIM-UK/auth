@@ -1,13 +1,11 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
-
 // Variables
 @import 'variables';
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-html,body {
+html, body {
     height: 100%;
 }
 
@@ -20,8 +18,7 @@ html,body {
     padding: 5px;
 
     &:after {
-        margin-left: 2em;
-        font-family: "Font Awesome 5 Free";
+        font-family: "Font Awesome 5 Free", sans-serif;
         color: $gray-300;
         font-size: 0.5em;
         vertical-align: middle;

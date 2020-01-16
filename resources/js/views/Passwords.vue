@@ -1,6 +1,6 @@
 <template>
     <div>
-        <success-message :message="success" v-if="success"></success-message>
+        <success-message v-if="success">{{success}}</success-message>
         <div v-if="authUser.has_password">
             You currently have a secondary password set. You may change it below:
             <text-input name="old_password" :errors="errors" v-model="old_password"
@@ -85,7 +85,7 @@
             },
             recordErrors(errors) {
                 let {graphQLErrors} = errors;
-                this.errors.record(graphQLErrors)
+                this.errors.recordValidationErrors(graphQLErrors)
             }
         },
         apollo: {

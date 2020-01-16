@@ -34,4 +34,12 @@ extend type Mutation  @middleware(checks: ["auth:api"]){
         user_id: ID! @rules(apply: ["exists:users,id"])
         permissions: [String!]!
     ): Boolean
+
+    editRole(
+        id: ID! @rules(apply: ["exists:roles,id"])
+        name: String! @rules(apply: ["min:2"])
+        require_password: Boolean!
+        password_refresh_rate: Int @rules(apply: ["nullable", "numeric", "min:1"])
+        permissions: Mixed
+    ): Boolean
 }

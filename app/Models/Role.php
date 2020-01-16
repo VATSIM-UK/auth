@@ -10,12 +10,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /*
  * Note: the 'password_refresh_rate' attribute is in days
  */
+
 class Role extends Model
 {
     use HasPermissions;
 
     protected $fillable = [
         'name',
+        'require_password',
+        'password_refresh_rate'
     ];
 
     public function users(): BelongsToMany

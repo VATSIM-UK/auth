@@ -4,17 +4,20 @@
             <span v-if="textValue">
                 {{textValue}}
             </span>
-            <span v-else>
-                <i>{{name}}</i>
-            </span>
         </span>
         <div v-else class="input-group">
-            <input type="text" v-model="editingValue" class="form-control" placeholder="name" aria-label="name">
+            <input type="text" v-model="editingValue" class="form-control"
+                   :class="{'is-invalid': !meetsLengthRequirement}" :placeholder="name" :aria-label="name">
              <div class="input-group-append">
-                <button class="btn btn-success" @click="endEdit"><span class="fa fa-check"></span></button>
+                <button class="btn btn-success" @click="endEdit"
+                        :disabled="!meetsLengthRequirement"><span
+                    class="fa fa-check"></span></button>
                 <button class="btn btn-warning" @click="cancelEdit">
                     <span class="fa fa-trash-alt"></span>
                 </button>
+            </div>
+            <div v-if="!meetsLengthRequirement" class="invalid-tooltip">
+                The {{name.toLowerCase()}} must be at least {{minLength}} characters long
             </div>
         </div>
     </span>
@@ -30,6 +33,9 @@
             name: {
                 type: String,
                 required: true
+            },
+            minLength: {
+                type: Number
             }
         },
         data: function () {
@@ -51,8 +57,13 @@
             endEdit: function () {
                 this.textValue = this.editingValue;
                 this.editing = false;
-                this.$emit('changed', this.textValue)
+                this.$emit('input', this.textValue)
             },
+        },
+        computed: {
+            meetsLengthRequirement: function () {
+                return this.minLength && this.editingValue.length >= this.minLength
+            }
         }
     }
 </script>

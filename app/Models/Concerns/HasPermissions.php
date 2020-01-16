@@ -70,7 +70,7 @@ trait HasPermissions
             $permissions = $permissions[0];
         }
         foreach ($permissions as $permission) {
-            if (! $this->hasPermissionTo($permission)) {
+            if (!$this->hasPermissionTo($permission)) {
                 return false;
             }
         }
@@ -137,24 +137,27 @@ trait HasPermissions
     {
         $altered = false;
 
-        collect($permissions)
-            ->flatten()
-            ->map(function ($permission) {
-                if (empty($permission)) {
-                    return false;
-                }
+        $permissions = collect($permissions)
+            ->flatten();
 
-                return $permission;
-            })
-            ->each(function ($permission) use (&$altered) {
-                if (! PermissionValidity::isValidPermission($permission)) {
-                    throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
-                }
-                $altered = true;
-                $this->permissions()->where('permission', $permission)->firstOrCreate([
-                    'permission' => $permission,
-                ]);
-            });
+        $permissions->reject(function ($permission, $key) use ($permissions) {
+            // Check for permissions not required because of wildcards
+            $withoutCurrentPermission = $permissions->except($key);
+            if (PermissionValidity::permissionSatisfiedByPermissions($permission, $withoutCurrentPermission)) {
+                return true;
+            }
+
+            return empty($permission);
+        })->each(function ($permission) use (&$altered) {
+            if (!PermissionValidity::isValidPermission($permission)) {
+                throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
+            }
+            $altered = true;
+            $this->permissions()->where('permission', $permission)->firstOrCreate([
+                'permission' => $permission,
+            ]);
+        });
+
 
         if ($this instanceof User && $altered) {
             event(new PermissionsChanged($this));

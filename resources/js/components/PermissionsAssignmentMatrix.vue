@@ -1,12 +1,39 @@
 <template>
     <div>
-        <div v-for="(group, key) in groupedPermissions" class="ml-1">
-            <h3>{{key}} (* or single)</h3>
-            <permissions-assignment-matrix v-if="!isArray(group)" :path-prefix="generatePassthroughPrefix(key)"
-                                           :assigned-permissions="permissionsHas"
-                                           :available-permissions="group"></permissions-assignment-matrix>
-            <ul v-else>
-                <li v-for="permission in group">{{permission}} ({{generateFullPermissionName(key, permission)}})</li>
+        <div class="card" style="width: 100%"
+             v-for="(group, key) in availablePermissions">
+            <div class="card-header">{{key}}</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, '*'))"
+                           @change="onPermissionChange($event, generateFullPermissionName(key, '*'))">
+                    <b>All in this category</b> ({{generateFullPermissionName(key, '*')}})
+                </li>
+                <li class="list-group-item">
+                    <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, null))"
+                           @change="onPermissionChange($event, generateFullPermissionName(key, null))">
+                    <b>Index this category</b> ({{generateFullPermissionName(key, null)}})
+                </li>
+                <li class="list-group-item" v-if="!isArray(group)">
+                    <div class="row no-gutters">
+                        <permissions-assignment-matrix v-for="(innerGroup, innerGroupKey, index) in group"
+                                                       :key="index"
+                                                       :class="{'col-12':!isBaseLevel, 'col-6':isBaseLevel}"
+                                                       :path-prefix="generatePassthroughPrefix(key)"
+                                                       :assigned-permissions="assignedPermissions"
+                                                       :available-permissions="createObjectFromParts(innerGroup, innerGroupKey)"
+                                                       :disabled="hasPermission(generateFullPermissionName(key, '*'))"
+                                                       @permissionAdded="permissionAdded"
+                                                       @permissionRemoved="permissionRemoved"></permissions-assignment-matrix>
+                    </div>
+                </li>
+                <li class="list-group-item" v-else v-for="permission in group">
+                    <input type="checkbox"
+                           :checked="hasPermission(generateFullPermissionName(key, permission))"
+                           :disabled="hasPermission(generateFullPermissionName(key, '*')) || disabled"
+                           @change="onPermissionChange($event, generateFullPermissionName(key, permission))">
+                    {{permission}} ({{generateFullPermissionName(key, permission)}})
+                </li>
             </ul>
         </div>
     </div>
@@ -25,14 +52,9 @@
             },
             pathPrefix: {
                 type: String
-            }
-        },
-        data() {
-            return {
-                permissionsHas: this.assignedPermissions,
-                groupedPermissions: this.availablePermissions,
-                depth: null,
-                prefix: this.pathPrefix,
+            },
+            disabled: {
+                type: Boolean
             }
         },
         methods: {
@@ -40,10 +62,46 @@
                 return (!!a) && (a.constructor === Array);
             },
             generateFullPermissionName: function (groupKey, base) {
-                return this.prefix + '.' + groupKey + '.' + base;
+                var permission = '';
+
+                if (this.pathPrefix) {
+                    permission = this.pathPrefix + '.' + groupKey;
+                } else {
+                    permission = groupKey;
+                }
+
+                if (base) {
+                    permission = permission + '.' + base;
+                }
+                return permission;
             },
-            generatePassthroughPrefix: function (groupKey){
-                return  this.prefix ? this.prefix + '.' + groupKey : groupKey;
+            generatePassthroughPrefix: function (groupKey) {
+                return this.pathPrefix ? this.pathPrefix + '.' + groupKey : groupKey;
+            },
+            onPermissionChange(event, permission) {
+                if (event.target.checked) {
+                    return this.permissionAdded(permission)
+                }
+                return this.permissionRemoved(permission)
+            },
+            permissionAdded: function (permission) {
+                this.$emit('permissionAdded', permission)
+            },
+            permissionRemoved: function (permission) {
+                this.$emit('permissionRemoved', permission)
+            },
+            hasPermission: function (permission) {
+                return this.assignedPermissions.includes(permission);
+            },
+            createObjectFromParts(value, key) {
+                var obj = {};
+                obj[key] = value;
+                return obj;
+            }
+        },
+        computed: {
+            isBaseLevel: function () {
+                return !this.pathPrefix
             }
         }
     }
