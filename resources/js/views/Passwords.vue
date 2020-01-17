@@ -101,7 +101,7 @@
             },
             recordErrors(errors) {
                 let {graphQLErrors} = errors;
-                this.errors.recordValidationErrors(graphQLErrors)
+                this.errors.record(graphQLErrors)
             }
         },
         apollo: {

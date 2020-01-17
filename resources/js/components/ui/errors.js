@@ -36,31 +36,36 @@ export default class Errors {
         }
     }
 
-
-    /**
-     * Record the validation errors only.
-     *
-     * @param {object} errors
-     */
-    recordValidationErrors(errors) {
-        errors.forEach(function (error) {
-            if (error.extensions.category === "validation") {
-                if (Array.isArray(error.extensions.validation)) {
-                    this.errors = {0: error.extensions.validation}
-                } else {
-                    this.errors = error.extensions.validation;
-                }
-            }
-        }.bind(this));
-    }
-
     /**
      * Record an array of error messages
      *
-     * @param [String] errors
+     * @param errors
      */
     record(errors) {
-        this.errors[0] = errors;
+        if (!this.has('0')) {
+            this.errors['0'] = [];
+        }
+        errors.forEach(function (error) {
+            if (error instanceof String) {
+                this.errors['0'].push(error);
+            }
+
+            if (error.extensions.category === "validation") {
+                if (Array.isArray(error.extensions.validation)) {
+                    this.errors['0'].concat(error.extensions.validation);
+                } else {
+                    this.errors = Object.assign(this.errors, error.extensions.validation);
+                }
+                return;
+            }
+
+            // Default to logging the message
+            this.errors['0'].push(error.message);
+        }.bind(this));
+
+        if (this.errors['0'].length === 0) {
+            delete this.errors['0'];
+        }
     }
 
 

@@ -8,7 +8,7 @@ export default [
     {
         path: '/',
         name: 'dashboard',
-        component: Dashboard
+        component: Dashboard,
     },
     {
         path: '/settings/password',
@@ -19,11 +19,17 @@ export default [
         path: '/admin/roles',
         name: 'admin.roles',
         component: Roles,
+        meta: {
+            permission: 'auth.roles'
+        }
     },
     {
         path: '/admin/role/:id',
         name: 'admin.role',
         component: Role,
+        meta: {
+            permission: 'auth.roles'
+        }
     },
     {
         path: '*',

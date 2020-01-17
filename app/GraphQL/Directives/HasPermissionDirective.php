@@ -67,7 +67,7 @@ class HasPermissionDirective extends BaseDirective implements FieldMiddleware
     {
         if (! $gate->check($ability)) {
             throw new AuthorizationException(
-                "You are not authorized to perform {$this->nodeName()}"
+                "You are not authorized to perform action '{$this->nodeName()}'"
             );
         }
     }

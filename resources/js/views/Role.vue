@@ -15,8 +15,8 @@
                                  @error="onUpdateError"><span class="fa fa-save"></span> Update
                 </mutation-button>
 
-                <table class="table table-sm table-dark text-center mt-1">
-                    <caption>Table showing basic statistics for the role</caption>
+                <table class="table table-sm table-dark text-center mt-1"
+                       aria-describedby="Table showing basic statistics for the role">
                     <thead>
                     <tr>
                         <th scope="col">Number of Assigned Users</th>
@@ -138,7 +138,7 @@
             },
             onUpdateError: function (errors) {
                 let {graphQLErrors} = errors;
-                this.errors.recordValidationErrors(graphQLErrors)
+                this.errors.record(graphQLErrors)
             }
         },
         apollo: {
@@ -165,7 +165,7 @@
                     }
                 },
                 error(errors) {
-                    this.errors.recordValidationErrors(errors);
+                    this.errors.record(errors);
                 }
             },
         }

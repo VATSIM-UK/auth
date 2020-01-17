@@ -1,7 +1,6 @@
 <template>
     <div>
-        <table class="table">
-            <caption>A table showing the available roles</caption>
+        <table class="table" aria-describedby="A table showing the available roles">
             <thead class="thead-dark">
             <tr>
                 <th scope="col">Name</th>

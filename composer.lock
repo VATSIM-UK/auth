@@ -4447,12 +4447,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VATSIM-UK/auth-package.git",
-                "reference": "e246108d6f01f8f93d2e190db3db12410b961977"
+                "reference": "d77f56330590eeff1ca497ac0dc7aace24ddb289"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VATSIM-UK/auth-package/zipball/e246108d6f01f8f93d2e190db3db12410b961977",
-                "reference": "e246108d6f01f8f93d2e190db3db12410b961977",
+                "url": "https://api.github.com/repos/VATSIM-UK/auth-package/zipball/d77f56330590eeff1ca497ac0dc7aace24ddb289",
+                "reference": "d77f56330590eeff1ca497ac0dc7aace24ddb289",
                 "shasum": ""
             },
             "require": {
@@ -4505,7 +4505,7 @@
                 "source": "https://github.com/VATSIM-UK/auth-package/tree/master",
                 "issues": "https://github.com/VATSIM-UK/auth-package/issues"
             },
-            "time": "2020-01-15T23:59:59+00:00"
+            "time": "2020-01-17T12:54:23+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
