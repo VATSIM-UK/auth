@@ -1,12 +1,15 @@
 <?php
 
+
 namespace App\GraphQL\Mutations;
 
+
+use App\Models\Role;
 use App\User;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
-class SyncPermissionsWithUser
+class UserRoleMutations
 {
     /**
      * Return a value for the field.
@@ -17,10 +20,30 @@ class SyncPermissionsWithUser
      * @param \GraphQL\Type\Definition\ResolveInfo $resolveInfo Information about the query itself, such as the execution state, the field name, path to the field from the root, and more.
      * @return bool
      */
-    public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): bool
+    public function giveRole($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): bool
     {
         $user = User::findOrFail($args['user_id']);
-        $user->syncPermissions($args['permissions']);
+        $role = Role::findOrFail($args['role_id']);
+
+        $user->assignRole($role);
+
+        return true;
+    }
+
+    public function syncRoles($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): bool
+    {
+        $user = User::findOrFail($args['user_id']);
+        $user->syncRoles($args['role_ids']);
+
+        return true;
+    }
+
+    public function takeRole($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): bool
+    {
+        $user = User::findOrFail($args['user_id']);
+        $role = Role::findOrFail($args['role_id']);
+
+        $user->removeRole($role);
 
         return true;
     }
