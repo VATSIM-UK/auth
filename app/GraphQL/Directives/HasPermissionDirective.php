@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\GraphQL\Directives;
-
 
 use Closure;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -15,7 +13,6 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class HasPermissionDirective extends BaseDirective implements FieldMiddleware
 {
-
     /**
      * @var Gate
      */

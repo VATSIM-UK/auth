@@ -1,10 +1,7 @@
 <?php
 
-
 namespace App\GraphQL\Mutations;
 
-
-use App\Models\Role;
 use App\User;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;

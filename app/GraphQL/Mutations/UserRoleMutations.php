@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\GraphQL\Mutations;
-
 
 use App\Models\Role;
 use App\User;

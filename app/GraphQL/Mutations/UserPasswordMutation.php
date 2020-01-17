@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\GraphQL\Mutations;
-
 
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Auth;
