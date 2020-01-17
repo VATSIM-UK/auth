@@ -43,6 +43,9 @@ class PermissionValidityServiceTest extends TestCase
     /** @test */
     public function itAllowsTopLevelPermissionIfChildHeld()
     {
+        PermissionValidity::partialMock()
+            ->shouldReceive('isValidPermission')
+            ->andReturn(true);
         $this->assertFalse($this->user->can('auth.permissions'));
         $this->user->givePermissionTo('auth.permissions.assign');
         $this->assertTrue($this->user->can('auth.permissions'));
