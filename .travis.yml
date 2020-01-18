@@ -18,6 +18,7 @@ before_install:
   - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
   - yarn install
   - php artisan dusk:chrome-driver
+  - php artisan serve
 
 install:
   - php artisan key:generate
