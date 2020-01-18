@@ -7,6 +7,7 @@ php:
 
 addons:
   mariadb: '10.2'
+  chrome: stable
 
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
@@ -16,6 +17,7 @@ before_install:
   - composer self-update
   - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
   - yarn install
+  - php artisan dusk:chrome-driver
 
 install:
   - php artisan key:generate
@@ -45,3 +47,4 @@ before_script:
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
   - yarn run test
+  - php artisan dusk

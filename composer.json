@@ -25,6 +25,7 @@
         "beyondcode/laravel-dump-server": "^1.0",
         "facade/ignition": "^1.4",
         "fzaninotto/faker": "^1.9",
+        "laravel/dusk": "^5.8",
         "laravel/ui": "^1.1",
         "mll-lab/laravel-graphql-playground": "^1.1",
         "mockery/mockery": "^1.0",
