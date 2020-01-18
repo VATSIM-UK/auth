@@ -23,7 +23,7 @@ class LoginTest extends DuskTestCase
                 ->assertGuest();
         });
 
-        $this->user->password = "Test123";
+        $this->user->password = 'Test123';
         $this->user->save();
 
         $this->browse(function (Browser $browser) {
@@ -41,13 +41,13 @@ class LoginTest extends DuskTestCase
     {
         $user = factory(User::class)->create([
             'id' => 1300001,
-            'password' => 'Test123'
+            'password' => 'Test123',
         ]);
 
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
                 ->clickLink('Login')
-                ->assertUrlIs(env('VATSIM_SSO_BASE') . 'auth/login/')
+                ->assertUrlIs(env('VATSIM_SSO_BASE').'auth/login/')
                 ->type('cid', 1300001)
                 ->type('password', 1300001)
                 ->press('Login')
@@ -73,7 +73,7 @@ class LoginTest extends DuskTestCase
 
     public function testItCanChecksSecondaryPassword()
     {
-        $this->user->password = "Test123";
+        $this->user->password = 'Test123';
         $this->user->save();
 
         $this->browse(function (Browser $browser) {
