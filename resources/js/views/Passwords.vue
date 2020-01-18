@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <default-layout>
         <success-message v-if="success">{{success}}</success-message>
         <div v-if="authUser.has_password">
             You currently have a secondary password set. You may change it below:
@@ -8,7 +8,7 @@
             <text-input type="password" name="new_password" :errors="errors" v-model="new_password"
                         placeholder="New Password"></text-input>
 
-            <mutation-button class="btn-info" :mutation-query="mutations.updatePassword"
+            <mutation-button custom-classes="btn-info" :mutation-query="mutations.updatePassword"
                              :variables="{
                                     old_password: old_password,
                                     new_password: new_password,
@@ -26,7 +26,7 @@
             <p>You may also remove your secondary password completely:</p>
             <text-input type="password" name="current_password" :errors="errors" v-model="current_password"
                         placeholder="Current Password"></text-input>
-            <mutation-button class="btn-info" :mutation-query="mutations.removePassword"
+            <mutation-button custom-classes="btn-info" :mutation-query="mutations.removePassword"
                              :variables="{
                                     current_password: current_password,
                                 }"
@@ -45,7 +45,7 @@
             <text-input type="password" name="new_confirm" v-model="new_password_confirm"
                         placeholder="Password (again)"></text-input>
 
-            <mutation-button class="btn-info" :mutation-query="mutations.updatePassword"
+            <mutation-button custom-classes="btn-info" :mutation-query="mutations.updatePassword"
                              :variables="{
                                     old_password: null,
                                     new_password: new_password,
@@ -60,15 +60,16 @@
             <small class="form-text text-muted">Passwords must be at least 8 characters long, containing a uppercase and
                 a lowercase letter, as well as a number.</small>
         </div>
-    </div>
+    </default-layout>
 </template>
 <script>
     import gql from 'graphql-tag'
     import Errors from '../components/ui/errors'
     import MutationButton from "../components/MutationButton";
+    import DefaultLayout from "../components/layout/DefaultLayout";
 
     export default {
-        components: {MutationButton},
+        components: {DefaultLayout, MutationButton},
         data() {
             return {
                 authUser: {},

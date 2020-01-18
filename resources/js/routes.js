@@ -24,11 +24,19 @@ export default [
         }
     },
     {
-        path: '/admin/role/:id',
-        name: 'admin.role',
+        path: '/admin/role/new',
+        name: 'admin.role.create',
         component: Role,
         meta: {
-            permission: 'auth.roles'
+            permission: 'auth.roles.create'
+        }
+    },
+    {
+        path: '/admin/role/:id',
+        name: 'admin.role.update',
+        component: Role,
+        meta: {
+            permission: 'auth.roles.update'
         }
     },
     {

@@ -1,7 +1,7 @@
 {
     "auth": {
         "permissions": [
-            "give"
+            "assign"
         ],
         "roles": [
             "create",

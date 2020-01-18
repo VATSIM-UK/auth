@@ -35,11 +35,21 @@ extend type Mutation  @middleware(checks: ["auth:api"]){
         permissions: [String!]!
     ): Boolean @field(resolver: "UserPermissionMutations@syncPermissions") @hasPermission(permission: "auth.permissions.assign")
 
+
+    createRole(
+        name: String! @rules(apply: ["min:2", "unique:roles,name"])
+        require_password: Boolean!
+        password_refresh_rate: Int @rules(apply: ["nullable", "numeric", "min:1"])
+        permissions: Mixed
+    ): Boolean @field(resolver: "RoleMutation@create") @hasPermission(permission: "auth.role.create")
+
     editRole(
         id: ID! @rules(apply: ["exists:roles,id"])
         name: String! @rules(apply: ["min:2"])
         require_password: Boolean!
         password_refresh_rate: Int @rules(apply: ["nullable", "numeric", "min:1"])
         permissions: Mixed
-    ): Boolean @hasPermission(permission: "auth.role.update")
+    ): Boolean @field(resolver: "RoleMutation@update") @hasPermission(permission: "auth.role.update")
+
+    deleteRole(id: ID! @rules(apply: ["exists:roles,id"])): Boolean @field(resolver: "RoleMutation@delete") @hasPermission(permission: "auth.role.delete")
 }

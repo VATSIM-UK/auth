@@ -66,6 +66,7 @@ export default class Errors {
         if (this.errors['0'].length === 0) {
             delete this.errors['0'];
         }
+        this.errors = Object.assign({}, this.errors); // Combat Vue not recognising new properties
     }
 
 

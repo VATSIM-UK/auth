@@ -6,11 +6,13 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, '*'))"
+                           :disabled="disabled"
                            @change="onPermissionChange($event, generateFullPermissionName(key, '*'))">
                     <strong>All in this category</strong> ({{generateFullPermissionName(key, '*')}})
                 </li>
                 <li class="list-group-item">
                     <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, null))"
+                           :disabled="hasPermission(generateFullPermissionName(key, '*')) || disabled"
                            @change="onPermissionChange($event, generateFullPermissionName(key, null))">
                     <strong>Index this category</strong> ({{generateFullPermissionName(key, null)}})
                 </li>

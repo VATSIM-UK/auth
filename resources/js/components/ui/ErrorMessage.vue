@@ -1,6 +1,6 @@
 <template>
-    <transition name="fade">
-        <div class="alert alert-danger" v-show="countdown || !hideAfter" @after-leave="this.$emit('done')" role="alert">
+    <transition name="fade" @after-leave="$emit('done')">
+        <div class="alert alert-danger" v-show="countdown || !hideAfter" role="alert">
             <h4 class="alert-heading">{{title}}</h4>
             <template v-if="isErrorsObject">
                 <ul v-if="errors.count() > 1 || !Array.isArray(errors.all())">
@@ -57,8 +57,9 @@
             errorProgress: function () {
                 this.countdown = this.countdown - 0.1;
                 if (this.countdown <= 0) {
+                    clearInterval(this.timer);
                     this.countdown = null;
-                    clearInterval(this.timer)
+                    this.timer = null;
                 }
             }
         },
@@ -80,5 +81,9 @@
 
     .fade-leave-to {
         opacity: 0;
+    }
+
+    ul {
+        margin-bottom: 0;
     }
 </style>

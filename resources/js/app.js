@@ -2,6 +2,7 @@
   Import Required Classes
 */
 import Vue from 'vue'
+import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
@@ -10,11 +11,37 @@ import App from './views/App'
 
 import Routes from './routes'
 
+import PermissionMet from '../../vendor/vatsimuk/auth-package/src/Js/permissionValidity'
+
 require('./bootstrap');
 require('../../node_modules/nprogress/nprogress');
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+    state: {
+        authUser: {
+            name_first: null,
+            name_last: null,
+            permissions: []
+        }
+    },
+    mutations: {
+        initAuthUser(state, authUser) {
+            state.authUser = authUser;
+        }
+    }
+});
+
+Vue.mixin({
+    methods: {
+        hasPermissionTo: function (permission) {
+            return PermissionMet(permission, this.$store.state.authUser.permissions);
+        }
+    }
+});
 
 /*
    Setup GraphQL Client with Authentication Headers
@@ -88,6 +115,7 @@ const app = new Vue({
     },
     components: {App},
     router,
+    store,
     apolloProvider,
     render: h => h(App),
 });
