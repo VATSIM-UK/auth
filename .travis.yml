@@ -44,7 +44,6 @@ before_script:
   - sed -i 's%^VATSIM_SSO_CERTIFCATE.*$%VATSIM_SSO_CERTIFCATE=\"${SSO_CERT}\"%' .env
   - sed -i "s%^VATSIM_SSO_KEY.*$%VATSIM_SSO_KEY=${SSO_KEY}%" .env
   - sed -i "s%^VATSIM_SSO_SECRET.*$%VATSIM_SSO_SECRET=${SSO_SECRET}%" .env
-  - sed -i "s%^APP_URL.*$%APP_URL=http://127.0.0.1:800%" .env
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
