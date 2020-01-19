@@ -6,14 +6,15 @@ use App\User;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 abstract class DuskTestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use CreatesApplication, DatabaseMigrations;
 
     /* @var User */
-    public $user;
+    public $user, $superUser;
 
     /**
      * Prepare for Dusk test execution.
@@ -29,7 +30,10 @@ abstract class DuskTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->user = factory(User::class)->create();
+        $this->superUser = factory(User::class)->create();
+        $this->superUser->givePermissionTo('*');
     }
 
     /**

@@ -51,5 +51,5 @@ extend type Mutation  @middleware(checks: ["auth:api"]){
         permissions: Mixed
     ): Boolean @field(resolver: "RoleMutation@update") @hasPermission(permission: "auth.role.update")
 
-    deleteRole(id: ID! @rules(apply: ["exists:roles,id"])): Boolean @field(resolver: "RoleMutation@delete") @hasPermission(permission: "auth.role.delete")
+    deleteRole(id: ID!): Role! @delete @hasPermission(permission: "auth.role.delete")
 }

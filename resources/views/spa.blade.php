@@ -10,7 +10,6 @@
     <script>
         var apiUri = "{{ url('/api') }}";
         var csrf = "{{ csrf_token() }}";
-        window.dataIsLoading = false;
     </script>
     <script src="{{ mix('js/manifest.js') }}"></script>
     <script src="{{ mix('js/vendor.js') }}"></script>

@@ -3,14 +3,11 @@
 namespace Tests\Browser;
 
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 class LoginTest extends DuskTestCase
 {
-    use DatabaseMigrations;
-
     public function testItCanLogout()
     {
         $this->browse(function (Browser $browser) {
@@ -47,7 +44,7 @@ class LoginTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
                 ->clickLink('Login')
-                ->assertUrlIs(env('VATSIM_SSO_BASE').'auth/login/')
+                ->assertUrlIs(env('VATSIM_SSO_BASE') . 'auth/login/')
                 ->type('cid', 1300001)
                 ->type('password', 1300001)
                 ->press('Login')

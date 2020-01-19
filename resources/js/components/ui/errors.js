@@ -45,9 +45,16 @@ export default class Errors {
         if (!this.has('0')) {
             this.errors['0'] = [];
         }
-        errors.forEach(function (error) {
+        errors.forEach(function (error, key) {
             if (error instanceof String) {
-                this.errors['0'].push(error);
+                if (isNaN(key)) {
+                    this.errors['0'].push(error);
+                } else {
+                    if (!this.has(key)) {
+                        this.errors[key] = [];
+                    }
+                    this.errors[key].push(error);
+                }
             }
 
             if (error.extensions.category === "validation") {
@@ -67,6 +74,16 @@ export default class Errors {
             delete this.errors['0'];
         }
         this.errors = Object.assign({}, this.errors); // Combat Vue not recognising new properties
+    }
+
+    /**
+     * Record an error message for a given field
+     *
+     * @param field
+     * @param message
+     */
+    recordForField(field, message) {
+        this.record({field: message})
     }
 
 
