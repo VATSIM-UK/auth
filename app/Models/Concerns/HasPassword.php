@@ -2,6 +2,8 @@
 
 namespace App\Models\Concerns;
 
+use App\Events\User\PasswordChanged;
+use App\Events\User\PasswordRemoved;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,8 +56,36 @@ trait HasPassword
      */
     public function getPasswordExpiresAtAttribute(): ?Carbon
     {
-        //TODO: Implement password expiry based on role/permissions
-        return null;
+        $rate = $this->roles()->forcesPassword()
+            ->whereNotNull('password_refresh_rate')
+            ->orderBy('password_refresh_rate', 'asc')
+            ->pluck('password_refresh_rate')->first();
+
+        if (! $rate || ! $this->password_set_at) {
+            return null;
+        }
+
+        return $this->password_set_at->addDays($rate);
+    }
+
+    /**
+     * Returns if the set password has expires, and needs to be reset
+     *
+     * @return bool
+     */
+    public function passwordHasExpired(): bool
+    {
+        return ($this->password && $this->password_expires_at) ? $this->password_expires_at->isPast() : false;
+    }
+
+    /**
+     * Returns if secondary password policy is enforced for the user
+     *
+     * @return mixed
+     */
+    public function requiresPassword()
+    {
+        return $this->roles()->forcesPassword()->exists();
     }
 
     /**
@@ -76,8 +106,6 @@ trait HasPassword
      */
     public function setPassword(string $password): bool
     {
-        //TODO: Implement expiry
-
         $save = $this->fill([
             'password' => $password,
             'password_set_at' => Carbon::now(),
@@ -94,7 +122,9 @@ trait HasPassword
         $this->tokens->each(function (Token $token) {
             $token->revoke();
         });
+        Auth::logoutOtherDevices($password);
 
+        event(new PasswordChanged($this));
         return $save;
     }
 
@@ -105,9 +135,13 @@ trait HasPassword
      */
     public function removePassword(): bool
     {
-        return $this->fill([
+        $fill = $this->fill([
             'password' => null,
             'password_set_at' => null,
         ])->save();
+
+        event(new PasswordRemoved($this));
+
+        return $fill;
     }
 }

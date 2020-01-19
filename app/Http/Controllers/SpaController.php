@@ -7,20 +7,22 @@ use Illuminate\Support\Facades\Request;
 
 class SpaController extends Controller
 {
+
     public function index()
     {
-        if (Auth::check()) {
-            if (Request::session()->has('intended')) {
-                return redirect(Request::session()->pull('intended'));
+        if (! Auth::guard('web')->check()) {
+            if (Request::path() == "/") {
+                return response()->view('splash');
             }
-            return view('spa');
-        }
-
-        if (Request::path() != "/") {
-            Request::session()->put('intended', Request::path());
+//            Request::session()->put('intended', Request::path());
             return redirect('/');
         }
 
-        return view('splash');
+
+//        if (Request::session()->has('intended')) {
+//            return redirect(Request::session()->pull('intended'));
+//        }
+
+        return view('spa');
     }
 }

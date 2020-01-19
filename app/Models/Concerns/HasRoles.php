@@ -5,6 +5,7 @@ namespace App\Models\Concerns;
 use App\Events\User\RolesChanged;
 use App\Models\Role;
 use App\User;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -34,8 +35,6 @@ trait HasRoles
      *
      * @param Builder $query
      * @param string|array|Collection $roles
-     * @param string $guard
-     *
      * @return Builder
      */
     public function scopeRole(Builder $query, $roles): Builder
@@ -75,14 +74,11 @@ trait HasRoles
     {
         $roles = $this->roleInputToIds($roles)->all();
 
-        $model = $this->getModel();
-
         $changes = $this->roles()->sync($roles, false);
-        $model->load('roles');
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -111,6 +107,7 @@ trait HasRoles
     /**
      * Remove all current roles and set the given ones.
      *
+     * @param UserProvider $provider
      * @param array|Role|string ...$roles
      *
      * @return $this
@@ -118,11 +115,18 @@ trait HasRoles
     public function syncRoles(...$roles): self
     {
         $roles = $this->roleInputToIds($roles);
+
         $changes = $this->roles()->sync($roles);
 
+        if ($this->fresh()->requiresPassword() && ! $this->hasPassword()) {
+            // Invalidate User's Session, forcing them through Auth to set a secondary password
+            $this->setRememberToken(null);
+            $this->save();
+        }
+
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -140,7 +144,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int) $roles) {
+        if (is_numeric($roles) && $roles = (int)$roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {

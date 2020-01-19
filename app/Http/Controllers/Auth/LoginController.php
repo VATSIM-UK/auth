@@ -23,9 +23,20 @@ class LoginController extends Controller
      *  5) Secondary Authentication users are then logged in once completed successfully.
      */
 
+    private $webUser;
+    private $partialWebUser;
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+
+        $this->middleware(function ($request, $next) {
+            $this->partialWebUser = Auth::guard('partial_web')->user();
+            $this->webUser = Auth::guard('web')->user();
+
+            return $next($request);
+        });
+
     }
 
     public function logout()
@@ -46,15 +57,13 @@ class LoginController extends Controller
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
-        if (Auth::guard('partial_web')->check()) {
-            $user = Auth::guard('partial_web')->user();
-            if ($user->hasPassword()) {
+        if ($this->partialWebUser) {
+
+            // Check for secondary password
+            if ($this->partialWebUser->hasPassword()) {
                 return redirect()->route('login.secondary');
             } else {
-                Auth::loginUsingId($user->id, true);
-                Auth::guard('partial_web')->logout();
-
-                return $this->authDone($user);
+                return $this->authDone($this->partialWebUser);
             }
         }
 
@@ -65,7 +74,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
         });
     }
 
@@ -97,15 +106,15 @@ class LoginController extends Controller
 
                 $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
 
-                if ($user->hasPassword()) {
-                    Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+                Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+                $this->partialWebUser = $user;
 
+
+                if ($this->partialWebUser->hasPassword()) {
                     return redirect()->route('login.secondary');
                 }
 
-                Auth::loginUsingId($vatsimUser->id, true);
-
-                return $this->authDone($user);
+                return $this->authDone($this->partialWebUser);
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -119,13 +128,11 @@ class LoginController extends Controller
 
     public function showSecondarySignin()
     {
-        $user = Auth::guard('partial_web')->user();
-
-        if (! $user->hasPassword()) {
-            return $this->authDone($user);
+        if (! $this->partialWebUser->hasPassword()) {
+            return $this->authDone($this->partialWebUser);
         }
 
-        return view('auth.secondary')->with('user', $user);
+        return view('auth.secondary')->with('user', $this->partialWebUser);
     }
 
     /*
@@ -134,28 +141,27 @@ class LoginController extends Controller
 
     public function verifySecondarySignin(Request $request)
     {
-        $user = Auth::guard('partial_web')->user();
-
-        if (! $user->hasPassword()) {
-            return $this->authDone($user);
+        if (! $this->partialWebUser->hasPassword()) {
+            return $this->authDone($this->partialWebUser);
         }
 
         $this->validate($request, [
             'password' => 'required|string',
         ]);
 
-        if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
+        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input('password')])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 'password' => ['The supplied password did not match our records'],
             ]);
             throw $error;
         }
 
-        return $this->authDone($user);
+        return $this->authDone($this->partialWebUser);
     }
 
     public function authDone(User $user)
     {
-        return redirect()->intended('/');
+        Auth::loginUsingId($user->id, true);
+        return redirect()->intended();
     }
 }

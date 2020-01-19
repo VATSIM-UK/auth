@@ -3,18 +3,9 @@
 namespace App\Events\User;
 
 use App\Models\Ban;
-use App\User;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 
-class Banned
+class Banned extends BaseUserEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-    /**
-     * @var User
-     */
-    private $user;
     /**
      * @var Ban
      */
@@ -27,7 +18,7 @@ class Banned
      */
     public function __construct(Ban $ban)
     {
-        $this->user = $ban->user;
+        parent::__construct($ban->user);
         $this->ban = $ban;
     }
 }

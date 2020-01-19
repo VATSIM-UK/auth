@@ -19,6 +19,11 @@ Route::namespace('Auth')->group(function () {
 
     Route::get('/logout', 'LoginController@logout')->name('logout');
 
+    Route::middleware('auth')->group(function () {
+        Route::get('/login/password/set', 'RequirePasswordChangeController@showSetSecondaryPassword')->name('login.set_password');
+        Route::post('/login/password/set', 'RequirePasswordChangeController@setSecondaryPassword');
+    });
+
     Route::middleware(['auth:partial_web', 'guest:web', 'auth.mandate.password'])->group(function () {
         Route::get('/login/password/forgot', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
         Route::post('/login/password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
@@ -30,4 +35,6 @@ Route::namespace('Auth')->group(function () {
     Route::post('/action/confirm', 'ConfirmPasswordController@confirm')->name('password.confirm');
 });
 
-Route::get('/{any?}', 'SpaController@index')->where('any', '.*');
+Route::get('/{any?}', 'SpaController@index')
+    ->where('any', '.*')
+    ->middleware('auth.check.password.expiry');
