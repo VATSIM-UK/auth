@@ -20,7 +20,7 @@ class RolePage extends Page
      */
     public function url()
     {
-        return '/admin/role/' . $this->id;
+        return '/admin/role/'.$this->id;
     }
 
     /**

@@ -20,18 +20,20 @@ class MakeSuperUser extends Command
 
     public function handle()
     {
-        if (app()->environment() == "production") {
-            $this->error("The app is in production! This command is disabled.");
+        if (app()->environment() == 'production') {
+            $this->error('The app is in production! This command is disabled.');
+
             return;
         }
 
         if (! $this->user = $this->user::find($this->argument('user'))) {
             $this->info("A user was not found with the ID {$this->argument('user')}");
+
             return;
         }
 
         $this->user->givePermissionTo('*');
 
-        $this->info("User with ID " . $this->user->id . " was made a super user!");
+        $this->info('User with ID '.$this->user->id.' was made a super user!');
     }
 }

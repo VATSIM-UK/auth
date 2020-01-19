@@ -69,7 +69,7 @@ trait HasPassword
     }
 
     /**
-     * Returns if the set password has expires, and needs to be reset
+     * Returns if the set password has expires, and needs to be reset.
      *
      * @return bool
      */
@@ -79,7 +79,7 @@ trait HasPassword
     }
 
     /**
-     * Returns if secondary password policy is enforced for the user
+     * Returns if secondary password policy is enforced for the user.
      *
      * @return mixed
      */
@@ -125,6 +125,7 @@ trait HasPassword
         Auth::logoutOtherDevices($password);
 
         event(new PasswordChanged($this));
+
         return $save;
     }
 

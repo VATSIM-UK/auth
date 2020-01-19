@@ -40,12 +40,12 @@ class User extends Authenticatable implements CanResetPasswordInterface
     ];
 
     protected $dates = [
-        'password_set_at'
+        'password_set_at',
     ];
 
     public function getHasPasswordAttribute(): bool
     {
-        return (bool)$this->password;
+        return (bool) $this->password;
     }
 
     public function getAllPermissionsAttribute(): Collection

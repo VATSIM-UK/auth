@@ -41,7 +41,7 @@ class RoleTest extends DuskTestCase
                 ->waitForLocation((new RolesPage())->url());
 
             $this->assertDatabaseHas('roles', [
-                'name' => 'Second Role'
+                'name' => 'Second Role',
             ]);
         });
     }
@@ -70,7 +70,6 @@ class RoleTest extends DuskTestCase
                 ->assertChecked('permission:auth.roles.delete');
         });
     }
-
 
     public function testItShowsRole()
     {
@@ -102,7 +101,7 @@ class RoleTest extends DuskTestCase
                 ->waitForLocation((new RolesPage)->url());
 
             $this->assertDatabaseMissing('roles', [
-                'id' => $this->role->id
+                'id' => $this->role->id,
             ]);
         });
     }

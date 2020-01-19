@@ -14,7 +14,8 @@ abstract class DuskTestCase extends BaseTestCase
     use CreatesApplication, DatabaseMigrations;
 
     /* @var User */
-    public $user, $superUser;
+    public $user;
+    public $superUser;
 
     /**
      * Prepare for Dusk test execution.

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RequirePasswordChangeController extends Controller
 {
-
     /*
      * Step (5): Set Secondary Password
      */
@@ -35,8 +34,8 @@ class RequirePasswordChangeController extends Controller
             }],
         ]);
 
-
         $user->setPassword($request->input('password'));
+
         return redirect()->intended();
     }
 }

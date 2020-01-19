@@ -36,7 +36,6 @@ class LoginController extends Controller
 
             return $next($request);
         });
-
     }
 
     public function logout()
@@ -74,7 +73,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
@@ -108,7 +107,6 @@ class LoginController extends Controller
 
                 Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
                 $this->partialWebUser = $user;
-
 
                 if ($this->partialWebUser->hasPassword()) {
                     return redirect()->route('login.secondary');
@@ -162,6 +160,7 @@ class LoginController extends Controller
     public function authDone(User $user)
     {
         Auth::loginUsingId($user->id, true);
+
         return redirect()->intended();
     }
 }
