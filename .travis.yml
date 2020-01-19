@@ -5,14 +5,15 @@ php:
   - 7.3
 
 addons:
+  mariadb: '10.2'
   chrome: stable
 
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
-  - mysql -e 'create database IF NOT EXISTS core;' -uroot
-  - cp .env.example .env
-  - sudo apt-get update
-  - composer self-update
+    - mysql -e 'create database IF NOT EXISTS core;' -uroot
+    - cp .env.example .env
+    - sudo apt-get update
+    - composer self-update
 
 install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest --optimize-autoloader
