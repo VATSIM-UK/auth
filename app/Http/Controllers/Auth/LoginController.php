@@ -169,6 +169,7 @@ class LoginController extends Controller
     public function authDone(User $user)
     {
         Auth::guard(self::fullGuard)->loginUsingId($user->getKey(), true);
+
         return redirect()->intended();
     }
 }
