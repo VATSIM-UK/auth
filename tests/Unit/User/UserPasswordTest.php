@@ -35,7 +35,7 @@ class UserPasswordTest extends TestCase
         $this->user->setPassword('test12345');
         $role = factory(Role::class)->create([
             'require_password' => true,
-            'password_refresh_rate' => 10
+            'password_refresh_rate' => 10,
         ]);
         $this->user->syncRoles($role);
 

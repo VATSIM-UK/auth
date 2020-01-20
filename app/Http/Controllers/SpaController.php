@@ -14,6 +14,7 @@ class SpaController extends Controller
                 return response()->view('splash');
             }
             session()->put('url.intended', Request::url());
+
             return redirect('/login');
         }
 

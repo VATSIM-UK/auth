@@ -19,7 +19,7 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
 
         $this->role = factory(Role::class)->create([
             'require_password' => true,
-            'password_refresh_rate' => 10
+            'password_refresh_rate' => 10,
         ]);
     }
 
@@ -80,5 +80,4 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
         $this->assertEquals(get_class($response), RedirectResponse::class);
         $this->assertEquals(route('login.set_password'), $response->headers->get('location'));
     }
-
 }

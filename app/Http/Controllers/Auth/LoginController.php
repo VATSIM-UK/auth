@@ -89,7 +89,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
@@ -147,7 +147,6 @@ class LoginController extends Controller
 
     public function verifySecondarySignin(Request $request)
     {
-
         $this->validate($request, [
             'password' => 'required|string',
         ]);

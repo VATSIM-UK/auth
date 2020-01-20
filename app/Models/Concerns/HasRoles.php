@@ -76,8 +76,8 @@ trait HasRoles
         $changes = $this->roles()->sync($roles, false);
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-                return count($value);
-            }) > 0) {
+            return count($value);
+        }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -123,8 +123,8 @@ trait HasRoles
         }
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-                return count($value);
-            }) > 0) {
+            return count($value);
+        }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -142,7 +142,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int)$roles) {
+        if (is_numeric($roles) && $roles = (int) $roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {
