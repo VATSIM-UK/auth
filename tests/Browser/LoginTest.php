@@ -47,7 +47,7 @@ class LoginTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
                 ->clickLink('Login')
-                ->assertUrlIs(env('VATSIM_SSO_BASE') . 'auth/login/')
+                ->assertUrlIs(env('VATSIM_SSO_BASE').'auth/login/')
                 ->type('cid', 1300001)
                 ->type('password', 1300001)
                 ->press('Login')
