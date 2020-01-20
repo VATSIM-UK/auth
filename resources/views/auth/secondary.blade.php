@@ -6,7 +6,7 @@
         <p>
             Hi {{$user->name_first}}, please enter your secondary password.
         </p>
-        <form method="POST" action="{{ isset($postroute) ? $postroute : route('login.secondary') }}">
+        <form method="POST" action="{{ isset($postroute) ? $postroute : route('login') }}">
             @csrf
 
             <div class="form-group row">
@@ -38,8 +38,8 @@
 
 @section('boxFooter')
     @error('password')
-        <div class="card-footer bg-danger text-white">
-            Having trouble? Send an email to <a class="badge badge-light" href="mailto:web-support@vatsim.uk">web-support@vatsim.uk</a>
-        </div>
+    <div class="card-footer bg-danger text-white">
+        Having trouble? Send an email to <a class="badge badge-light" href="mailto:web-support@vatsim.uk">web-support@vatsim.uk</a>
+    </div>
     @enderror
 @endsection

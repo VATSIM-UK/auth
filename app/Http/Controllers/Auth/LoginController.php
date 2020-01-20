@@ -23,9 +23,19 @@ class LoginController extends Controller
      *  5) Secondary Authentication users are then logged in once completed successfully.
      */
 
+    private $webUser;
+    private $partialWebUser;
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+
+        $this->middleware(function ($request, $next) {
+            $this->partialWebUser = Auth::guard('partial_web')->user();
+            $this->webUser = Auth::guard('web')->user();
+
+            return $next($request);
+        });
     }
 
     public function logout()
@@ -34,6 +44,32 @@ class LoginController extends Controller
         Auth::guard('partial_web')->logout();
 
         return redirect('/');
+    }
+
+    /**
+     * This function acts as an internal route for all login-related actions.
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function handleLogin(Request $request)
+    {
+        // Step 1: Check if user has logged in via SSO yet
+        if (! $this->partialWebUser) {
+            return $this->loginWithVatsimSSO();
+        }
+
+        // Step 3: User SSO authenticated. Now check for secondary authentication issues
+        if (! $this->partialWebUser->hasPassword()) {
+            return $this->authDone($this->partialWebUser);
+        }
+
+        if (! $request->has('password') && $request->isMethod('GET')) {
+            return $this->showSecondarySignin();
+        }
+
+        // Step 4: Validate POST from Secondary Sign In
+        return $this->verifySecondarySignin($request);
     }
 
     /*
@@ -46,21 +82,9 @@ class LoginController extends Controller
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
-        if (Auth::guard('partial_web')->check()) {
-            $user = Auth::guard('partial_web')->user();
-            if ($user->hasPassword()) {
-                return redirect()->route('login.secondary');
-            } else {
-                Auth::loginUsingId($user->id, true);
-                Auth::guard('partial_web')->logout();
-
-                return $this->authDone($user);
-            }
-        }
-
         $sso = new VATSIMSSO();
 
-        return $sso->login(url('/login/sso/verify'), function ($key, $secret, $url) {
+        return $sso->login(route('login.sso.verify'), function ($key, $secret, $url) {
             Session::put('vatsimauth', compact('key', 'secret'));
 
             return redirect($url);
@@ -85,7 +109,7 @@ class LoginController extends Controller
             $session['key'],
             $session['secret'],
             $request->input('oauth_verifier'),
-            function ($vatsimUser) {
+            function ($vatsimUser) use ($request) {
                 $user = User::firstOrNew(['id' => $vatsimUser->id]);
                 $user->name_first = utf8_decode($vatsimUser->name_first);
                 $user->name_last = utf8_decode($vatsimUser->name_last);
@@ -97,15 +121,10 @@ class LoginController extends Controller
 
                 $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
 
-                if ($user->hasPassword()) {
-                    Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+                Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+                $this->partialWebUser = $user;
 
-                    return redirect()->route('login.secondary');
-                }
-
-                Auth::loginUsingId($vatsimUser->id, true);
-
-                return $this->authDone($user);
+                return redirect()->route('login');
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -119,13 +138,7 @@ class LoginController extends Controller
 
     public function showSecondarySignin()
     {
-        $user = Auth::guard('partial_web')->user();
-
-        if (! $user->hasPassword()) {
-            return $this->authDone($user);
-        }
-
-        return view('auth.secondary')->with('user', $user);
+        return view('auth.secondary')->with('user', $this->partialWebUser);
     }
 
     /*
@@ -134,28 +147,24 @@ class LoginController extends Controller
 
     public function verifySecondarySignin(Request $request)
     {
-        $user = Auth::guard('partial_web')->user();
-
-        if (! $user->hasPassword()) {
-            return $this->authDone($user);
-        }
-
         $this->validate($request, [
             'password' => 'required|string',
         ]);
 
-        if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
+        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input('password')])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 'password' => ['The supplied password did not match our records'],
             ]);
             throw $error;
         }
 
-        return $this->authDone($user);
+        return $this->authDone($this->partialWebUser);
     }
 
     public function authDone(User $user)
     {
-        return redirect()->intended('/');
+        Auth::guard('web')->loginUsingId($user->id, true);
+
+        return redirect()->intended();
     }
 }

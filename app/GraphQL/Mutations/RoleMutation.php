@@ -17,18 +17,15 @@ class RoleMutation
     public function update($rootValue, array $args): bool
     {
         $role = Role::findOrFail($args['id']);
+
+        if (! $args['require_password']) {
+            $args['password_refresh_rate'] = null;
+        }
+
         $role->fill($args);
         $role->save();
 
         $role->syncPermissions($args['permissions']);
-
-        return true;
-    }
-
-    public function delete($rootValue, array $args): bool
-    {
-        $role = Role::findOrFail($args['id']);
-        $role->delete();
 
         return true;
     }

@@ -34,8 +34,6 @@ trait HasRoles
      *
      * @param Builder $query
      * @param string|array|Collection $roles
-     * @param string $guard
-     *
      * @return Builder
      */
     public function scopeRole(Builder $query, $roles): Builder
@@ -75,10 +73,7 @@ trait HasRoles
     {
         $roles = $this->roleInputToIds($roles)->all();
 
-        $model = $this->getModel();
-
         $changes = $this->roles()->sync($roles, false);
-        $model->load('roles');
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
             return count($value);
@@ -118,7 +113,14 @@ trait HasRoles
     public function syncRoles(...$roles): self
     {
         $roles = $this->roleInputToIds($roles);
+
         $changes = $this->roles()->sync($roles);
+
+        if ($this->fresh()->requiresPassword() && ! $this->hasPassword()) {
+            // Invalidate User's Session, forcing them through Auth to set a secondary password
+            $this->setRememberToken(null);
+            $this->save();
+        }
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
             return count($value);

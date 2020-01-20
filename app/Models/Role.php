@@ -21,6 +21,11 @@ class Role extends Model
         'password_refresh_rate',
     ];
 
+    public function scopeForcesPassword($query)
+    {
+        return $query->where('require_password', true);
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_roles');

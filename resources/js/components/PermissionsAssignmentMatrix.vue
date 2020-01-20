@@ -5,13 +5,17 @@
             <div class="card-header">{{key}}</div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, '*'))"
+                    <input type="checkbox"
+                           :name="'permission:'+generateFullPermissionName(key, '*')"
+                           :checked="hasPermission(generateFullPermissionName(key, '*'))"
                            :disabled="disabled"
                            @change="onPermissionChange($event, generateFullPermissionName(key, '*'))">
                     <strong>All in this category</strong> ({{generateFullPermissionName(key, '*')}})
                 </li>
                 <li class="list-group-item">
-                    <input type="checkbox" :checked="hasPermission(generateFullPermissionName(key, null))"
+                    <input type="checkbox"
+                           :name="'permission:'+generateFullPermissionName(key, null)"
+                           :checked="hasPermission(generateFullPermissionName(key, null))"
                            :disabled="hasPermission(generateFullPermissionName(key, '*')) || disabled"
                            @change="onPermissionChange($event, generateFullPermissionName(key, null))">
                     <strong>Index this category</strong> ({{generateFullPermissionName(key, null)}})
@@ -31,6 +35,7 @@
                 </li>
                 <li class="list-group-item" v-else v-for="permission in group">
                     <input type="checkbox"
+                           :name="'permission:'+generateFullPermissionName(key, permission)"
                            :checked="hasPermission(generateFullPermissionName(key, permission))"
                            :disabled="hasPermission(generateFullPermissionName(key, '*')) || disabled"
                            @change="onPermissionChange($event, generateFullPermissionName(key, permission))">

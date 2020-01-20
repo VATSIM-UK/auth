@@ -40,13 +40,13 @@ class LoginTest extends TestCase
             ->assertRedirect('/');
     }
 
-    public function testSSOUserWithPasswordIsRedirected()
+    public function testSSOUserRedirectedIfNoPassword()
     {
-        $this->user->setPassword('1234');
-
         $this->actingAs($this->user, 'partial_web')
-            ->get(route('login'))
-            ->assertRedirect(route('login.secondary'));
+            ->followingRedirects()
+            ->get(route('login'));
+
+        $this->assertAuthenticatedAs($this->user, 'web');
     }
 
     public function testSSOUserCanSeeSignin()
@@ -54,7 +54,7 @@ class LoginTest extends TestCase
         $this->user->setPassword('1234');
 
         $this->actingAs($this->user, 'partial_web')
-            ->get(route('login.secondary'))
+            ->get(route('login'))
             ->assertSuccessful()
             ->assertSeeText('Secondary Authentication');
     }
@@ -64,12 +64,12 @@ class LoginTest extends TestCase
         $this->user->setPassword('1234');
 
         $this->actingAs($this->user, 'partial_web')
-            ->from(route('login.secondary'))
-            ->post(route('login.secondary'), [
+            ->from(route('login'))
+            ->post(route('login'), [
                 'password' => 'abcd',
             ])
             ->assertSessionHasErrors()
-            ->assertLocation(route('login.secondary'));
+            ->assertLocation(route('login'));
     }
 
     public function testValidPasswordAccepted()
@@ -77,8 +77,8 @@ class LoginTest extends TestCase
         $this->user->setPassword('1234');
 
         $this->actingAs($this->user, 'partial_web')
-            ->from(route('login.secondary'))
-            ->post(route('login.secondary'), [
+            ->from(route('login'))
+            ->post(route('login'), [
                 'password' => '1234',
             ])->assertRedirect('/');
     }

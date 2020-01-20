@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckForExpiredPasswords;
 use App\Http\Middleware\MustHavePassword;
 use App\Http\Middleware\PasswordConfirmation;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.password.confirm' => PasswordConfirmation::class,
         'auth.mandate.password' => MustHavePassword::class,
+        'auth.check.password.expiry' => CheckForExpiredPasswords::class,
     ];
 
     /**

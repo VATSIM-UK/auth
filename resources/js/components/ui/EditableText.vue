@@ -1,13 +1,17 @@
 <template>
-    <span>
+    <span class="editable-text">
         <span v-if="!editing" :class="['inline-edit', 'd-inline-block']" @click="beginEdit">
             <span v-if="textValue">
                 {{textValue}}
             </span>
         </span>
         <div v-else class="input-group">
-            <input type="text" v-model="editingValue" class="form-control"
-                   :class="{'is-invalid': !meetsLengthRequirement}" :placeholder="name" :aria-label="name">
+            <input type="text"
+                   v-model="editingValue"
+                   class="form-control"
+                   :class="{'is-invalid': !meetsLengthRequirement}"
+                   :placeholder="name"
+                   :aria-label="name">
              <div class="input-group-append">
                 <button class="btn btn-success" @click="endEdit"
                         :disabled="!meetsLengthRequirement"><span

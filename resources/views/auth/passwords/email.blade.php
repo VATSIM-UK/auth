@@ -18,19 +18,19 @@
             </div>
         @else
 
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
-            <div class="form-group row mb-0">
-                <div class="col">
-                    <a href="{{route('login.secondary')}}" type="submit" class="btn btn-dark">
-                        {{ __('Back') }}
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        {{ __('Send Password Reset Link') }}
-                    </button>
+            <form method="POST" action="{{ route('password.email') }}">
+                @csrf
+                <div class="form-group row mb-0">
+                    <div class="col">
+                        <a href="{{route('login')}}" type="submit" class="btn btn-dark">
+                            {{ __('Back') }}
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {{ __('Send Password Reset Link') }}
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
         @endif
     </div>
 @endsection

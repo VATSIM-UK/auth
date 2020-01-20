@@ -1,5 +1,5 @@
 <template>
-    <div class="loader d-flex justify-content-center" :class="{'loader-cover' : shouldCover}">
+    <div dusk="loadingCover" class="loader d-flex justify-content-center" :class="{'loader-cover' : shouldCover}">
         <div class="spinner-border text-secondary my-auto" role="status">
             <span class="sr-only">Loading...</span>
         </div>

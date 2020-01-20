@@ -6,7 +6,7 @@
                                  :mutation-query="isCreate ? createMutationQuery : updateMutationQuery"
                                  :variables="getUpdateParameters"
                                  :loadingText="isCreate ? 'Creating...' : 'Updating...'"
-                                 :disabled="deleted"
+                                 :disabled="deleted || !role.name"
                                  @loading="success = null; errors.clear()"
                                  @done="onDone"
                                  @error="onError"><span class="fa fa-save"></span> {{isCreate ? 'Create' :
@@ -37,9 +37,11 @@
         </template>
         <div v-if="!$apolloData.loading && role">
             <template v-if="!editingPermissions">
-                <editable-text v-if="!isCreate" class="h1" name="Role Name" v-model.trim="role.name"
+                <editable-text dusk="role-name-input" v-if="!isCreate" class="h1" name="Role Name"
+                               v-model.trim="role.name"
                                :min-length="2"></editable-text>
-                <text-input v-else name="name" v-model.trim="role.name" placeholder="Role Name"></text-input>
+                <text-input dusk="role-name-input" v-else name="name" v-model.trim="role.name"
+                            placeholder="Role Name"></text-input>
 
                 <table class="table table-sm table-dark text-center mt-1"
                        aria-describedby="Table showing basic statistics for the role">
@@ -80,7 +82,8 @@
                     </div>
                     <div class="col">
                         <label>Required Password Refresh Rate (Days):</label>
-                        <input type="number" class="form-control" v-model="role.password_refresh_rate"
+                        <input type="number" class="form-control" name="password_refresh_rate"
+                               v-model="role.password_refresh_rate"
                                placeholder="No Password Refresh Requirement">
                         <small id="passwordHelpBlock" class="form-text text-muted">
                             Leave blank for no requirement
@@ -135,7 +138,9 @@
                 `,
                 deleteMutationQuery: gql`
                     mutation RoleDelete ($id: ID!) {
-                        deleteRole (id: $id)
+                        deleteRole (id: $id) {
+                            id
+                        }
                     }
                 `
             }

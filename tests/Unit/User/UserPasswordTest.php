@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Role;
 use Carbon\Carbon;
 use Tests\TestCase;
 
@@ -15,7 +16,7 @@ class UserPasswordTest extends TestCase
             'password' => null,
         ]);
 
-        Carbon::setTestNow(Carbon::now());
+        Carbon::setTestNow(Carbon::now()->setMicro(0));
         $this->user->setPassword('test12345');
 
         $this->assertNotNull($this->user->password);
@@ -25,6 +26,25 @@ class UserPasswordTest extends TestCase
             'id' => $this->user->id,
             'password' => $this->user->password,
         ]);
+    }
+
+    /** @test */
+    public function itCanDetermineIfPasswordHasExpired()
+    {
+        Carbon::setTestNow($passwordSetTime = Carbon::now()->setMicro(0));
+        $this->user->setPassword('test12345');
+        $role = factory(Role::class)->create([
+            'require_password' => true,
+            'password_refresh_rate' => 10,
+        ]);
+        $this->user->syncRoles($role);
+
+        $this->assertTrue($this->user->requiresPassword());
+        $this->assertEquals($passwordSetTime->addDays(10), $this->user->password_expires_at);
+
+        $this->assertFalse($this->user->passwordHasExpired());
+        Carbon::setTestNow($passwordSetTime->addDays(10));
+        $this->assertTrue($this->user->passwordHasExpired());
     }
 
     /** @test */
