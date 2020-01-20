@@ -5,7 +5,6 @@ namespace App\Models\Concerns;
 use App\Events\User\RolesChanged;
 use App\Models\Role;
 use App\User;
-use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -77,8 +76,8 @@ trait HasRoles
         $changes = $this->roles()->sync($roles, false);
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -107,7 +106,6 @@ trait HasRoles
     /**
      * Remove all current roles and set the given ones.
      *
-     * @param UserProvider $provider
      * @param array|Role|string ...$roles
      *
      * @return $this
@@ -125,8 +123,8 @@ trait HasRoles
         }
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -144,7 +142,7 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int) $roles) {
+        if (is_numeric($roles) && $roles = (int)$roles) {
             return $this->roles->contains('id', $roles);
         }
         if (is_string($roles)) {

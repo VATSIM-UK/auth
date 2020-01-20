@@ -25,7 +25,7 @@ class LoginTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->user, 'partial_web')
-                ->visit(route('login.secondary'))
+                ->visit(route('login'))
                 ->assertSeeLink('Logout')
                 ->clickLink('Logout')
                 ->assertPathIs('/')
@@ -44,11 +44,11 @@ class LoginTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
                 ->clickLink('Login')
-                ->assertUrlIs(env('VATSIM_SSO_BASE').'auth/login/')
+                ->assertUrlIs(env('VATSIM_SSO_BASE') . 'auth/login/')
                 ->type('cid', 1300001)
                 ->type('password', 1300001)
                 ->press('Login')
-                ->assertUrlIs(route('login.secondary'))
+                ->assertUrlIs(route('login'))
                 ->screenshot('login/secondary_authentication')
                 ->assertSee('Secondary Authentication')
                 ->type('password', 'Test123')
@@ -80,7 +80,7 @@ class LoginTest extends DuskTestCase
                 ->press('Login')
                 ->screenshot('login/secondary_authentication_error')
                 ->assertSee('password did not match our records')
-                ->assertUrlIs(route('login.secondary'));
+                ->assertUrlIs(route('login'));
         });
     }
 }

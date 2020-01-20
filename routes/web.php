@@ -12,10 +12,9 @@
 */
 
 Route::namespace('Auth')->group(function () {
-    Route::get('/login', 'LoginController@loginWithVatsimSSO')->name('login');
+    Route::get('/login', 'LoginController@handleLogin')->name('login');
+    Route::post('/login', 'LoginController@handleLogin');
     Route::get('/login/sso/verify', 'LoginController@verifySSOLogin')->name('login.sso.verify');
-    Route::get('/login/secondary', 'LoginController@showSecondarySignin')->name('login.secondary');
-    Route::post('/login/secondary', 'LoginController@verifySecondarySignin');
 
     Route::get('/logout', 'LoginController@logout')->name('logout');
 

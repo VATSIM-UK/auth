@@ -13,13 +13,9 @@ class SpaController extends Controller
             if (Request::path() == '/') {
                 return response()->view('splash');
             }
-//            Request::session()->put('intended', Request::path());
-            return redirect('/');
+            session()->put('url.intended', Request::url());
+            return redirect('/login');
         }
-
-//        if (Request::session()->has('intended')) {
-//            return redirect(Request::session()->pull('intended'));
-//        }
 
         return view('spa');
     }

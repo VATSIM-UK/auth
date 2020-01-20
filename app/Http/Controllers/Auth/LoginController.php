@@ -46,6 +46,32 @@ class LoginController extends Controller
         return redirect('/');
     }
 
+    /**
+     * This function acts as an internal route for all login-related actions.
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function handleLogin(Request $request)
+    {
+        // Step 1: Check if user has logged in via SSO yet
+        if (! $this->partialWebUser) {
+            return $this->loginWithVatsimSSO();
+        }
+
+        // Step 3: User SSO authenticated. Now check for secondary authentication issues
+        if (! $this->partialWebUser->hasPassword()) {
+            return $this->authDone($this->partialWebUser);
+        }
+
+        if (! $request->has('password') && $request->isMethod('GET')) {
+            return $this->showSecondarySignin();
+        }
+
+        // Step 4: Validate POST from Secondary Sign In
+        return $this->verifySecondarySignin($request);
+    }
+
     /*
      * Step 1: Redirect to VATSIM.NET SSO
      */
@@ -56,24 +82,14 @@ class LoginController extends Controller
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
-        if ($this->partialWebUser) {
-
-            // Check for secondary password
-            if ($this->partialWebUser->hasPassword()) {
-                return redirect()->route('login.secondary');
-            } else {
-                return $this->authDone($this->partialWebUser);
-            }
-        }
-
         $sso = new VATSIMSSO();
 
-        return $sso->login(url('/login/sso/verify'), function ($key, $secret, $url) {
+        return $sso->login(route('login.sso.verify'), function ($key, $secret, $url) {
             Session::put('vatsimauth', compact('key', 'secret'));
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
         });
     }
 
@@ -93,7 +109,7 @@ class LoginController extends Controller
             $session['key'],
             $session['secret'],
             $request->input('oauth_verifier'),
-            function ($vatsimUser) {
+            function ($vatsimUser) use ($request) {
                 $user = User::firstOrNew(['id' => $vatsimUser->id]);
                 $user->name_first = utf8_decode($vatsimUser->name_first);
                 $user->name_last = utf8_decode($vatsimUser->name_last);
@@ -108,11 +124,7 @@ class LoginController extends Controller
                 Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
                 $this->partialWebUser = $user;
 
-                if ($this->partialWebUser->hasPassword()) {
-                    return redirect()->route('login.secondary');
-                }
-
-                return $this->authDone($this->partialWebUser);
+                return redirect()->route('login');
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -126,10 +138,6 @@ class LoginController extends Controller
 
     public function showSecondarySignin()
     {
-        if (! $this->partialWebUser->hasPassword()) {
-            return $this->authDone($this->partialWebUser);
-        }
-
         return view('auth.secondary')->with('user', $this->partialWebUser);
     }
 
@@ -139,9 +147,6 @@ class LoginController extends Controller
 
     public function verifySecondarySignin(Request $request)
     {
-        if (! $this->partialWebUser->hasPassword()) {
-            return $this->authDone($this->partialWebUser);
-        }
 
         $this->validate($request, [
             'password' => 'required|string',

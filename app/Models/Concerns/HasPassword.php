@@ -122,7 +122,6 @@ trait HasPassword
         $this->tokens->each(function (Token $token) {
             $token->revoke();
         });
-        Auth::logoutOtherDevices($password);
 
         event(new PasswordChanged($this));
 

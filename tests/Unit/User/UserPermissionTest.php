@@ -106,7 +106,7 @@ class UserPermissionTest extends TestCase
         $this->assertFalse($this->user->hasAllPermissions(['auth.permission.example10', 'auth.permission.example5']));
 
         $assignment = factory(Assignment::class)->create(['permission' => 'auth.permission.*']);
-        $this->user->assignRole($assignment->related_id);
+        $this->user = $this->user->assignRole($assignment->related_id)->fresh();
 
         $this->assertTrue($this->user->hasAllPermissions(['auth.permission.example', 'auth.permission.example5']));
         $this->assertTrue($this->user->hasAllPermissions(['auth.permission.example10', 'auth.permission.example5']));
@@ -120,7 +120,7 @@ class UserPermissionTest extends TestCase
 
         $assignment = factory(Assignment::class)->create(['permission' => 'auth.permission.extended.*']);
         factory(Assignment::class, 'user')->create(['related_id' => $this->user->id, 'permission' => 'auth.permission.intended.*']);
-        $this->user->assignRole($assignment->related_id);
+        $this->user = $this->user->assignRole($assignment->related_id)->fresh();
 
         $this->assertTrue($this->user->hasPermissionViaRole('auth.permission.extended'));
         $this->assertTrue($this->user->hasPermissionViaRole('auth.permission.extended.example'));
@@ -136,7 +136,7 @@ class UserPermissionTest extends TestCase
 
         $assignment = factory(Assignment::class)->create(['permission' => 'auth.permission.extended.*']);
         factory(Assignment::class, 'user')->create(['related_id' => $this->user->id, 'permission' => 'auth.permission.intended.*']);
-        $this->user->assignRole($assignment->related_id);
+        $this->user = $this->user->assignRole($assignment->related_id)->fresh();
 
         $this->assertTrue($this->user->hasDirectPermission('auth.permission.intended'));
         $this->assertTrue($this->user->hasDirectPermission('auth.permission.intended.example'));

@@ -37,7 +37,7 @@ class PasswordResetTest extends TestCase
     {
         $this->actingAs($this->user, 'partial_web');
 
-        $this->get(route('login.secondary'))
+        $this->get(route('login'))
             ->assertSeeText('Forgot your password?');
     }
 
