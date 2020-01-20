@@ -26,15 +26,15 @@ class LoginController extends Controller
     private $webUser;
     private $partialWebUser;
 
-    const ssoGuard = 'partial_web';
-    const fullGuard = 'web';
+    const SSO_GUARD = 'partial_web';
+    const FULL_GUARD = 'web';
 
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
 
         $this->middleware(function ($request, $next) {
-            $this->partialWebUser = Auth::guard(self::ssoGuard)->user();
+            $this->partialWebUser = Auth::guard(self::SSO_GUARD)->user();
             $this->webUser = Auth::guard('web')->user();
 
             return $next($request);
@@ -44,7 +44,7 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        Auth::guard(self::ssoGuard)->logout();
+        Auth::guard(self::SSO_GUARD)->logout();
 
         return redirect('/');
     }
@@ -92,7 +92,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
         });
     }
 
@@ -124,7 +124,7 @@ class LoginController extends Controller
 
                 $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
 
-                Auth::guard(self::ssoGuard)->loginUsingId($vatsimUser->id, true);
+                Auth::guard(self::SSO_GUARD)->loginUsingId($vatsimUser->id, true);
                 $this->partialWebUser = $user;
 
                 return redirect()->route('login');
@@ -168,7 +168,7 @@ class LoginController extends Controller
 
     public function authDone(User $user)
     {
-        Auth::guard(self::fullGuard)->loginUsingId($user->getKey(), true);
+        Auth::guard(self::FULL_GUARD)->loginUsingId($user->getKey(), true);
         return redirect()->intended();
     }
 }

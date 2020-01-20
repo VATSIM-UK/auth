@@ -12,7 +12,7 @@ class RoleTest extends DuskTestCase
 {
     private $role;
 
-    const editPermissionsButtonText = 'Edit Permissions';
+    const EDIT_PERMISSIONS_BUTTON_TEXT = 'Edit Permissions';
 
     protected function setUp(): void
     {
@@ -59,7 +59,7 @@ class RoleTest extends DuskTestCase
                 ->click('@role-name-input')
                 ->type('.editable-text input', 'My Updated Role')
                 ->click('.editable-text button:first-of-type')
-                ->press(self::editPermissionsButtonText)
+                ->press(self::EDIT_PERMISSIONS_BUTTON_TEXT)
                 ->assertChecked('permission:auth.roles.create')
                 ->check('permission:auth.roles.delete')
                 ->press('Done')
@@ -68,7 +68,7 @@ class RoleTest extends DuskTestCase
                 ->waitForText('My Updated Role')
                 ->assertRadioSelected('require_password', 'false')
                 ->assertInputValue('password_refresh_rate', '')
-                ->press(self::editPermissionsButtonText)
+                ->press(self::EDIT_PERMISSIONS_BUTTON_TEXT)
                 ->assertChecked('permission:auth.roles.delete');
         });
     }
@@ -80,7 +80,7 @@ class RoleTest extends DuskTestCase
                 ->visit(new RolePage($this->role->id))
                 ->waitForText($this->role->name)
                 ->assertRadioSelected('require_password', 'true')
-                ->press(self::editPermissionsButtonText)
+                ->press(self::EDIT_PERMISSIONS_BUTTON_TEXT)
                 ->assertChecked('permission:auth.roles.create')
                 ->assertNotChecked('permission:auth.roles')
                 ->assertNotChecked('permission:auth.roles.delete');

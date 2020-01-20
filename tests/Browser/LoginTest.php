@@ -27,7 +27,7 @@ class LoginTest extends DuskTestCase
         $this->user->save();
 
         $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->user, LoginController::ssoGuard)
+            $browser->loginAs($this->user, LoginController::SSO_GUARD)
                 ->visit(route('login'))
                 ->assertSeeLink('Logout')
                 ->clickLink('Logout')
@@ -64,7 +64,7 @@ class LoginTest extends DuskTestCase
     public function testItCanCheckForNoSecondaryPassword()
     {
         $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->user, LoginController::ssoGuard)
+            $browser->loginAs($this->user, LoginController::SSO_GUARD)
                 ->visit(route('login'))
                 ->assertPathIs('/')
                 ->assertAuthenticated('web');
@@ -77,7 +77,7 @@ class LoginTest extends DuskTestCase
         $this->user->save();
 
         $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->user, LoginController::ssoGuard)
+            $browser->loginAs($this->user, LoginController::SSO_GUARD)
                 ->visit(route('login'))
                 ->type('password', "{$this->fakePassword}4")
                 ->press('Login')

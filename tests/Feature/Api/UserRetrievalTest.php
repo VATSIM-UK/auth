@@ -18,35 +18,25 @@ class UserRetrievalTest extends TestCase
 {
     use MakesGraphQLRequests;
 
+    private $authUserQuery = '
+        query{
+            authUser{
+                id
+            }
+        }
+        ';
+
     public function testUnauthenticatedCantAccessMethods()
     {
-        $this->assertApiUnauthenticatedResponse($this->graphQL('
-        query{
-            authUser{
-                id
-            }
-        }
-        '));
+        $this->assertApiUnauthenticatedResponse($this->graphQL($this->authUserQuery));
 
-        $this->assertApiUnauthenticatedResponse($this->actingAs($this->user)->graphQL('
-        query{
-            authUser{
-                id
-            }
-        }
-        '));
+        $this->assertApiUnauthenticatedResponse($this->actingAs($this->user)->graphQL($this->authUserQuery));
     }
 
     public function testCanRetrieveAuthenticatedUser()
     {
         $this->asUserOnAPI();
-        $this->graphQL('
-        query{
-            authUser{
-                id
-            }
-        }
-        ')->assertJson([
+        $this->graphQL($this->authUserQuery)->assertJson([
             'data' => [
                 'authUser' => [
                     'id' => $this->user->id,
