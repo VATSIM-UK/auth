@@ -43,10 +43,10 @@ class LoginTest extends TestCase
     public function testSSOUserRedirectedIfNoPassword()
     {
         $this->actingAs($this->user, 'partial_web')
-            ->get(route('login'))
-            ->assertRedirect('/');
+            ->followingRedirects()
+            ->get(route('login'));
 
-        $this->assertAuthenticated('web');
+        $this->assertAuthenticatedAs($this->user, 'web');
     }
 
     public function testSSOUserCanSeeSignin()
