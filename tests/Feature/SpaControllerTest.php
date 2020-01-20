@@ -6,25 +6,27 @@ use Tests\TestCase;
 
 class SpaControllerTest extends TestCase
 {
+    const fakePath = '/some/path';
+
     public function testUnauthenticatedUserRedirected()
     {
-        $this->get('/some/path')
+        $this->get(self::fakePath)
             ->assertRedirect('/login')
-            ->assertSessionHas('url.intended', url('/some/path'));
+            ->assertSessionHas('url.intended', url(self::fakePath));
     }
 
     public function testSemiAuthenticatedUserRedirected()
     {
         $this->actingAs($this->user, 'partial_web')
-            ->get('/some/path')
+            ->get(self::fakePath)
             ->assertRedirect('/login')
-            ->assertSessionHas('url.intended', url('/some/path'));
+            ->assertSessionHas('url.intended', url(self::fakePath));
     }
 
     public function testAuthenticatedUserNotRedirected()
     {
         $this->actingAs($this->user, 'web')
-            ->get('/some/path')
+            ->get(self::fakePath)
             ->assertOk();
     }
 }

@@ -42,10 +42,10 @@ class HasPermissionDirective extends BaseDirective implements FieldMiddleware
         return $next(
             $fieldValue->setResolver(
                 function ($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) use ($previousResolver) {
-                    $gate = $this->gate->forUser($context->user());
+                    $gateForUser = $this->gate->forUser($context->user());
                     $ability = $this->directiveArgValue('permission');
 
-                    $this->authorize($gate, $ability);
+                    $this->authorize($gateForUser, $ability);
 
                     return $previousResolver($root, $args, $context, $resolveInfo);
                 }

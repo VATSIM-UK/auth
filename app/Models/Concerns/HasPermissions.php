@@ -108,9 +108,11 @@ trait HasPermissions
     public function getPermissionsViaRoles(): Collection
     {
         return $this->loadMissing('roles', 'roles.permissions')
-            ->roles->flatMap(function ($role) {
+            ->roles
+            ->flatMap(function ($role) {
                 return $role->permissions->pluck('permission');
-            })->sort()->values();
+            })->sort()
+            ->values();
     }
 
     /**
@@ -123,7 +125,10 @@ trait HasPermissions
             $permissions = $permissions->merge($this->getPermissionsViaRoles());
         }
 
-        return $permissions->unique()->sort()->values();
+        return $permissions
+            ->unique()
+            ->sort()
+            ->values();
     }
 
     /**
@@ -153,9 +158,11 @@ trait HasPermissions
                 throw new InvalidPermissionException("The given permission, $permission, is not defined as a valid permission");
             }
             $altered = true;
-            $this->permissions()->where('permission', $permission)->firstOrCreate([
-                'permission' => $permission,
-            ]);
+            $this->permissions()
+                ->where('permission', $permission)
+                ->firstOrCreate([
+                    'permission' => $permission,
+                ]);
         });
 
         if ($this instanceof User && $altered) {

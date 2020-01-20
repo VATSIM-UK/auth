@@ -69,9 +69,9 @@ class RoleTest extends TestCase
     /** @test */
     public function itCanBeFoundByName()
     {
-        $role = factory(Role::class)->create(['name' => 'My Custom Role']);
+        $anotherRole = factory(Role::class)->create(['name' => 'My Custom Role']);
 
-        $this->assertEquals($role->id, Role::findByName('My Custom Role')->id);
+        $this->assertEquals($anotherRole->id, Role::findByName('My Custom Role')->id);
     }
 
     /** @test */

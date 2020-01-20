@@ -47,7 +47,7 @@ class UserBansTest extends TestCase
         $this->assertEmpty($this->user->currentBans);
         $this->assertFalse($this->user->banned);
 
-        $ban = factory(Ban::class)->create([
+        factory(Ban::class)->create([
             'user_id' => $this->user->id,
         ]);
         $this->assertNotEmpty($this->user->fresh()->currentBans);
@@ -60,7 +60,7 @@ class UserBansTest extends TestCase
         $this->assertEmpty($this->user->currentBans);
         $this->assertFalse($this->user->banned);
 
-        $ban = factory(Ban::class)->create([
+        factory(Ban::class)->create([
             'user_id' => $this->user->id,
             'ends_at' => null,
         ]);
@@ -76,13 +76,13 @@ class UserBansTest extends TestCase
             'name' => 'Silly Billy',
         ]);
 
-        $ban = factory(Ban::class)->create([
+        factory(Ban::class)->create([
             'user_id' => $this->user->id,
             'reason_id' => $reason,
         ]);
 
         $this->assertEquals($reason->id, $this->user->currentBans->first()->reason->id);
-        $this->assertEquals('Silly Billy', $this->user->currentBans->first()->reason->name);
+        $this->assertEquals($reason->name, $this->user->currentBans->first()->reason->name);
     }
 
     /** @test */
@@ -180,7 +180,7 @@ class UserBansTest extends TestCase
     /** @test */
     public function itCanHaveBanRepealed()
     {
-        $ban = factory(Ban::class)->create([
+        factory(Ban::class)->create([
             'user_id' => $this->user->id,
         ]);
 
@@ -197,6 +197,6 @@ class UserBansTest extends TestCase
     {
         $this->expectException(BanEndsBeforeStartException::class);
 
-        $this->user->banLocally('Silly Billy', null, null, Carbon::now()->subDay());
+        $this->user->banLocally('Did something bad', null, null, Carbon::now()->subDay());
     }
 }

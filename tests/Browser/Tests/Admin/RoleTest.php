@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser\TestsAdmin\Roles;
+namespace Tests\Browser\Tests\Admin\Roles;
 
 use App\Models\Role;
 use Laravel\Dusk\Browser;
@@ -11,6 +11,8 @@ use Tests\DuskTestCase;
 class RoleTest extends DuskTestCase
 {
     private $role;
+
+    const editPermissionsButtonText = 'Edit Permissions';
 
     protected function setUp(): void
     {
@@ -51,13 +53,13 @@ class RoleTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superUser)
                 ->visit(new RolePage($this->role->id))
-                ->waitForText('My Role')
+                ->waitForText($this->role->name)
                 ->click('.btn-group label:last-of-type') //No Password Required Button
                 ->type('password_refresh_rate', '10')
                 ->click('@role-name-input')
                 ->type('.editable-text input', 'My Updated Role')
                 ->click('.editable-text button:first-of-type')
-                ->press('Edit Permissions')
+                ->press(self::editPermissionsButtonText)
                 ->assertChecked('permission:auth.roles.create')
                 ->check('permission:auth.roles.delete')
                 ->press('Done')
@@ -66,7 +68,7 @@ class RoleTest extends DuskTestCase
                 ->waitForText('My Updated Role')
                 ->assertRadioSelected('require_password', 'false')
                 ->assertInputValue('password_refresh_rate', '')
-                ->press('Edit Permissions')
+                ->press(self::editPermissionsButtonText)
                 ->assertChecked('permission:auth.roles.delete');
         });
     }
@@ -76,9 +78,9 @@ class RoleTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superUser)
                 ->visit(new RolePage($this->role->id))
-                ->waitForText('My Role')
+                ->waitForText($this->role->name)
                 ->assertRadioSelected('require_password', 'true')
-                ->press('Edit Permissions')
+                ->press(self::editPermissionsButtonText)
                 ->assertChecked('permission:auth.roles.create')
                 ->assertNotChecked('permission:auth.roles')
                 ->assertNotChecked('permission:auth.roles.delete');
@@ -90,12 +92,12 @@ class RoleTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superUser)
                 ->visit(new RolePage($this->role->id))
-                ->waitForText('My Role')
-                ->press('.navbar .btn-danger')
-                ->press('.navbar .btn-danger') // Cancel Deletion
-                ->assertVisible('.navbar .btn-danger')
+                ->waitForText($this->role->name)
+                ->press('@toolbarDangerButton')
+                ->press('@toolbarDangerButton') // Cancel Deletion
+                ->assertVisible('@toolbarDangerButton')
                 ->assertSee('Delete')
-                ->press('.navbar .btn-danger')
+                ->press('@toolbarDangerButton')
                 ->press('.navbar .btn-success')
                 ->waitForText('Role Deleted!')
                 ->waitForLocation((new RolesPage)->url());

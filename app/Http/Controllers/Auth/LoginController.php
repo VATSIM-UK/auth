@@ -26,12 +26,15 @@ class LoginController extends Controller
     private $webUser;
     private $partialWebUser;
 
+    const ssoGuard = 'partial_web';
+    const fullGuard = 'web';
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
 
         $this->middleware(function ($request, $next) {
-            $this->partialWebUser = Auth::guard('partial_web')->user();
+            $this->partialWebUser = Auth::guard(self::ssoGuard)->user();
             $this->webUser = Auth::guard('web')->user();
 
             return $next($request);
@@ -41,7 +44,7 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        Auth::guard('partial_web')->logout();
+        Auth::guard(self::ssoGuard)->logout();
 
         return redirect('/');
     }
@@ -109,7 +112,7 @@ class LoginController extends Controller
             $session['key'],
             $session['secret'],
             $request->input('oauth_verifier'),
-            function ($vatsimUser) use ($request) {
+            function ($vatsimUser) {
                 $user = User::firstOrNew(['id' => $vatsimUser->id]);
                 $user->name_first = utf8_decode($vatsimUser->name_first);
                 $user->name_last = utf8_decode($vatsimUser->name_last);
@@ -121,7 +124,7 @@ class LoginController extends Controller
 
                 $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
 
-                Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+                Auth::guard(self::ssoGuard)->loginUsingId($vatsimUser->id, true);
                 $this->partialWebUser = $user;
 
                 return redirect()->route('login');
@@ -147,13 +150,15 @@ class LoginController extends Controller
 
     public function verifySecondarySignin(Request $request)
     {
+        $passwordFieldName = 'password';
+
         $this->validate($request, [
-            'password' => 'required|string',
+            $passwordFieldName => 'required|string',
         ]);
 
-        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input('password')])) {
+        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
-                'password' => ['The supplied password did not match our records'],
+                $passwordFieldName => ['The supplied password did not match our records'],
             ]);
             throw $error;
         }
@@ -163,7 +168,7 @@ class LoginController extends Controller
 
     public function authDone(User $user)
     {
-        Auth::guard('web')->loginUsingId($user->id, true);
+        Auth::guard(self::fullGuard)->loginUsingId($user->getKey(), true);
         return redirect()->intended();
     }
 }

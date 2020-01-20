@@ -263,7 +263,7 @@ class UserPermissionTest extends TestCase
     /** @test */
     public function itDoesntDisplayDuplicates()
     {
-        $this->assertEquals(1, $this->user->getAllPermissions()->filter(function ($key, $value) {
+        $this->assertEquals(1, $this->user->getAllPermissions()->filter(function ($value) {
             return $value == 'auth.permission.example';
         })->count());
     }

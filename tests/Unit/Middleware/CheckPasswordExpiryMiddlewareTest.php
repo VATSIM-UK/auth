@@ -30,6 +30,7 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
         $request = new Request();
         $middleware = resolve(CheckForExpiredPasswords::class);
         $response = $middleware->handle($request, function () {
+            //
         });
 
         $this->assertNull($response);
@@ -44,6 +45,7 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
         $request = new Request();
         $middleware = resolve(CheckForExpiredPasswords::class);
         $response = $middleware->handle($request, function () {
+            //
         });
 
         $this->assertNull($response);
@@ -59,6 +61,7 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
         $middleware = resolve(CheckForExpiredPasswords::class);
 
         $response = $middleware->handle($request, function () {
+            //
         });
         $this->assertEquals(get_class($response), RedirectResponse::class);
         $this->assertEquals(route('login.set_password'), $response->headers->get('location'));
@@ -76,6 +79,7 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
         $middleware = resolve(CheckForExpiredPasswords::class);
 
         $response = $middleware->handle($request, function () {
+            //
         });
         $this->assertEquals(get_class($response), RedirectResponse::class);
         $this->assertEquals(route('login.set_password'), $response->headers->get('location'));

@@ -12,6 +12,9 @@ use Laravel\Passport\Token;
 
 trait HasPassword
 {
+    private $passwordAttributeName = 'password';
+    private $passwordRefreshRateAttributeName = 'password_refresh_rate';
+
     /**
      * Verify if supplied password is correct for user.
      *
@@ -20,12 +23,12 @@ trait HasPassword
      */
     public function verifyPassword(string $password): bool
     {
-        if ($this->password === sha1(sha1($password))) {
-            $this->password = $password;
+        if ($this->{$this->passwordAttributeName} === sha1(sha1($password))) {
+            $this->{$this->passwordAttributeName} = $password;
             $this->save();
         }
 
-        return Hash::check($password, $this->password);
+        return Hash::check($password, $this->{$this->passwordAttributeName});
     }
 
     /**
@@ -41,11 +44,11 @@ trait HasPassword
         // elseif password is already hashed, store it as provided
         // else password needs hashing, hash and store it
         if ($password === null) {
-            $this->attributes['password'] = null;
+            $this->attributes[$this->passwordAttributeName] = null;
         } elseif (! Hash::needsRehash($password)) {
-            $this->attributes['password'] = $password;
+            $this->attributes[$this->passwordAttributeName] = $password;
         } else {
-            $this->attributes['password'] = Hash::make($password);
+            $this->attributes[$this->passwordAttributeName] = Hash::make($password);
         }
     }
 
@@ -57,9 +60,9 @@ trait HasPassword
     public function getPasswordExpiresAtAttribute(): ?Carbon
     {
         $rate = $this->roles()->forcesPassword()
-            ->whereNotNull('password_refresh_rate')
-            ->orderBy('password_refresh_rate', 'asc')
-            ->pluck('password_refresh_rate')->first();
+            ->whereNotNull($this->passwordRefreshRateAttributeName)
+            ->orderBy($this->passwordRefreshRateAttributeName, 'asc')
+            ->pluck($this->passwordRefreshRateAttributeName)->first();
 
         if (! $rate || ! $this->password_set_at) {
             return null;
@@ -75,7 +78,7 @@ trait HasPassword
      */
     public function passwordHasExpired(): bool
     {
-        return ($this->password && $this->password_expires_at) ? $this->password_expires_at->isPast() : false;
+        return ($this->hasPassword() && $this->password_expires_at) && $this->password_expires_at->isPast();
     }
 
     /**
@@ -95,7 +98,7 @@ trait HasPassword
      */
     public function hasPassword(): bool
     {
-        return $this->password !== null;
+        return $this->{$this->passwordAttributeName} !== null;
     }
 
     /**
@@ -107,7 +110,7 @@ trait HasPassword
     public function setPassword(string $password): bool
     {
         $save = $this->fill([
-            'password' => $password,
+            $this->passwordAttributeName => $password,
             'password_set_at' => Carbon::now(),
         ])->save();
 
@@ -136,7 +139,7 @@ trait HasPassword
     public function removePassword(): bool
     {
         $fill = $this->fill([
-            'password' => null,
+            $this->passwordAttributeName => null,
             'password_set_at' => null,
         ])->save();
 

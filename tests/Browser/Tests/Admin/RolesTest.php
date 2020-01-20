@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Browser\TestsAdmin\Roles;
+namespace Tests\Browser\Tests\Admin\Roles;
 
 use App\Models\Role;
 use Facebook\WebDriver\WebDriverBy;

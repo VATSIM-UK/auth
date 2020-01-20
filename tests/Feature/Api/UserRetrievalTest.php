@@ -20,25 +20,21 @@ class UserRetrievalTest extends TestCase
 
     public function testUnauthenticatedCantAccessMethods()
     {
-        $this->graphQL('
+        $this->assertApiUnauthenticatedResponse($this->graphQL('
         query{
             authUser{
                 id
             }
         }
-        ')->assertJsonFragment([
-            'debugMessage' => 'Unauthenticated.',
-        ]);
+        '));
 
-        $this->actingAs($this->user)->graphQL('
+        $this->assertApiUnauthenticatedResponse($this->actingAs($this->user)->graphQL('
         query{
             authUser{
                 id
             }
         }
-        ')->assertJsonFragment([
-            'debugMessage' => 'Unauthenticated.',
-        ]);
+        '));
     }
 
     public function testCanRetrieveAuthenticatedUser()
@@ -62,13 +58,13 @@ class UserRetrievalTest extends TestCase
     public function testNonMachineTokenCantAccessOtherUsers()
     {
         $this->asUserOnAPI();
-        $this->graphQL("
+        $this->assertApiUnauthenticatedResponse($this->graphQL("
         query{
             user(id: {$this->user->id}){
                 id
             }
         }
-        ")->assertJsonPath('errors.0.debugMessage', 'Unauthenticated.');
+        "));
     }
 
     public function testCanRetrieveUserByID()
@@ -331,5 +327,10 @@ class UserRetrievalTest extends TestCase
     private function asUserOnAPI()
     {
         Passport::actingAs($this->user);
+    }
+
+    private function assertApiUnauthenticatedResponse($response)
+    {
+        $response->assertJsonPath('errors.0.debugMessage', 'Unauthenticated.');
     }
 }

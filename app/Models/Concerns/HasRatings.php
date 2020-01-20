@@ -81,11 +81,13 @@ trait HasRatings
 
     public function getATCRatingAttribute()
     {
-        $rating = $this->ratings()->typeATC()->get()
-            ->sortByDesc(function ($rating, $key) {
+        $rating = $this->ratings()
+            ->typeATC()
+            ->get()
+            ->sortByDesc(function ($rating) {
                 return $rating->id;
             })
-            ->sortByDesc(function ($rating, $key) {
+            ->sortByDesc(function ($rating) {
                 return $rating->pivot->created_at;
             })->first();
 

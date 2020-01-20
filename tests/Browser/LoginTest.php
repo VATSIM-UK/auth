@@ -2,12 +2,15 @@
 
 namespace Tests\Browser;
 
+use App\Http\Controllers\Auth\LoginController;
 use App\User;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 class LoginTest extends DuskTestCase
 {
+    private $fakePassword = 'Test123';
+
     public function testItCanLogout()
     {
         $this->browse(function (Browser $browser) {
@@ -20,11 +23,11 @@ class LoginTest extends DuskTestCase
                 ->assertGuest();
         });
 
-        $this->user->password = 'Test123';
+        $this->user->password = $this->fakePassword;
         $this->user->save();
 
         $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->user, 'partial_web')
+            $browser->loginAs($this->user, LoginController::ssoGuard)
                 ->visit(route('login'))
                 ->assertSeeLink('Logout')
                 ->clickLink('Logout')
@@ -36,22 +39,22 @@ class LoginTest extends DuskTestCase
 
     public function testItCanBeRedirectedToSSOAndRedirectedBack()
     {
-        $user = factory(User::class)->create([
+        factory(User::class)->create([
             'id' => 1300001,
-            'password' => 'Test123',
+            'password' => $this->fakePassword,
         ]);
 
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
                 ->clickLink('Login')
-                ->assertUrlIs(env('VATSIM_SSO_BASE').'auth/login/')
+                ->assertUrlIs(env('VATSIM_SSO_BASE') . 'auth/login/')
                 ->type('cid', 1300001)
                 ->type('password', 1300001)
                 ->press('Login')
                 ->assertUrlIs(route('login'))
                 ->screenshot('login/secondary_authentication')
                 ->assertSee('Secondary Authentication')
-                ->type('password', 'Test123')
+                ->type('password', $this->fakePassword)
                 ->press('Login')
                 ->assertPathIs('/')
                 ->assertAuthenticated();
@@ -61,7 +64,7 @@ class LoginTest extends DuskTestCase
     public function testItCanCheckForNoSecondaryPassword()
     {
         $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->user, 'partial_web')
+            $browser->loginAs($this->user, LoginController::ssoGuard)
                 ->visit(route('login'))
                 ->assertPathIs('/')
                 ->assertAuthenticated('web');
@@ -70,13 +73,13 @@ class LoginTest extends DuskTestCase
 
     public function testItCanChecksSecondaryPassword()
     {
-        $this->user->password = 'Test123';
+        $this->user->password = $this->fakePassword;
         $this->user->save();
 
         $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->user, 'partial_web')
+            $browser->loginAs($this->user, LoginController::ssoGuard)
                 ->visit(route('login'))
-                ->type('password', 'Test1234')
+                ->type('password', "{$this->fakePassword}4")
                 ->press('Login')
                 ->screenshot('login/secondary_authentication_error')
                 ->assertSee('password did not match our records')
