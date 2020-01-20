@@ -92,7 +92,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
