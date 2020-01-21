@@ -23,7 +23,6 @@ class CheckForExpiredPasswords
             return $next($request);
         }
 
-
         return redirect()->route('login.set_password');
     }
 }

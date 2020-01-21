@@ -92,7 +92,7 @@ trait HasPassword
     }
 
     /**
-     * Returns if the user needs to add / change their secondary password
+     * Returns if the user needs to add / change their secondary password.
      *
      * @return bool
      */
