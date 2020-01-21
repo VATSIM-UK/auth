@@ -42,6 +42,7 @@ class CreateRolesAndPermissionsTables extends Migration
     public function down()
     {
         Schema::dropIfExists('roles');
+        Schema::dropIfExists('user_roles');
         Schema::dropIfExists('permission_assignments');
     }
 }

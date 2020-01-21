@@ -9,18 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class RequirePasswordChangeController extends Controller
 {
-    /*
-     * Step (5): Set Secondary Password
-     */
 
     public function showSetSecondaryPassword()
     {
+        if (! Auth::user()->requiresPassword() && ! Auth::user()->passwordHasExpired()) {
+            return redriect('/');
+        }
+
         return view('auth.passwords.set');
     }
 
     public function setSecondaryPassword(Request $request)
     {
-        $user = Auth::guard('partial_web')->user();
+
+        $user = Auth::user();
         $this->validate($request, [
             'old_password' => [function ($attribute, $value, $fail) use ($user) {
                 if ($user->hasPassword() && ! $user->verifyPassword($value)) {

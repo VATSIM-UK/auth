@@ -6,15 +6,15 @@ use App\Models\Role;
 
 class RoleMutation
 {
-    public function create($rootValue, array $args): bool
+    public function create($rootValue, array $args): Role
     {
         $role = Role::create($args);
         $role->syncPermissions($args['permissions']);
 
-        return true;
+        return $role;
     }
 
-    public function update($rootValue, array $args): bool
+    public function update($rootValue, array $args): Role
     {
         $role = Role::findOrFail($args['id']);
 
@@ -27,6 +27,6 @@ class RoleMutation
 
         $role->syncPermissions($args['permissions']);
 
-        return true;
+        return $role;
     }
 }

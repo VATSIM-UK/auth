@@ -171,4 +171,73 @@ class PermissionsAndRolesTest extends TestCase
             }
         ")->assertJsonPath('errors.0.extensions.validation.0', 'The given permission, auth.invalid.permission, is not defined as a valid permission');
     }
+
+    public function testItCanCreateUpdateAndDeleteRole()
+    {
+        PermissionValidity::partialMock()
+            ->shouldReceive('isValidPermission')
+            ->andReturn(true);
+
+        $roleID = $this->graphQL('
+            mutation {
+                createRole(name: "My Second Role", require_password: false, permissions: ["role.permission"]){
+                    id
+                }
+            }
+        ')->json('data.createRole.id');
+
+        $this->assertDatabaseHas('roles', [
+            'id' => $roleID,
+            'name' => 'My Second Role',
+            'require_password' => false,
+            'password_refresh_rate' => null
+        ]);
+
+        $this->assertDatabaseHas('permission_assignments', [
+            'related_type' => Role::class,
+            'permission' => "role.permission"
+        ]);
+
+        $this->graphQL("
+            mutation {
+                editRole(id: $roleID, name: \"My Updated Role\", require_password: false, permissions: [\"role.permission.next\"]){
+                    id
+                }
+            }
+        ");
+
+        $this->assertDatabaseMissing('roles', [
+            'name' => "My Second Role",
+            'require_password' => false,
+            'password_refresh_rate' => null
+        ]);
+
+        $this->assertDatabaseMissing('permission_assignments', [
+            'related_type' => Role::class,
+            'permission' => "role.permission"
+        ]);
+
+        $this->assertDatabaseHas('roles', [
+            'name' => "My Updated Role",
+            'require_password' => false,
+            'password_refresh_rate' => null
+        ]);
+
+        $this->assertDatabaseHas('permission_assignments', [
+            'related_type' => Role::class,
+            'permission' => "role.permission.next"
+        ]);
+
+        $this->graphQL("
+            mutation {
+                deleteRole(id: $roleID){
+                    id
+                }
+            }
+        ");
+
+        $this->assertDatabaseMissing('roles', [
+            'id' => $roleID
+        ]);
+    }
 }

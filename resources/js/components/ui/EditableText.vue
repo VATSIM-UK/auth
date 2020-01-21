@@ -1,30 +1,35 @@
 <template>
-    <span class="editable-text">
-        <span v-if="!editing" :class="['inline-edit', 'd-inline-block']" @click="beginEdit">
-            <span v-if="textValue">
-                {{textValue}}
-            </span>
+  <div class="editable-text d-inline-block">
+    <span v-if="!editing"
+          :class="['inline-edit', 'd-inline-block']"
+          @click="beginEdit">
+        <span v-if="textValue">
+            {{textValue}}
         </span>
-        <div v-else class="input-group">
-            <input type="text"
-                   v-model="editingValue"
-                   class="form-control"
-                   :class="{'is-invalid': !meetsLengthRequirement}"
-                   :placeholder="name"
-                   :aria-label="name">
-             <div class="input-group-append">
-                <button class="btn btn-success" @click="endEdit"
-                        :disabled="!meetsLengthRequirement"><span
-                    class="fa fa-check"></span></button>
-                <button class="btn btn-warning" @click="cancelEdit">
-                    <span class="fa fa-trash-alt"></span>
-                </button>
-            </div>
-            <div v-if="!meetsLengthRequirement" class="invalid-tooltip">
-                The {{name.toLowerCase()}} must be at least {{minLength}} characters long
-            </div>
-        </div>
     </span>
+    <div v-else class="input-group">
+      <input type="text"
+             v-model="editingValue"
+             class="form-control"
+             :class="{'is-invalid': !meetsLengthRequirement}"
+             :placeholder="name"
+             :aria-label="name"/>
+      <div class="input-group-append">
+        <button class="btn btn-success"
+                @click="endEdit"
+                :disabled="!meetsLengthRequirement">
+          <span class="fa fa-check"></span>
+        </button>
+        <button class="btn btn-warning"
+                @click="cancelEdit">
+          <span class="fa fa-trash-alt"></span>
+        </button>
+      </div>
+      <div v-if="!meetsLengthRequirement" class="invalid-tooltip">
+        The {{name.toLowerCase()}} must be at least {{minLength}} characters long
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -72,7 +77,7 @@
     }
 </script>
 <style scoped>
-    .input-group {
-        padding: 5px;
-    }
+  .input-group {
+    padding: 5px;
+  }
 </style>

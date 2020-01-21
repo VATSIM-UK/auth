@@ -1,11 +1,19 @@
 extend type Query @middleware(checks: ["auth:api"]){
     role(id: ID! @eq): Role @find @hasPermission(permission: "auth.roles")
     roles: [Role!] @all @hasPermission(permission: "auth.roles")
-    userRoles(user_id: ID! @rules(apply: ["exists:users,id"])): [Role!] @hasPermission(permission: "auth.roles")
-
     permissions: Mixed @hasPermission(permission: "auth.permissions", model: "App\\Models\\Permissions\\Assignment")
-    userRolePermissions(user_id: ID! @rules(apply: ["exists:users,id"])): [String!] @hasPermission(permission: "auth.permissions")
-    userDirectPermissions(user_id: ID! @rules(apply: ["exists:users,id"])): [String!] @hasPermission(permission: "auth.permissions")
+
+
+    userRoles(user_id: ID! @rules(apply: ["exists:users,id"])
+    ): [Role!] @hasPermission(permission: "auth.user")
+
+    userRolePermissions(user_id: ID! @rules(apply: ["exists:users,id"])
+    ): [String!] @field(resolver: "UserPermissions@rolePermissions")
+    @hasPermission(permission: "auth.user")
+
+    userDirectPermissions(user_id: ID! @rules(apply: ["exists:users,id"])
+    ): [String!] @field(resolver: "UserPermissions@directPermissions")
+    @hasPermission(permission: "auth.user")
 }
 
 extend type Mutation  @middleware(checks: ["auth:api"]){
@@ -41,7 +49,7 @@ extend type Mutation  @middleware(checks: ["auth:api"]){
         require_password: Boolean!
         password_refresh_rate: Int @rules(apply: ["nullable", "numeric", "min:1"])
         permissions: Mixed
-    ): Boolean @field(resolver: "RoleMutation@create") @hasPermission(permission: "auth.role.create")
+    ): Role! @field(resolver: "RoleMutation@create") @hasPermission(permission: "auth.role.create")
 
     editRole(
         id: ID! @rules(apply: ["exists:roles,id"])
@@ -49,7 +57,7 @@ extend type Mutation  @middleware(checks: ["auth:api"]){
         require_password: Boolean!
         password_refresh_rate: Int @rules(apply: ["nullable", "numeric", "min:1"])
         permissions: Mixed
-    ): Boolean @field(resolver: "RoleMutation@update") @hasPermission(permission: "auth.role.update")
+    ): Role! @field(resolver: "RoleMutation@update") @hasPermission(permission: "auth.role.update")
 
     deleteRole(id: ID!): Role! @delete @hasPermission(permission: "auth.role.delete")
 }

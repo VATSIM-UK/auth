@@ -14,7 +14,9 @@ Laravel based OAuth 2 server for service-wide SSO and authentication.
 // For production:
     $ composer install --no-dev --optimize-autoloader
 
-// Install frontend dependencies
+// Install frontend dependencies. (If on Windows VM, add --no-bin-links to command) If on development:
+    $ yarn
+// For production
     $ yarn --no-dev
 
 // Setup Laravel
@@ -33,9 +35,11 @@ Laravel based OAuth 2 server for service-wide SSO and authentication.
 ## Development
 
 ### Tips and Tricks
-* Lighthouse, the GraphQL API we use in Auth, will by default cache the graphql schema. To disable this, add `LIGHTHOUSE_CACHE_ENABLE=false` into your `.env`.
-* To quickly give a user all permissions, run `$ php artisan user:super (id)` (Replacing `(id)` with the user's ID). They must already exist in the database.
-* For testing the API, you can quickly generate an API token for your development user with  `$ php artisan token:generate (id)`.
+* **API Schema Caching** - Lighthouse, the GraphQL API we use in Auth, will by default cache the graphql schema. To disable this, add `LIGHTHOUSE_CACHE_ENABLE=false` into your `.env`.
+
+### Useful Commands
+* `$ php artisan user:super (id)` - Give a user all permissions
+* `$ php artisan token:generate (id)` - Generate API token for user
 
 ## Testing
 
@@ -50,6 +54,8 @@ This project has 3 test suites:
 
 ### Running Laravel Dusk Tests
 For Dusk, Google Chrome must be installed on your testing machine. For Laradock, this should already be enabled in the env file by default. For Homestead it is as simple as enabling it in the [.yaml file](https://laravel.com/docs/6.x/homestead#installing-optional-features), and re-creating the box.
+
+Then run the suite with `$ php artisan dusk`.
 
 ### Running Mocha Tests
 `$ yarn run test`

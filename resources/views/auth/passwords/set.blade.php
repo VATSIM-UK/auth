@@ -4,7 +4,7 @@
     <div class="container">
         <h3>Set A Secondary Password</h3>
         <p>
-            @if(\Illuminate\Support\Facades\Auth::user()->password)
+            @if(\Illuminate\Support\Facades\Auth::user()->hasPassword())
                 Your secondary password has expired. Please create a new one.
             @else
                 For security purposes, due to your allocated roles, you are required to set a secondary password below.
@@ -13,7 +13,7 @@
         <form method="POST" action="{{ route('login.set_password') }}">
             @csrf
 
-            @if(\Illuminate\Support\Facades\Auth::user()->password)
+            @if(\Illuminate\Support\Facades\Auth::user()->hasPassword())
                 <div class="form-group row">
                     <label for="old_password"
                            class="col-md-4 col-form-label text-md-right">{{ __('Current Password') }}</label>

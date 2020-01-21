@@ -1,26 +1,30 @@
 <template>
-    <transition name="fade" @after-leave="$emit('done')">
-        <div class="alert alert-danger" v-show="countdown || !hideAfter" role="alert">
-            <h4 class="alert-heading">{{title}}</h4>
-            <template v-if="isErrorsObject">
-                <ul v-if="errors.count() > 1 || !Array.isArray(errors.all())">
-                    <template v-for="error in errors.errors">
-                        <li v-if="!Array.isArray(error)">{{error}}</li>
-                        <li v-for="message in error">{{message}}</li>
-                    </template>
-                </ul>
-                <span v-else>{{errors.first()}}</span>
-            </template>
+  <transition name="fade" @after-leave="$emit('done')">
+    <div class="alert alert-danger" v-show="countdown || !hideAfter" role="alert">
+      <h4 class="alert-heading">{{title}}</h4>
+      <template v-if="isErrorsObject">
+        <ul v-if="errors.count() > 1 || !Array.isArray(errors.all())">
+          <template v-for="error in errors.errors">
+            <li v-if="!Array.isArray(error)">{{error}}</li>
+            <li v-for="message in error">{{message}}</li>
+          </template>
+        </ul>
+        <span v-else>{{errors.first()}}</span>
+      </template>
 
-            <slot></slot>
-            <div v-if="hideAfter" style="height: 2px" class="progress mt-2">
-                <div class="progress-bar bg-danger" role="progressbar"
-                     :aria-valuenow="hideAfter - countdown" aria-valuemin="0" :aria-valuemax="hideAfter"
-                     :style="{ width: progressBarWidth }">
-                </div>
-            </div>
+      <slot/>
+
+      <div v-if="hideAfter" style="height: 2px" class="progress mt-2">
+        <div class="progress-bar bg-danger"
+             role="progressbar"
+             aria-valuemin="0"
+             :aria-valuenow="hideAfter - countdown"
+             :aria-valuemax="hideAfter"
+             :style="{ width: progressBarWidth }">
         </div>
-    </transition>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -30,7 +34,8 @@
         name: "ErrorMessage",
         props: {
             errors: {
-                type: Errors
+                type: Errors,
+                required: true
             },
             title: {
                 type: String,
@@ -75,15 +80,15 @@
 </script>
 
 <style scoped>
-    .fade-leave-active {
-        transition: opacity .5s;
-    }
+  .fade-leave-active {
+    transition: opacity .5s;
+  }
 
-    .fade-leave-to {
-        opacity: 0;
-    }
+  .fade-leave-to {
+    opacity: 0;
+  }
 
-    ul {
-        margin-bottom: 0;
-    }
+  ul {
+    margin-bottom: 0;
+  }
 </style>

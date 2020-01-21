@@ -2,7 +2,7 @@
 
 namespace App\Models\Concerns;
 
-use App\Events\User\Updated;
+use App\Events\User\RatingsChanged;
 use App\Libraries\CERT\VATSIMUserDetails;
 use App\Models\Rating;
 use App\Models\RatingPivot;
@@ -75,7 +75,7 @@ trait HasRatings
 
         if (! empty($idsToSync = $ratingIds->diff($currentRatingIds))) {
             $this->ratings()->syncWithoutDetaching($idsToSync);
-            event(new Updated($this));
+            event(new RatingsChanged($this));
         }
     }
 

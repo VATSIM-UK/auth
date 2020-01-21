@@ -1,16 +1,16 @@
 <template>
-    <div class="input-group">
-        <input class="form-control"
-               :class="{'is-invalid': errors.has(name)}"
-               :type="type"
-               :value="value"
-               :placeholder="placeholder"
-               @input="updateInput">
+  <div class="input-group">
+    <input class="form-control"
+           :class="{'is-invalid': errors.has(name)}"
+           :type="type"
+           :value="value"
+           :placeholder="placeholder"
+           @input="updateInput">
 
-        <div v-if="errors.has(name)" class="invalid-tooltip">
-            {{errors.get(name)}}
-        </div>
+    <div v-if="errors.has(name)" class="invalid-tooltip">
+      {{errors.get(name)}}
     </div>
+  </div>
 </template>
 
 <script>

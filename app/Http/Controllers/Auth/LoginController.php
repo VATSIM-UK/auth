@@ -34,8 +34,8 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
 
         $this->middleware(function ($request, $next) {
-            $this->partialWebUser = Auth::guard(self::SSO_GUARD)->user();
-            $this->webUser = Auth::guard('web')->user();
+            $this->partialWebUser = userOnSSOGuard();
+            $this->webUser = userOnFullGuard();
 
             return $next($request);
         });
@@ -92,7 +92,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
         });
     }
 
