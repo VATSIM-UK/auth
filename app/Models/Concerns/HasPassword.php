@@ -92,6 +92,16 @@ trait HasPassword
     }
 
     /**
+     * Returns if the user needs to add / change their secondary password
+     *
+     * @return bool
+     */
+    public function needsToUpdatePassword(): bool
+    {
+        return (! $this->hasPassword() && $this->requiresPassword()) || $this->passwordHasExpired();
+    }
+
+    /**
      * Determine whether the current account has a password set.
      *
      * @return bool
