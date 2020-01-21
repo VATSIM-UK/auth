@@ -190,12 +190,12 @@ class PermissionsAndRolesTest extends TestCase
             'id' => $roleID,
             'name' => 'My Second Role',
             'require_password' => false,
-            'password_refresh_rate' => null
+            'password_refresh_rate' => null,
         ]);
 
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => Role::class,
-            'permission' => "role.permission"
+            'permission' => 'role.permission',
         ]);
 
         $this->graphQL("
@@ -207,25 +207,25 @@ class PermissionsAndRolesTest extends TestCase
         ");
 
         $this->assertDatabaseMissing('roles', [
-            'name' => "My Second Role",
+            'name' => 'My Second Role',
             'require_password' => false,
-            'password_refresh_rate' => null
+            'password_refresh_rate' => null,
         ]);
 
         $this->assertDatabaseMissing('permission_assignments', [
             'related_type' => Role::class,
-            'permission' => "role.permission"
+            'permission' => 'role.permission',
         ]);
 
         $this->assertDatabaseHas('roles', [
-            'name' => "My Updated Role",
+            'name' => 'My Updated Role',
             'require_password' => false,
-            'password_refresh_rate' => null
+            'password_refresh_rate' => null,
         ]);
 
         $this->assertDatabaseHas('permission_assignments', [
             'related_type' => Role::class,
-            'permission' => "role.permission.next"
+            'permission' => 'role.permission.next',
         ]);
 
         $this->graphQL("
@@ -237,7 +237,7 @@ class PermissionsAndRolesTest extends TestCase
         ");
 
         $this->assertDatabaseMissing('roles', [
-            'id' => $roleID
+            'id' => $roleID,
         ]);
     }
 }

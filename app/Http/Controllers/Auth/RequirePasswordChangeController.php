@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RequirePasswordChangeController extends Controller
 {
-
     public function showSetSecondaryPassword()
     {
         if (! Auth::user()->requiresPassword() && ! Auth::user()->passwordHasExpired()) {
@@ -21,7 +20,6 @@ class RequirePasswordChangeController extends Controller
 
     public function setSecondaryPassword(Request $request)
     {
-
         $user = Auth::user();
         $this->validate($request, [
             'old_password' => [function ($attribute, $value, $fail) use ($user) {

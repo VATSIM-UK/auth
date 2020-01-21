@@ -9,13 +9,13 @@ class PermissionDirectiveTest extends TestCase
 {
     use MakesGraphQLRequests;
 
-    private $permissionProtectedQuery = ("
+    private $permissionProtectedQuery = ('
             query {
                 roles {
                     name
                 }
             }
-        ");
+        ');
     private $permission = 'auth.roles';
     private $queryMethodName = 'roles';
 
@@ -35,7 +35,7 @@ class PermissionDirectiveTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->graphQL($this->permissionProtectedQuery)
             ->assertJsonMissing([
-                "errors"
+                'errors',
             ]);
     }
 }

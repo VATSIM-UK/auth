@@ -5,7 +5,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Returns if the user is authenticated on any of the defined guards
+ * Returns if the user is authenticated on any of the defined guards.
  *
  * @return bool
  */
@@ -22,7 +22,7 @@ function authenticatedOnAnyGuard(): bool
 }
 
 /**
- * Returns user logged in on the full guard
+ * Returns user logged in on the full guard.
  *
  * @return User|null
  */
@@ -32,7 +32,7 @@ function userOnFullGuard(): ?User
 }
 
 /**
- * Returns user logged in on the SSO guard
+ * Returns user logged in on the SSO guard.
  *
  * @return User|null
  */
@@ -42,7 +42,7 @@ function userOnSSOGuard(): ?User
 }
 
 /**
- * Returns if the user is authenticated on the full guard
+ * Returns if the user is authenticated on the full guard.
  *
  * @return bool
  */
@@ -52,7 +52,7 @@ function authenticatedOnFullGuard(): bool
 }
 
 /**
- * Returns if the user is authenticated on the SSO guard
+ * Returns if the user is authenticated on the SSO guard.
  *
  * @return bool
  */
