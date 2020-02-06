@@ -10,7 +10,7 @@
                 For security purposes, due to your allocated roles, you are required to set a secondary password below.
             @endif
         </p>
-        <form method="POST" action="{{ route('login.set_password') }}">
+        <form method="POST" action="{{ route('login.password.set') }}">
             @csrf
 
             @if(\Illuminate\Support\Facades\Auth::user()->hasPassword())

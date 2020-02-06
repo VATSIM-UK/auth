@@ -158,7 +158,7 @@ class LoginController extends Controller
         Auth::guard(self::FULL_GUARD)->loginUsingId($user->getKey(), true);
 
         if ($user->needsToUpdatePassword()) {
-            return redirect()->route('login.set_password');
+            return redirect()->route('login.password.set');
         }
 
         return redirect()->intended();

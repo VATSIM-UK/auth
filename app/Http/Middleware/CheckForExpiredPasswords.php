@@ -19,10 +19,10 @@ class CheckForExpiredPasswords
     {
         $user = Auth::user();
 
-        if (! $user || ! $user->needsToUpdatePassword()) {
+        if (!$user || !$user->needsToUpdatePassword()) {
             return $next($request);
         }
 
-        return redirect()->route('login.set_password');
+        return redirect()->route('login.password.set');
     }
 }

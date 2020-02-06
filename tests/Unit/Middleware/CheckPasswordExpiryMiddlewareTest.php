@@ -64,7 +64,7 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
             //
         });
         $this->assertEquals(get_class($response), RedirectResponse::class);
-        $this->assertEquals(route('login.set_password'), $response->headers->get('location'));
+        $this->assertEquals(route('login.password.set'), $response->headers->get('location'));
     }
 
     /** @test */
@@ -82,6 +82,6 @@ class CheckPasswordExpiryMiddlewareTest extends TestCase
             //
         });
         $this->assertEquals(get_class($response), RedirectResponse::class);
-        $this->assertEquals(route('login.set_password'), $response->headers->get('location'));
+        $this->assertEquals(route('login.password.set'), $response->headers->get('location'));
     }
 }

@@ -47,22 +47,22 @@ class UserRolePasswordRequirementTest extends TestCase
 
         $this->actingAs($this->user)
             ->get(self::FAKE_PATH)
-            ->assertRedirect(route('login.set_password'));
+            ->assertRedirect(route('login.password.set'));
     }
 
     public function testUserWithRequirementAndNoPasswordRedirected()
     {
         $this->actingAs($this->user)
             ->get(self::FAKE_PATH)
-            ->assertRedirect(route('login.set_password'));
+            ->assertRedirect(route('login.password.set'));
     }
 
     public function testUserCanSetThePasswordWithoutPassword()
     {
         $this->actingAs($this->user)
             ->followingRedirects()
-            ->from(route('login.set_password'))
-            ->post(route('login.set_password'), [
+            ->from(route('login.password.set'))
+            ->post(route('login.password.set'), [
                 'password' => 'A5trongP@ssw0rd',
                 'password_confirmation' => 'A5trongP@ssw0rd',
             ])->assertLocation('/');
@@ -77,8 +77,8 @@ class UserRolePasswordRequirementTest extends TestCase
 
         $this->actingAs($this->user)
             ->followingRedirects()
-            ->from(route('login.set_password'))
-            ->post(route('login.set_password'), [
+            ->from(route('login.password.set'))
+            ->post(route('login.password.set'), [
                 'current_password' => 'A Password',
                 'password' => 'A5trongP@ssw0rd',
                 'password_confirmation' => 'A5trongP@ssw0rd',

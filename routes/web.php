@@ -19,7 +19,7 @@ Route::namespace('Auth')->group(function () {
     Route::get('/logout', 'LoginController@logout')->name('logout');
 
     Route::middleware('auth')->group(function () {
-        Route::get('/login/password/set', 'RequirePasswordChangeController@showSetSecondaryPassword')->name('login.set_password');
+        Route::get('/login/password/set', 'RequirePasswordChangeController@showSetSecondaryPassword')->name('login.password.set');
         Route::post('/login/password/set', 'RequirePasswordChangeController@setSecondaryPassword');
     });
 
