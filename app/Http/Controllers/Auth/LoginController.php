@@ -50,7 +50,7 @@ class LoginController extends Controller
     }
 
     /**
-     * This function acts as an internal route for all login-related actions.
+     * This function acts as an internal router for all login-related actions.
      *
      * @param Request $request
      * @return mixed
@@ -58,16 +58,17 @@ class LoginController extends Controller
     public function handleLogin(Request $request)
     {
         // Step 1: Check if user has logged in via SSO yet
-        if (! $this->partialWebUser) {
+        if (!$this->partialWebUser) {
             return $this->loginWithVatsimSSO();
         }
 
-        // Step 3: User SSO authenticated. Now check for secondary authentication issues
-        if (! $this->partialWebUser->hasPassword()) {
+        // Step 2: User SSO authenticated. Now check for secondary authentication issues
+        if (!$this->partialWebUser->hasPassword()) {
             return $this->authDone($this->partialWebUser);
         }
 
-        if (! $request->has('password') && $request->isMethod('GET')) {
+        // Step 3: User has secondary password. If it is a GET request, show the secondary login page
+        if (!$request->has('password') && $request->isMethod('GET')) {
             return $this->showSecondarySignin();
         }
 
@@ -75,13 +76,10 @@ class LoginController extends Controller
         return $this->verifySecondarySignin($request);
     }
 
-    /*
-     * Step 1: Redirect to VATSIM.NET SSO
-     */
     public function loginWithVatsimSSO()
     {
         // Check we have necessary information
-        if (! VATSIMSSO::isEnabled()) {
+        if (!VATSIMSSO::isEnabled()) {
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
@@ -92,13 +90,10 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
         });
     }
 
-    /*
-     * Step 2: Verify SSO Login after redirect
-     */
     public function verifySSOLogin(Request $request)
     {
         $sso = new VATSIMSSO();
@@ -135,18 +130,10 @@ class LoginController extends Controller
         );
     }
 
-    /*
-     * Step (3): Show Secondary Sign In
-     */
-
     public function showSecondarySignin()
     {
         return view('auth.secondary')->with('user', $this->partialWebUser);
     }
-
-    /*
-     * Step (4): Fully Authenticate
-     */
 
     public function verifySecondarySignin(Request $request)
     {
@@ -156,7 +143,7 @@ class LoginController extends Controller
             $passwordFieldName => 'required|string',
         ]);
 
-        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
+        if (!Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 $passwordFieldName => ['The supplied password did not match our records'],
             ]);
