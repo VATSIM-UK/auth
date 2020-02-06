@@ -58,17 +58,17 @@ class LoginController extends Controller
     public function handleLogin(Request $request)
     {
         // Step 1: Check if user has logged in via SSO yet
-        if (!$this->partialWebUser) {
+        if (! $this->partialWebUser) {
             return $this->loginWithVatsimSSO();
         }
 
         // Step 2: User SSO authenticated. Now check for secondary authentication issues
-        if (!$this->partialWebUser->hasPassword()) {
+        if (! $this->partialWebUser->hasPassword()) {
             return $this->authDone($this->partialWebUser);
         }
 
         // Step 3: User has secondary password. If it is a GET request, show the secondary login page
-        if (!$request->has('password') && $request->isMethod('GET')) {
+        if (! $request->has('password') && $request->isMethod('GET')) {
             return $this->showSecondarySignin();
         }
 
@@ -79,7 +79,7 @@ class LoginController extends Controller
     public function loginWithVatsimSSO()
     {
         // Check we have necessary information
-        if (!VATSIMSSO::isEnabled()) {
+        if (! VATSIMSSO::isEnabled()) {
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
@@ -90,7 +90,7 @@ class LoginController extends Controller
 
             return redirect($url);
         }, function ($error) {
-            throw new AuthenticationException('Could not authenticate with VATSIM SSO: ' . $error['message']);
+            throw new AuthenticationException('Could not authenticate with VATSIM SSO: '.$error['message']);
         });
     }
 
@@ -143,7 +143,7 @@ class LoginController extends Controller
             $passwordFieldName => 'required|string',
         ]);
 
-        if (!Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
+        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 $passwordFieldName => ['The supplied password did not match our records'],
             ]);
