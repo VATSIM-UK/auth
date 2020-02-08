@@ -40,7 +40,7 @@ trait HasPassword
         // else password needs hashing, hash and store it
         if ($password === null) {
             $this->attributes[$this->passwordAttributeName] = null;
-        } elseif (!Hash::needsRehash($password)) {
+        } elseif (! Hash::needsRehash($password)) {
             $this->attributes[$this->passwordAttributeName] = $password;
         } else {
             $this->attributes[$this->passwordAttributeName] = Hash::make($password);
@@ -59,7 +59,7 @@ trait HasPassword
             ->orderBy($this->passwordRefreshRateAttributeName, 'asc')
             ->pluck($this->passwordRefreshRateAttributeName)->first();
 
-        if (!$rate || !$this->password_set_at) {
+        if (! $rate || ! $this->password_set_at) {
             return null;
         }
 
@@ -93,7 +93,7 @@ trait HasPassword
      */
     public function needsToUpdatePassword(): bool
     {
-        return (!$this->hasPassword() && $this->requiresPassword()) || $this->passwordHasExpired();
+        return (! $this->hasPassword() && $this->requiresPassword()) || $this->passwordHasExpired();
     }
 
     /**
