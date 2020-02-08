@@ -13,7 +13,7 @@ addons:
 
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
-  - cp .env.example .env
+  - cp .env.travis .env
   - sudo apt-get update
   - composer self-update
 
