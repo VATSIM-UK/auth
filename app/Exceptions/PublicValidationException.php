@@ -2,9 +2,10 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Nuwave\Lighthouse\Exceptions\RendersErrorsExtensions;
 
-class PublicValidationException extends \Exception implements RendersErrorsExtensions
+class PublicValidationException extends Exception implements RendersErrorsExtensions
 {
     /**
      * Returns true when exception message is safe to be displayed to a client.

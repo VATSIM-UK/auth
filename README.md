@@ -5,18 +5,38 @@ Laravel based OAuth 2 server for service-wide SSO and authentication.
 ## Installation
 1. It is recommended you use a container for development / hosting of the application. For Docker, [Laradock](https://laradock.io/) ships with all the required components to run the application. For Vagrant, Laravel's Homestead works well.
 2. Run the following commands in the root of the project
+
+For Development Environments:
 ```php
 // Create environment file
     $ cp .env.example .env 
 
-// Install Composer dependencies. If on development:
-    $ composer install 
-// For production:
+// Install Composer dependencies
+    $ composer install
+
+// Install frontend dependencies. (If on Windows VM, add --no-bin-links to command)
+    $ yarn
+
+// Setup Laravel
+    $ php artisan key:generate
+    $ php artisan migrate -vvv -n
+    $ php artisan db:seed
+    $ php artisan passport:keys
+    $ php artisan passport:client --client --name="VATSIM UK ClientCredentials Client"
+
+// Compile Assets
+    $ yarn run dev
+```
+
+For Production Environments:
+```php
+// Create environment file
+    $ cp .env.example .env 
+
+// Install Composer dependencies
     $ composer install --no-dev --optimize-autoloader
 
-// Install frontend dependencies. (If on Windows VM, add --no-bin-links to command) If on development:
-    $ yarn
-// For production
+// Install frontend dependencies. (If on Windows VM, add --no-bin-links to command)
     $ yarn --no-dev
 
 // Setup Laravel
@@ -26,12 +46,9 @@ Laravel based OAuth 2 server for service-wide SSO and authentication.
     $ php artisan passport:keys
     $ php artisan passport:client --client --name="VATSIM UK ClientCredentials Client"
 
-// Compile Assets. For development:
-    $ yarn run dev
-// For production:
+// Compile Assets
     $ yarn run prod
 ```
-
 ## Development
 
 ### Tips and Tricks

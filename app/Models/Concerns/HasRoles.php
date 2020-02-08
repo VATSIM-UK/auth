@@ -41,7 +41,7 @@ trait HasRoles
         if ($roles instanceof Collection) {
             $roles = $roles->all();
         }
-        if (! is_array($roles)) {
+        if (!is_array($roles)) {
             $roles = [$roles];
         }
         $roles = array_map(function ($role) {
@@ -75,9 +75,17 @@ trait HasRoles
 
         $changes = $this->roles()->sync($roles, false);
 
+        // If the effected Model is a user, count the number of rows updated to see if we should fire an event.
+        // The sync above will return an array of the changes like such:
+        //        [
+        //            'attached' => [1, 2, 3],
+        //            'detached' => [4, 5],
+        //            'updated' => [6]
+        //        ]
+
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -116,15 +124,15 @@ trait HasRoles
 
         $changes = $this->roles()->sync($roles);
 
-        if ($this->fresh()->requiresPassword() && ! $this->hasPassword()) {
+        if ($this->fresh()->requiresPassword() && !$this->hasPassword()) {
             // Invalidate User's Session, forcing them through Auth to set a secondary password
             $this->setRememberToken(null);
             $this->save();
         }
 
         if ($this instanceof User && collect($changes)->sum(function ($value) {
-            return count($value);
-        }) > 0) {
+                return count($value);
+            }) > 0) {
             event(new RolesChanged($this));
         }
 
@@ -142,14 +150,14 @@ trait HasRoles
         if (is_string($roles) && false !== strpos($roles, '|')) {
             $roles = $this->convertPipeToArray($roles);
         }
-        if (is_numeric($roles) && $roles = (int) $roles) {
-            return $this->roles->contains('id', $roles);
+        if (is_numeric($roles) && $roles = (int)$roles) {
+            return $this->hasRoleByID($roles);
         }
         if (is_string($roles)) {
-            return $this->roles->contains('name', $roles);
+            return $this->hasRoleByName($roles);
         }
         if ($roles instanceof Role) {
-            return $this->roles->contains('id', $roles->id);
+            return $this->hasRoleByID($roles->id);
         }
         if ($roles instanceof Collection) {
             $roles = $roles->all();
@@ -161,6 +169,28 @@ trait HasRoles
         }
 
         return false;
+    }
+
+    /**
+     * Returns if the model has a role by a role ID
+     *
+     * @param int $roleID
+     * @return bool
+     */
+    public function hasRoleByID(int $roleID): bool
+    {
+        return $this->roles->contains('id', $roleID);
+    }
+
+    /**
+     * Returns if the model has a role by a role name
+     *
+     * @param string $roleName
+     * @return bool
+     */
+    public function hasRoleByName(string $roleName): bool
+    {
+        return $this->roles->contains('name', $roleName);
     }
 
     /**
@@ -245,7 +275,7 @@ trait HasRoles
         if ($quoteCharacter !== $endCharacter) {
             return explode('|', $pipeString);
         }
-        if (! in_array($quoteCharacter, ["'", '"'])) {
+        if (!in_array($quoteCharacter, ["'", '"'])) {
             return explode('|', $pipeString);
         }
 
