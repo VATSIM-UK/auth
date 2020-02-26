@@ -3,15 +3,12 @@
 namespace Tests\Feature;
 
 use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    use DatabaseTransactions;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,7 +37,7 @@ class PasswordResetTest extends TestCase
     {
         $this->actingAs($this->user, 'partial_web');
 
-        $this->get(route('login.secondary'))
+        $this->get(route('login'))
             ->assertSeeText('Forgot your password?');
     }
 

@@ -2,9 +2,9 @@
 
 namespace App\Exceptions\Ban;
 
-use Exception;
+use App\Exceptions\PublicValidationException;
 
-class AlreadyNetworkBannedException extends Exception
+class AlreadyNetworkBannedException extends PublicValidationException
 {
     protected $message = 'This user is already network banned';
 }

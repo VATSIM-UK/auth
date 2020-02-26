@@ -1,0 +1,85 @@
+type User {
+    id: ID!
+    slack_id: String
+    name_first: String!
+    name_last: String!
+    nickname: String
+    email: String!
+    password_set_at: DateTime
+    last_login: DateTime
+    last_login_ip: String!
+    remember_token: String
+    joined_at: DateTime!
+    cert_checked_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+    deleted_at: DateTime
+    has_password: Boolean
+
+    ratings: [Rating!]
+    atcRating: Rating!
+    pilotRatings: [Rating!]
+
+    bans: [Ban!]
+    currentBans: [Ban!]
+    network_ban: Ban
+    banned: Boolean
+
+    all_permissions: [String!]
+    roles: [Role!]
+}
+
+type Rating {
+    id: ID!
+    type: RatingConstant!
+    code: String!
+    code_long: String!
+    name: String!
+    name_long: String!
+    vatsim_id: Int!
+}
+
+type Ban {
+    id: ID!
+    user_id: ID!
+    banner_id: ID
+    reason_id: ID
+    type: BanConstant!
+    body: String
+    starts_at: DateTime!
+    ends_at: DateTime
+
+    created_at: DateTime!
+    updated_at: DateTime!
+    repealed_at: DateTime
+
+    user: User!
+    banner: User
+    reason: BanReason
+}
+
+type BanReason {
+    id: ID!
+    name: String!
+    body: String
+    period: String!
+
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Role {
+    id: ID!
+    name: String!
+    permissions: [Assignment!]
+    users: [User!]
+
+    require_password: Boolean
+    password_refresh_rate: Int
+
+    number_users: Int! @count(relation: "users")
+}
+
+type Assignment {
+    permission: String!
+}

@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Api;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
 class PasswordResetTest extends TestCase
 {
-    use DatabaseTransactions, MakesGraphQLRequests;
+    use MakesGraphQLRequests;
 
     protected function setUp(): void
     {

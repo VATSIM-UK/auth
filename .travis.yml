@@ -1,23 +1,26 @@
 os:
   - linux
 
+language: php
+
 php:
-  - 7.2
   - 7.3
+  - 7.4
 
 addons:
   mariadb: '10.2'
+  chrome: stable
 
 before_install:
   - mysql -e 'create database IF NOT EXISTS ukauth;' -uroot
-  - mysql -e 'create database IF NOT EXISTS core;' -uroot
-  - cp .env.example .env
+  - cp .env.travis .env
   - sudo apt-get update
   - composer self-update
-  - composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
-  - yarn install
 
 install:
+  - travis_retry composer install --no-interaction --prefer-dist --no-suggest --optimize-autoloader
+  - yarn install
+  - php artisan dusk:chrome-driver
   - php artisan key:generate
   - php artisan migrate -vvv -n
   - php artisan db:seed
@@ -41,7 +44,10 @@ before_script:
   - sed -i 's%^VATSIM_SSO_CERTIFCATE.*$%VATSIM_SSO_CERTIFCATE=\"${SSO_CERT}\"%' .env
   - sed -i "s%^VATSIM_SSO_KEY.*$%VATSIM_SSO_KEY=${SSO_KEY}%" .env
   - sed -i "s%^VATSIM_SSO_SECRET.*$%VATSIM_SSO_SECRET=${SSO_SECRET}%" .env
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - php artisan serve &
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
   - yarn run test
+  - php artisan dusk

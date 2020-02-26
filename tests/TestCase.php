@@ -4,14 +4,15 @@ namespace Tests;
 
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Tests\Database\MockCoreDatabase;
+use Illuminate\Support\Facades\Gate;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use CreatesApplication, DatabaseTransactions;
 
-    /* @var \App\User */
+    /* @var User */
     protected $user;
 
     protected function setUp(): void
@@ -19,9 +20,18 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         Carbon::setTestNow();
 
-        // Setup account table
-        MockCoreDatabase::create();
-
         $this->user = factory(User::class)->create();
+    }
+
+    public function withoutPermissions()
+    {
+        Gate::before(function () {
+            return true;
+        });
+    }
+
+    public function assertCollectionSubset($subset, $collection)
+    {
+        $this->assertEquals($subset, $subset->intersect($collection));
     }
 }

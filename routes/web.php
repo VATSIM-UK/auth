@@ -12,12 +12,16 @@
 */
 
 Route::namespace('Auth')->group(function () {
-    Route::get('/login', 'LoginController@loginWithVatsimSSO')->name('login');
+    Route::get('/login', 'LoginController@handleLogin')->name('login');
+    Route::post('/login', 'LoginController@handleLogin');
     Route::get('/login/sso/verify', 'LoginController@verifySSOLogin')->name('login.sso.verify');
-    Route::get('/login/secondary', 'LoginController@showSecondarySignin')->name('login.secondary');
-    Route::post('/login/secondary', 'LoginController@verifySecondarySignin');
 
     Route::get('/logout', 'LoginController@logout')->name('logout');
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/login/password/set', 'RequirePasswordChangeController@showSetSecondaryPassword')->name('login.password.set');
+        Route::post('/login/password/set', 'RequirePasswordChangeController@setSecondaryPassword');
+    });
 
     Route::middleware(['auth:partial_web', 'guest:web', 'auth.mandate.password'])->group(function () {
         Route::get('/login/password/forgot', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
@@ -30,4 +34,6 @@ Route::namespace('Auth')->group(function () {
     Route::post('/action/confirm', 'ConfirmPasswordController@confirm')->name('password.confirm');
 });
 
-Route::get('/{any?}', 'SpaController@index')->where('any', '.*');
+Route::get('/{any?}', 'SpaController@index')
+    ->where('any', '.*')
+    ->middleware('auth.check.password.expiry');

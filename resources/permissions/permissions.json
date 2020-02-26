@@ -1,0 +1,13 @@
+{
+    "auth": {
+        "permissions": [
+            "assign"
+        ],
+        "roles": [
+            "create",
+            "update",
+            "delete",
+            "assign"
+        ]
+    }
+}

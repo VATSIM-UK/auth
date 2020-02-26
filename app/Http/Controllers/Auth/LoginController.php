@@ -23,22 +23,59 @@ class LoginController extends Controller
      *  5) Secondary Authentication users are then logged in once completed successfully.
      */
 
+    private $webUser;
+    private $partialWebUser;
+
+    const SSO_GUARD = 'partial_web';
+    const FULL_GUARD = 'web';
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+
+        $this->middleware(function ($request, $next) {
+            $this->partialWebUser = userOnSSOGuard();
+            $this->webUser = userOnFullGuard();
+
+            return $next($request);
+        });
     }
 
     public function logout()
     {
         Auth::logout();
-        Auth::guard('partial_web')->logout();
+        Auth::guard(self::SSO_GUARD)->logout();
 
         return redirect('/');
     }
 
-    /*
-     * Step 1: Redirect to VATSIM.NET SSO
+    /**
+     * This function acts as an internal router for all login-related actions.
+     *
+     * @param Request $request
+     * @return mixed
      */
+    public function handleLogin(Request $request)
+    {
+        // Step 1: Check if user has logged in via SSO yet
+        if (! $this->partialWebUser) {
+            return $this->loginWithVatsimSSO();
+        }
+
+        // Step 2: User SSO authenticated. Now check for secondary authentication issues
+        if (! $this->partialWebUser->hasPassword()) {
+            return $this->authDone($this->partialWebUser);
+        }
+
+        // Step 3: User has secondary password. If it is a GET request, show the secondary login page
+        if (! $request->has('password') && $request->isMethod('GET')) {
+            return $this->showSecondarySignin();
+        }
+
+        // Step 4: Validate POST from Secondary Sign In
+        return $this->verifySecondarySignin($request);
+    }
+
     public function loginWithVatsimSSO()
     {
         // Check we have necessary information
@@ -46,21 +83,9 @@ class LoginController extends Controller
             return back()->with('error', 'VATSIM SSO Authentication is not currently available');
         }
 
-        if (Auth::guard('partial_web')->check()) {
-            $user = Auth::guard('partial_web')->user();
-            if ($user->hasPassword()) {
-                return redirect()->route('login.secondary');
-            } else {
-                Auth::loginUsingId($user->id, true);
-                Auth::guard('partial_web')->logout();
-
-                return $this->authDone($user);
-            }
-        }
-
         $sso = new VATSIMSSO();
 
-        return $sso->login(url('/login/sso/verify'), function ($key, $secret, $url) {
+        return $sso->login(route('login.sso.verify'), function ($key, $secret, $url) {
             Session::put('vatsimauth', compact('key', 'secret'));
 
             return redirect($url);
@@ -69,9 +94,6 @@ class LoginController extends Controller
         });
     }
 
-    /*
-     * Step 2: Verify SSO Login after redirect
-     */
     public function verifySSOLogin(Request $request)
     {
         $sso = new VATSIMSSO();
@@ -97,15 +119,10 @@ class LoginController extends Controller
 
                 $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
 
-                if ($user->hasPassword()) {
-                    Auth::guard('partial_web')->loginUsingId($vatsimUser->id, true);
+                Auth::guard(self::SSO_GUARD)->loginUsingId($vatsimUser->id, true);
+                $this->partialWebUser = $user;
 
-                    return redirect()->route('login.secondary');
-                }
-
-                Auth::loginUsingId($vatsimUser->id, true);
-
-                return $this->authDone($user);
+                return redirect()->route('login');
             },
             function ($error) {
                 throw new AuthenticationException($error['message']);
@@ -113,49 +130,37 @@ class LoginController extends Controller
         );
     }
 
-    /*
-     * Step (3): Show Secondary Sign In
-     */
-
     public function showSecondarySignin()
     {
-        $user = Auth::guard('partial_web')->user();
-
-        if (! $user->hasPassword()) {
-            return $this->authDone($user);
-        }
-
-        return view('auth.secondary')->with('user', $user);
+        return view('auth.secondary')->with('user', $this->partialWebUser);
     }
-
-    /*
-     * Step (4): Fully Authenticate
-     */
 
     public function verifySecondarySignin(Request $request)
     {
-        $user = Auth::guard('partial_web')->user();
-
-        if (! $user->hasPassword()) {
-            return $this->authDone($user);
-        }
+        $passwordFieldName = 'password';
 
         $this->validate($request, [
-            'password' => 'required|string',
+            $passwordFieldName => 'required|string',
         ]);
 
-        if (! Auth::attempt(['id' => Auth::guard('partial_web')->user()->id, 'password' => $request->input('password')])) {
+        if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
-               'password' => ['The supplied password did not match our records'],
+                $passwordFieldName => ['The supplied password did not match our records'],
             ]);
             throw $error;
         }
 
-        return $this->authDone($user);
+        return $this->authDone($this->partialWebUser);
     }
 
     public function authDone(User $user)
     {
-        return redirect()->intended('/');
+        Auth::guard(self::FULL_GUARD)->loginUsingId($user->getKey(), true);
+
+        if ($user->needsToUpdatePassword()) {
+            return redirect()->route('login.password.set');
+        }
+
+        return redirect()->intended();
     }
 }

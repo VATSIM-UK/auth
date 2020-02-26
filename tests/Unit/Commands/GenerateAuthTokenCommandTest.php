@@ -3,7 +3,6 @@
 namespace Tests\Unit\Commands;
 
 use App\Passport\Client;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
@@ -13,11 +12,16 @@ use Tests\TestCase;
 
 class GenerateAuthTokenCommandTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function itFailsSafelyWithNoClient()
     {
+        if (Passport::$personalAccessClientId != null) {
+            fwrite(STDOUT, "Personal Access Client Installed. Skipped test 'itFailsSafelyWithNoClient'.");
+            $this->expectNotToPerformAssertions();
+
+            return;
+        }
+
         Artisan::call("token:generate {$this->user->id}");
         $this->assertEquals("No personal access client has been setup. Create one with \"php artisan passport:client --personal\"\n", Artisan::output());
     }

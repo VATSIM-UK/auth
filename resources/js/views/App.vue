@@ -1,34 +1,29 @@
 <template>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <router-link :to="{ name: 'dashboard' }" v-if="this.$router.currentRoute.name != 'dashboard'"> Back to Dashboard</router-link>
-
-                    <div class="float-right">Hi, {{authUser.name_first}}</div>
-                </div>
-
-                <div class="card-body">
-                    <router-view></router-view>
-                </div>
-            </div>
-        </div>
-    </div>
+    <router-view v-if="!$apollo.queries.authUser.loading"></router-view>
+    <loading-cover v-else></loading-cover>
 </template>
+
 <script>
     import gql from 'graphql-tag'
+    import LoadingCover from "../components/ui/LoadingCover";
 
     export default {
-        data () {
-            return {
-                authUser: {},
+        components: {LoadingCover},
+        apollo: {
+            authUser: {
+                query: gql`{authUser {
+                    name_first
+                    name_last
+                    all_permissions
+                }}`,
+                result(result) {
+                    this.$store.commit('initAuthUser', {
+                        name_first: result.data.authUser.name_first,
+                        name_last: result.data.authUser.name_last,
+                        permissions: result.data.authUser.all_permissions
+                    });
+                }
             }
         },
-        apollo: {
-            authUser: gql`{authUser {
-                name_first
-                name_last
-              }}`,
-        }
     }
 </script>
