@@ -10,7 +10,7 @@ $factory->define(\App\Models\Rating::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->defineAs(\App\Models\Rating::class, 'atc', function (Faker\Generator $faker) use ($factory) {
+$factory->state(\App\Models\Rating::class, 'atc', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(\App\Models\Rating::class);
 
     return array_merge($atc, [
@@ -19,7 +19,7 @@ $factory->defineAs(\App\Models\Rating::class, 'atc', function (Faker\Generator $
         'type' => \App\Constants\RatingTypeConstants::ATC,
     ]);
 });
-$factory->defineAs(\App\Models\Rating::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
+$factory->state(\App\Models\Rating::class, 'pilot', function (Faker\Generator $faker) use ($factory) {
     $atc = $factory->raw(\App\Models\Rating::class);
 
     return array_merge($atc, [

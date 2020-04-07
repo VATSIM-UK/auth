@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Returns if the user is authenticated on any of the defined guards.
@@ -59,4 +60,10 @@ function authenticatedOnFullGuard(): bool
 function authenticatedOnSSOGuard(): bool
 {
     return Auth::guard(LoginController::SSO_GUARD)->check();
+}
+
+function reportException(Throwable $exception): void{
+    Log::error("Exception thrown, and handled.", ['exception' => $exception]);
+
+    //TODO: Install BugSnag
 }
