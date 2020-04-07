@@ -62,8 +62,20 @@ function authenticatedOnSSOGuard(): bool
     return Auth::guard(LoginController::SSO_GUARD)->check();
 }
 
-function reportException(Throwable $exception): void{
-    Log::error("Exception thrown, and handled.", ['exception' => $exception]);
+/**
+ * @param $exception Throwable?
+ * @param null $message
+ */
+function reportException($exception, $message = null): void
+{
+    if ($exception) {
+        Log::error("Exception thrown, and handled.", [
+            'message' => $message,
+            'exception' => $exception
+        ]);
+    } else {
+        Log::error("Error: " . $exception);
+    }
 
-    //TODO: Install BugSnag
+    //TODO: Install BugSnag and Implement Here
 }
