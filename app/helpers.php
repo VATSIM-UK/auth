@@ -69,12 +69,12 @@ function authenticatedOnSSOGuard(): bool
 function reportException($exception, $message = null): void
 {
     if ($exception) {
-        Log::error("Exception thrown, and handled.", [
+        Log::error('Exception thrown, and handled.', [
             'message' => $message,
-            'exception' => $exception
+            'exception' => $exception,
         ]);
     } else {
-        Log::error("Error: " . $exception);
+        Log::error('Error: '.$exception);
     }
 
     //TODO: Install BugSnag and Implement Here
