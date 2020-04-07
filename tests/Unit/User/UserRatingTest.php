@@ -19,7 +19,7 @@ class UserRatingTest extends TestCase
     /** @test */
     public function itCanHaveMultiplePilotRatings()
     {
-        $ratings = factory(Rating::class,3)->state('pilot')->create();
+        $ratings = factory(Rating::class, 3)->state('pilot')->create();
         $this->assertTrue($this->user->pilotRatings->isEmpty());
         $this->user->ratings()->sync([$ratings->first()->id, $ratings->last()->id]);
 
