@@ -21,7 +21,7 @@
         "laravel/passport": "^8.4",
         "laravel/tinker": "^2.0",
         "mll-lab/graphql-php-scalars": "^2.1",
-        "nuwave/lighthouse": "^4.7",
+        "nuwave/lighthouse": "^4.10",
         "vatsimuk/auth-package": "dev-master",
         "laravel/ui": "^2.0"
     },
