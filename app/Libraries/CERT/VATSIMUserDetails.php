@@ -49,12 +49,10 @@ class VATSIMUserDetails
             $xml = new \SimpleXMLElement($response->getBody()->getContents());
 
             if (! $xml->user) {
-                //TODO: Log exception
-                return;
+                return reportException(null, 'No user found in AutoTools XML Response');
             }
         } catch (ConnectException $e) {
-            //TODO: Log exception
-            return;
+            return reportException($e);
         }
 
         $values = json_decode(json_encode($xml->user), false);

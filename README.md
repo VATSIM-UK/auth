@@ -65,7 +65,7 @@ This project has 3 test suites:
 * Secondly, Laravel's Dusk test suite for front-end integration and feature testing
 * Finally, a Mocha test suite to unit test JS components and classes
 
-###Running PHPUnit tests (with code coverage):
+### Running PHPUnit tests (with code coverage):
 
 `$ phpunit (--coverage-html build)` () = Optional for code coverage
 

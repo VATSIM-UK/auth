@@ -24,11 +24,11 @@ class PermissionValidityServiceTest extends TestCase
             'related_id' => $assignment->related_id,
             'permission' => 'auth.users.*',
         ]);
-        factory(Assignment::class, 'user')->create([
+        factory(Assignment::class)->state('user')->create([
             'related_id' => $this->user->id,
             'permission' => 'auth.permissions.view',
         ]);
-        factory(Assignment::class, 'user')->create([
+        factory(Assignment::class)->state('user')->create([
             'related_id' => $this->user->id,
             'permission' => 'auth.users.*',
         ]);

@@ -10,7 +10,7 @@ class AuthServiceProviderTest extends TestCase
     /** @test */
     public function itRegistersCustomPermissionsOnGate()
     {
-        factory(Assignment::class, 'user')->create(
+        factory(Assignment::class)->state('user')->create(
             [
                 'related_id' => $this->user->id,
                 'permission' => 'test.permission',

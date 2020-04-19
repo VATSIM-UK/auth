@@ -16,6 +16,7 @@ before_install:
   - cp .env.travis .env
   - sudo apt-get update
   - composer self-update
+  - nvm install 12.16.1
 
 install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest --optimize-autoloader

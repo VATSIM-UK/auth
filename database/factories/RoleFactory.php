@@ -14,7 +14,7 @@ $factory->define(\App\Models\Permissions\Assignment::class, function () {
     ];
 });
 
-$factory->defineAS(\App\Models\Permissions\Assignment::class, 'user', function () {
+$factory->state(\App\Models\Permissions\Assignment::class, 'user', function () {
     return [
         'related_type' => \App\User::class,
         'related_id' => factory(\App\User::class),

@@ -100,7 +100,7 @@ class UserRetrievalTest extends TestCase
     public function testCanRetrieveUsersRatings()
     {
         $this->asMachineMachine();
-        $ratings = factory(Rating::class, 'atc', 2)->create();
+        $ratings = factory(Rating::class, 2)->state('atc')->create();
 
         $this->user->ratings()->sync($ratings);
 
@@ -127,7 +127,7 @@ class UserRetrievalTest extends TestCase
     public function testCanRetrieveUsersATCRating()
     {
         $this->asMachineMachine();
-        $rating = factory(Rating::class, 'atc')->create();
+        $rating = factory(Rating::class)->state('atc')->create();
 
         $this->user->ratings()->sync($rating);
 
@@ -155,7 +155,7 @@ class UserRetrievalTest extends TestCase
     public function testCanRetrieveUsersPilotRatings()
     {
         $this->asMachineMachine();
-        $rating = factory(Rating::class, 'pilot')->create();
+        $rating = factory(Rating::class)->state('pilot')->create();
 
         $this->graphQL("
         query{
@@ -250,7 +250,7 @@ class UserRetrievalTest extends TestCase
             'related_id' => $roles->last()->id,
             'permission' => 'ukts.emails.manage',
         ]);
-        factory(Assignment::class, 'user')->create([
+        factory(Assignment::class)->state('user')->create([
             'related_id' => $this->user->id,
             'permission' => 'ukts.people.manage',
         ]);
@@ -281,11 +281,11 @@ class UserRetrievalTest extends TestCase
     public function testCanCheckIfUserAuthorisedForPermission()
     {
         $this->asUserOnAPI();
-        factory(Assignment::class, 'user')->create([
+        factory(Assignment::class)->state('user')->create([
             'related_id' => $this->user->id,
             'permission' => 'ukts.people.manage',
         ]);
-        factory(Assignment::class, 'user')->create([
+        factory(Assignment::class)->state('user')->create([
             'related_id' => $this->user->id,
             'permission' => 'ukts.people.move',
         ]);
