@@ -64,9 +64,9 @@ function authenticatedOnSSOGuard(): bool
 
 /**
  * @param $exception Throwable?
- * @param null $message
+ * @param $message string?
  */
-function reportException($exception, $message = null): void
+function reportException(Throwable $exception, $message = null): void
 {
     Log::error('Exception thrown, and handled.', [
         'message' => $message,
