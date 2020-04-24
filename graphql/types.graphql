@@ -1,8 +1,11 @@
 type User {
     id: ID!
-    slack_id: String
+
     name_first: String!
     name_last: String!
+    name_full: String!
+
+    slack_id: String
     nickname: String
     email: String!
     password_set_at: DateTime

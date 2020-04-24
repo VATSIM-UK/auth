@@ -10,10 +10,7 @@ scalar Mixed @scalar(class: "MLL\\GraphQLScalars\\Mixed")
 #import types.graphql
 #import inputs.graphql
 
-type Query @middleware(checks: ["auth:api"]){
-    authUser: User @auth
-    authUserCan(permissions: [String!]!): Boolean @field(resolver: "AuthorizeUser")
-}
+type Query
 
 extend type Query @middleware(checks: ["client:machine-only"]){
     user(id: Int! @eq): User @find
@@ -22,5 +19,6 @@ extend type Query @middleware(checks: ["client:machine-only"]){
 
 type Mutation
 
+#import users.graphql
 #import passwords.graphql
 #import permissions.graphql

@@ -236,7 +236,7 @@
                     if (this.role) {
                         this.assignedPermissions = this.role.permissions.map(assignment => assignment.permission)
                     } else {
-                        this.errors.record(['This role does not exists!'])
+                        this.errors.record(['This role does not exist!'])
                     }
                 },
                 error(errors) {

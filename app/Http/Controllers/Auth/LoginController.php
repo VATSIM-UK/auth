@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request as RequestFacade;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -54,6 +55,7 @@ class LoginController extends Controller
      *
      * @param Request $request
      * @return mixed
+     * @throws ValidationException
      */
     public function handleLogin(Request $request)
     {
@@ -144,7 +146,7 @@ class LoginController extends Controller
         ]);
 
         if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
-            $error = \Illuminate\Validation\ValidationException::withMessages([
+            $error = ValidationException::withMessages([
                 $passwordFieldName => ['The supplied password did not match our records'],
             ]);
             throw $error;

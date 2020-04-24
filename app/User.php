@@ -43,6 +43,11 @@ class User extends Authenticatable implements CanResetPasswordInterface
         'password_set_at',
     ];
 
+    public function getNameFullAttribute()
+    {
+        return $this->name_first . ' ' . $this->name_last;
+    }
+
     public function getHasPasswordAttribute(): bool
     {
         return (bool) $this->password;
