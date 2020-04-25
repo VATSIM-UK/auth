@@ -118,6 +118,7 @@ class LoginController extends Controller
                 $user->save();
 
                 $user->syncRatings($vatsimUser->rating->id, $vatsimUser->pilot_rating->rating);
+                $user->updatePrimaryMembership($vatsimUser->division->code, $vatsimUser->region->code);
 
                 Auth::guard(self::SSO_GUARD)->loginUsingId($vatsimUser->id, true);
                 $this->partialWebUser = $user;
