@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models\Concerns;
-
 
 use App\Exceptions\Memberships\MembershipNotSecondaryException;
 use App\Exceptions\Memberships\PrimaryMembershipDoesntAllowSecondaryException;
@@ -44,28 +42,28 @@ trait HasMemberships
     {
         $matchingMembership = Membership::findPrimaryByVATSIMLocality($division, $region);
 
-        if(!$matchingMembership){
+        if (! $matchingMembership) {
             return false;
         }
 
         // Check if the user already has this membership
-        if($this->hasMembership($matchingMembership)){
+        if ($this->hasMembership($matchingMembership)) {
             return false;
         }
 
         // Check we can have secondary memberships
-        if(!$matchingMembership->can_have_secondaries){
+        if (! $matchingMembership->can_have_secondaries) {
             $this->removeSecondaryMemberships();
         }
 
         // End Previous Primary Membership
-        if($currentMembership = $this->primaryMembership()){
+        if ($currentMembership = $this->primaryMembership()) {
             $this->removeMembership($currentMembership);
         }
 
         $this->memberships()->attach($matchingMembership, [
             'division' => $division,
-            'region' => $region
+            'region' => $region,
         ]);
 
         return true;
@@ -76,12 +74,12 @@ trait HasMemberships
         throw_if($membership->primary, new MembershipNotSecondaryException());
 
         // Check we can have secondary memberships
-        if($this->primaryMembership() && !$this->primaryMembership()->can_have_secondaries){
+        if ($this->primaryMembership() && ! $this->primaryMembership()->can_have_secondaries) {
             throw new PrimaryMembershipDoesntAllowSecondaryException();
         }
 
         // Check if the user already has this membership
-        if($this->hasMembership($membership)){
+        if ($this->hasMembership($membership)) {
             return false;
         }
 
@@ -93,7 +91,7 @@ trait HasMemberships
     public function removeSecondaryMemberships(): void
     {
         $this->secondaryMemberships->each(function ($membership) {
-           $this->removeMembership($membership);
+            $this->removeMembership($membership);
         });
     }
 
@@ -118,6 +116,6 @@ trait HasMemberships
     {
         return $this->belongsToMany(Membership::class, 'user_memberships')
             ->using(MembershipPivot::class)
-            ->withPivot('region', 'division','started_at', 'ended_at');
+            ->withPivot('region', 'division', 'started_at', 'ended_at');
     }
 }

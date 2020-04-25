@@ -6,5 +6,5 @@ use Exception;
 
 class MembershipNotSecondaryException extends Exception
 {
-    protected $message = "The subject membership is not a secondary membership";
+    protected $message = 'The subject membership is not a secondary membership';
 }

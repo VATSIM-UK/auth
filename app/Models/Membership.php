@@ -11,11 +11,11 @@ use Illuminate\Support\Collection;
 
 class Membership extends Model
 {
-    const IDENT_DIVISION = "DIV";
-    const IDENT_REGION = "REG";
-    const IDENT_INTERNATIONAL = "INT";
-    const IDENT_VISITING = "VIS";
-    const IDENT_TRANSFERING = "TFR";
+    const IDENT_DIVISION = 'DIV';
+    const IDENT_REGION = 'REG';
+    const IDENT_INTERNATIONAL = 'INT';
+    const IDENT_VISITING = 'VIS';
+    const IDENT_TRANSFERING = 'TFR';
 
     public $timestamps = false;
 
@@ -56,6 +56,7 @@ class Membership extends Model
             if ($regionCriteriaMatched && $divisionCriteriaMatched) {
                 return true;
             }
+
             return false;
         });
     }
@@ -68,7 +69,7 @@ class Membership extends Model
 
     public function getSecondaryAttribute(): bool
     {
-        return !$this->primary;
+        return ! $this->primary;
     }
 
     public function getDivisionExpressionAttribute(): ?Collection

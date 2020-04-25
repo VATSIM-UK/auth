@@ -316,7 +316,7 @@ class UserRetrievalTest extends TestCase
 
         // Add states
         $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_DIVISION), [
-            'ended_at' => Carbon::now()
+            'ended_at' => Carbon::now(),
         ]);
         $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_INTERNATIONAL));
         $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_VISITING));
@@ -340,14 +340,12 @@ class UserRetrievalTest extends TestCase
         }
         ');
 
-
         $result = $result->json('data.authUser');
 
         $this->assertCount(2, $result['memberships']);
         $this->assertCount(3, $result['membershipHistory']);
         $this->assertEquals(Membership::IDENT_INTERNATIONAL, $result['primaryMembership']['identifier']);
         $this->assertCount(1, $result['secondaryMemberships']);
-
     }
 
     private function asMachineMachine()
