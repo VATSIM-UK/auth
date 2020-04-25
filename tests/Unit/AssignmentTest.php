@@ -5,10 +5,13 @@ namespace Tests\Unit;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class AssignmentTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function itCanGetTheRelatedModel()
     {

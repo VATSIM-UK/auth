@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\User;
 
 use App\Events\User\Banned;
 use App\Events\User\BanRepealed;
@@ -9,11 +9,14 @@ use App\Exceptions\Ban\BanEndsBeforeStartException;
 use App\Models\Ban;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserBansTest extends TestCase
 {
+    use DatabaseTransactions;
+
     protected function setUp(): void
     {
         parent::setUp();

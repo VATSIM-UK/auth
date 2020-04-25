@@ -1,18 +1,21 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\User;
 
 use App\Events\User\PermissionsChanged;
 use App\Exceptions\InvalidPermissionException;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class UserPermissionTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /* @var Role */
     private $role1;
     private $role2;

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Commands;
 
 use App\Passport\Client;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
@@ -12,6 +13,8 @@ use Tests\TestCase;
 
 class GenerateAuthTokenCommandTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /** @test */
     public function itFailsSafelyWithNoClient()
     {

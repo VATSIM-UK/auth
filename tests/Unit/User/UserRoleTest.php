@@ -6,11 +6,14 @@ use App\Events\User\RolesChanged;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserRoleTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /* @var Role */
     private $role1;
     private $role2;
@@ -96,7 +99,7 @@ class UserRoleTest extends TestCase
 
         $this->user->assignRole($newRoles->take(-2));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(2)));
-        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id.'|'.$newRoles->get(2)->id));
+        $this->assertTrue($this->user->fresh()->hasRole($newRoles->get(1)->id . '|' . $newRoles->get(2)->id));
         $this->assertTrue($this->user->fresh()->hasRole($newRoles->last()));
         Event::assertDispatchedTimes(RolesChanged::class, 2);
     }

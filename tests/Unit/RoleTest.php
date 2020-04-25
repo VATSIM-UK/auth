@@ -6,12 +6,15 @@ use App\Events\User\PermissionsChanged;
 use App\Models\Permissions\Assignment;
 use App\Models\Role;
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 use VATSIMUK\Support\Auth\Facades\PermissionValidity;
 
 class RoleTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /* @var Role */
     private $role;
 
