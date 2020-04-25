@@ -5,13 +5,10 @@ namespace Tests\Unit;
 use App\Constants\BanTypeConstants;
 use App\Models\Ban;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class BanTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /* @var Ban */
     private $ban1;
     private $ban2;

@@ -3,7 +3,6 @@
 namespace Tests\Unit\Middleware;
 
 use App\Http\Middleware\MustHavePassword;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\UnauthorizedException;
@@ -11,8 +10,6 @@ use Tests\TestCase;
 
 class MustHavePasswordMiddlewareTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function itPassesIfTheyHavePassword()
     {

@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Constants\BanTypeConstants;
 use App\Models\Ban;
+use App\Models\Membership;
 use App\Models\Permissions\Assignment;
 use App\Models\Rating;
 use App\Models\Role;
@@ -307,6 +308,46 @@ class UserRetrievalTest extends TestCase
             authUserCan(permissions: ["ukts.people.mutate"])
         }
         ')->assertJsonPath('data.authUserCan', false);
+    }
+
+    public function testItCanRetrieveMemberships()
+    {
+        $this->asUserOnAPI();
+
+        // Add states
+        $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_DIVISION), [
+            'ended_at' => Carbon::now()
+        ]);
+        $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_INTERNATIONAL));
+        $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_VISITING));
+
+        $result = $this->graphQL('
+        query{
+            authUser {
+                memberships {
+                    identifier
+                }
+                membershipHistory {
+                    identifier
+                }
+                primaryMembership {
+                    identifier
+                }
+                secondaryMemberships {
+                    identifier
+                }
+            }
+        }
+        ');
+
+
+        $result = $result->json('data.authUser');
+
+        $this->assertCount(2, $result['memberships']);
+        $this->assertCount(3, $result['membershipHistory']);
+        $this->assertEquals(Membership::IDENT_INTERNATIONAL, $result['primaryMembership']['identifier']);
+        $this->assertCount(1, $result['secondaryMemberships']);
+
     }
 
     private function asMachineMachine()

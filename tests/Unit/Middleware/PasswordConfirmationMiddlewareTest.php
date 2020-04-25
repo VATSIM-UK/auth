@@ -3,15 +3,12 @@
 namespace Tests\Unit\Middleware;
 
 use App\Http\Middleware\PasswordConfirmation;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
 use Illuminate\Validation\UnauthorizedException;
 use Tests\TestCase;
 
 class PasswordConfirmationMiddlewareTest extends TestCase
 {
-    use DatabaseTransactions;
-
     /** @test */
     public function itAsksForConfirmationIfHasPassword()
     {

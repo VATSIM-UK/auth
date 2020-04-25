@@ -4,12 +4,10 @@ namespace Tests\Unit;
 
 use App\Models\Membership;
 use App\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class MembershipTest extends TestCase
 {
-    use DatabaseTransactions;
     /** @test */
     public function itHasWorkingScopes()
     {
@@ -41,7 +39,7 @@ class MembershipTest extends TestCase
     public function itCanHaveManyUsers()
     {
         $membership = Membership::findByIdent(Membership::IDENT_DIVISION);
-        $users = factory(User::class, 3)->create()->each(function (User $user) use ($membership){
+        $users = factory(User::class, 3)->create()->each(function (User $user) use ($membership) {
             $membership->users()->attach($user->id);
         });
 

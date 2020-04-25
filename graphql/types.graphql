@@ -27,6 +27,11 @@ type User {
 
     all_permissions: [String!]
     roles: [Role!]
+
+    memberships: [Membership!]
+    membershipHistory: [Membership!]
+    primaryMembership: Membership
+    secondaryMemberships: [Membership!]
 }
 
 type Rating {
@@ -82,4 +87,15 @@ type Role {
 
 type Assignment {
     permission: String!
+}
+
+type Membership {
+    id: ID!
+    identifier: String!
+    primary: Boolean!
+    name: String!
+    division_expression: [String!]
+    region_expression: [String!]
+    can_have_secondaries: Boolean!
+    priority: Int!
 }

@@ -2,22 +2,14 @@
 
 namespace Tests\Unit\User;
 
-use App\Events\User\RolesChanged;
 use App\Exceptions\Memberships\MembershipNotSecondaryException;
 use App\Exceptions\Memberships\PrimaryMembershipDoesntAllowSecondaryException;
 use App\Models\Membership;
-use App\Models\Permissions\Assignment;
-use App\Models\Role;
-use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserMembershipTest extends TestCase
 {
-    use DatabaseTransactions;
-
     private $activeMembership, $pastMembership;
 
     protected function setUp(): void

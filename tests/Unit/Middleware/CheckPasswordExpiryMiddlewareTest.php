@@ -5,15 +5,12 @@ namespace Tests\Unit\Middleware;
 use App\Http\Middleware\CheckForExpiredPasswords;
 use App\Models\Role;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class CheckPasswordExpiryMiddlewareTest extends TestCase
 {
-    use DatabaseTransactions;
-
     private $role;
 
     protected function setUp(): void

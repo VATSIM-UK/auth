@@ -23,7 +23,7 @@ trait HasMemberships
     public function membershipHistory(): BelongsToMany
     {
         return $this->membershipsRelationship()
-            ->orderBy('pivot.started_at', 'desc');
+            ->orderBy((new MembershipPivot())->getTable().'.started_at', 'desc');
     }
 
     public function primaryMembership(): ?Membership
@@ -107,6 +107,11 @@ trait HasMemberships
         return $this->memberships()->updateExistingPivot($state, [
             'ended_at' => Carbon::now(),
         ]);
+    }
+
+    public function getPrimaryMembershipAttribute()
+    {
+        return $this->primaryMembership();
     }
 
     private function membershipsRelationship(): BelongsToMany
