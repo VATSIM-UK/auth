@@ -51,7 +51,7 @@ class CreateMembershipTables extends Migration
                     'division_expression' => '*',
                     'region_expression' => '*',
                     'priority' => '80',
-                ]]);
+                ], ]);
 
         DB::table('memberships')
             ->insert([
@@ -66,7 +66,7 @@ class CreateMembershipTables extends Migration
                     'primary' => false,
                     'name' => 'Visiting',
                     'priority' => '20',
-                ]
+                ],
             ]);
 
         // Create pivot table

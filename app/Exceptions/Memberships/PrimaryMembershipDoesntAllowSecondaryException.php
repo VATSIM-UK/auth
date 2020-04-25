@@ -6,5 +6,5 @@ use Exception;
 
 class PrimaryMembershipDoesntAllowSecondaryException extends Exception
 {
-    protected $message = "The current primary membership does not allow secondary memberships";
+    protected $message = 'The current primary membership does not allow secondary memberships';
 }

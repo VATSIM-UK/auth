@@ -8,5 +8,5 @@ $factory->define(\App\Models\Membership::class, function (Faker\Generator $faker
 });
 
 $factory->state(\App\Models\Membership::class, 'secondary', [
-    'primary' => false
+    'primary' => false,
 ]);

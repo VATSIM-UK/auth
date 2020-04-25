@@ -10,7 +10,8 @@ use Tests\TestCase;
 
 class UserMembershipTest extends TestCase
 {
-    private $activeMembership, $pastMembership;
+    private $activeMembership;
+    private $pastMembership;
 
     protected function setUp(): void
     {
@@ -19,7 +20,7 @@ class UserMembershipTest extends TestCase
         $this->pastMembership = factory(Membership::class)->create();
 
         $this->user->memberships()->attach($this->activeMembership->id, [
-            'started_at' => Carbon::now()->subYear()
+            'started_at' => Carbon::now()->subYear(),
         ]);
 
         $this->user->memberships()->attach($this->pastMembership->id, [
