@@ -32,6 +32,9 @@ type User {
     membershipHistory: [Membership!]
     primaryMembership: Membership
     secondaryMemberships: [Membership!]
+    is_home_member: Boolean!
+    is_transferring: Boolean!
+    is_visiting: Boolean!
 }
 
 type Rating {

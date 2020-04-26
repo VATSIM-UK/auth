@@ -348,16 +348,6 @@ class UserRetrievalTest extends TestCase
         $this->assertCount(1, $result['secondaryMemberships']);
     }
 
-    private function asMachineMachine()
-    {
-        Passport::actingAsClient(new Client(), ['machine-only']);
-    }
-
-    private function asUserOnAPI()
-    {
-        Passport::actingAs($this->user);
-    }
-
     private function assertApiUnauthenticatedResponse($response)
     {
         $response->assertJsonPath('errors.0.debugMessage', 'Unauthenticated.');

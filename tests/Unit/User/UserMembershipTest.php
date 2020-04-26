@@ -6,6 +6,9 @@ use App\Exceptions\Memberships\MembershipNotSecondaryException;
 use App\Exceptions\Memberships\PrimaryMembershipDoesntAllowSecondaryException;
 use App\Models\Membership;
 use Carbon\Carbon;
+use Mockery;
+use Mockery\Mock;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class UserMembershipTest extends TestCase
@@ -59,7 +62,9 @@ class UserMembershipTest extends TestCase
         $this->assertNotEquals('Division', $this->user->primaryMembership()->name);
         $this->assertNull(Membership\MembershipPivot::where(['user_id' => $this->user->id, 'membership_id' => $this->activeMembership->id])->first()->ended_at);
 
-        $this->user->updatePrimaryMembership('GBR', 'EUR');
+        $this->assertTrue($this->user->updatePrimaryMembership('GBR', 'EUR'));
+        // Test adding duplicate
+        $this->assertFalse($this->user->updatePrimaryMembership('GBR', 'EUR'));
 
         $this->assertEquals('Division', $this->user->primaryMembership()->name);
         $this->assertEquals('GBR', $this->user->primaryMembership()->pivot->division);
@@ -71,9 +76,24 @@ class UserMembershipTest extends TestCase
     }
 
     /** @test */
+    public function itHandlesNotFindingPrimaryMembership()
+    {
+        $this->mock(Membership::class, function (MockInterface $mock) {
+            $mock->shouldReceive('findPrimaryByVATSIMLocality')
+                ->andReturn(null);
+        });
+
+        $this->assertFalse($this->user->updatePrimaryMembership('GBR', 'EUR'));
+    }
+
+    /** @test */
     public function itCanAddSecondaryMembershipIfAllowed()
     {
         $this->assertEquals(0, $this->user->secondaryMemberships->count());
+        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->assertEquals(1, $this->user->fresh()->secondaryMemberships->count());
+
+        // Test adding duplicate
         $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
         $this->assertEquals(1, $this->user->fresh()->secondaryMemberships->count());
 
@@ -98,6 +118,7 @@ class UserMembershipTest extends TestCase
     public function itDeterminesIfItHasMembership()
     {
         $this->assertTrue($this->user->hasMembership($this->activeMembership));
+        $this->assertTrue($this->user->hasMembership($this->activeMembership->id));
         $this->assertFalse($this->user->hasMembership($this->pastMembership));
     }
 
@@ -106,5 +127,24 @@ class UserMembershipTest extends TestCase
     {
         $this->assertEquals(1, $this->user->removeMembership($this->activeMembership));
         $this->assertEquals(0, $this->user->fresh()->memberships()->count());
+    }
+
+    /** @test */
+    public function itHasWorkingAttributes()
+    {
+        $this->assertFalse($this->user->is_home_member);
+        $this->user->updatePrimaryMembership('GBR', 'EUR');
+        $this->assertTrue($this->user->is_home_member);
+
+
+        $this->user->updatePrimaryMembership('EUD', 'EUR');
+        $this->assertFalse($this->user->is_transferring);
+        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_TRANSFERING));
+        $this->assertTrue($this->user->is_transferring);
+
+        $this->assertFalse($this->user->is_visiting);
+        $this->user->removeSecondaryMemberships();
+        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->assertTrue($this->user->is_visiting);
     }
 }

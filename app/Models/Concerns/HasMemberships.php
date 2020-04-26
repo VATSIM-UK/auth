@@ -40,7 +40,7 @@ trait HasMemberships
 
     public function updatePrimaryMembership(string $division, string $region): bool
     {
-        $matchingMembership = Membership::findPrimaryByVATSIMLocality($division, $region);
+        $matchingMembership = resolve(Membership::class)->findPrimaryByVATSIMLocality($division, $region);
 
         if (! $matchingMembership) {
             return false;
@@ -95,9 +95,21 @@ trait HasMemberships
         });
     }
 
-    public function hasMembership(Membership $membership): bool
+    /**
+     * @param Membership|int|string $membership
+     * @return bool
+     */
+    public function hasMembership($membership): bool
     {
-        return $this->memberships()->where('memberships.id', $membership->id)->exists();
+        if($membership instanceof Membership){
+            return $this->memberships()->where('memberships.id', $membership->id)->exists();
+        }else if(is_string($membership)){
+            // Assume is an identifier
+            return $this->memberships()->where('memberships.identifier', $membership)->exists();
+        }
+        // Assume is an ID
+        return $this->memberships()->where('memberships.id', $membership)->exists();
+
     }
 
     public function removeMembership(Membership $state): int
@@ -107,9 +119,24 @@ trait HasMemberships
         ]);
     }
 
-    public function getPrimaryMembershipAttribute()
+    public function getPrimaryMembershipAttribute(): ?Membership
     {
         return $this->primaryMembership();
+    }
+
+    public function getIsHomeMemberAttribute(): bool
+    {
+        return $this->hasMembership(Membership::IDENT_DIVISION);
+    }
+
+    public function getIsVisitingAttribute(): bool
+    {
+        return $this->hasMembership(Membership::IDENT_VISITING);
+    }
+
+    public function getIsTransferringAttribute(): bool
+    {
+        return $this->hasMembership(Membership::IDENT_TRANSFERING);
     }
 
     private function membershipsRelationship(): BelongsToMany

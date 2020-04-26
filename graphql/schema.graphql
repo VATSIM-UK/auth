@@ -24,3 +24,4 @@ type Mutation
 
 #import passwords.graphql
 #import permissions.graphql
+#import memberships.graphql
