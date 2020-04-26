@@ -101,15 +101,14 @@ trait HasMemberships
      */
     public function hasMembership($membership): bool
     {
-        if($membership instanceof Membership){
+        if ($membership instanceof Membership) {
             return $this->memberships()->where('memberships.id', $membership->id)->exists();
-        }else if(is_string($membership)){
+        } elseif (is_string($membership)) {
             // Assume is an identifier
             return $this->memberships()->where('memberships.identifier', $membership)->exists();
         }
         // Assume is an ID
         return $this->memberships()->where('memberships.id', $membership)->exists();
-
     }
 
     public function removeMembership(Membership $state): int

@@ -6,8 +6,6 @@ use App\Exceptions\Memberships\MembershipNotSecondaryException;
 use App\Exceptions\Memberships\PrimaryMembershipDoesntAllowSecondaryException;
 use App\Models\Membership;
 use Carbon\Carbon;
-use Mockery;
-use Mockery\Mock;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -135,7 +133,6 @@ class UserMembershipTest extends TestCase
         $this->assertFalse($this->user->is_home_member);
         $this->user->updatePrimaryMembership('GBR', 'EUR');
         $this->assertTrue($this->user->is_home_member);
-
 
         $this->user->updatePrimaryMembership('EUD', 'EUR');
         $this->assertFalse($this->user->is_transferring);

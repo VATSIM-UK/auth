@@ -8,10 +8,8 @@ use App\Models\Membership;
 use App\Models\Permissions\Assignment;
 use App\Models\Rating;
 use App\Models\Role;
-use App\Passport\Client;
 use App\User;
 use Carbon\Carbon;
-use Laravel\Passport\Passport;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
