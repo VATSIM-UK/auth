@@ -69,7 +69,7 @@ class Membership extends Model
 
     public function getSecondaryAttribute(): bool
     {
-        return !$this->primary;
+        return ! $this->primary;
     }
 
     public function getDivisionExpressionAttribute(): ?Collection
