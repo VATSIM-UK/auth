@@ -50,8 +50,8 @@ class Membership extends Model
             $divisions = $membership->division_expression;
             $regions = $membership->region_expression;
 
-            $regionCriteriaMatched = $regions ? ($regions->first() == '*' || $regions->contains($region)) : false;
-            $divisionCriteriaMatched = $divisions ? ($divisions->first() == '*' || $divisions->contains($division)) : false;
+            $regionCriteriaMatched = $regions && ($regions->first() == '*' || $regions->contains($region));
+            $divisionCriteriaMatched = $divisions && ($divisions->first() == '*' || $divisions->contains($division));
 
             if ($regionCriteriaMatched && $divisionCriteriaMatched) {
                 return true;
@@ -69,7 +69,7 @@ class Membership extends Model
 
     public function getSecondaryAttribute(): bool
     {
-        return ! $this->primary;
+        return !$this->primary;
     }
 
     public function getDivisionExpressionAttribute(): ?Collection

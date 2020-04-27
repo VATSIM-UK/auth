@@ -39,7 +39,7 @@ class MembershipTest extends TestCase
     public function itCanHaveManyUsers()
     {
         $membership = Membership::findByIdent(Membership::IDENT_DIVISION);
-        $users = factory(User::class, 3)->create()->each(function (User $user) use ($membership) {
+        factory(User::class, 3)->create()->each(function (User $user) use ($membership) {
             $membership->users()->attach($user->id);
         });
 

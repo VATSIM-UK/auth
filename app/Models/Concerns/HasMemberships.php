@@ -21,7 +21,7 @@ trait HasMemberships
     public function membershipHistory(): BelongsToMany
     {
         return $this->membershipsRelationship()
-            ->orderBy((new MembershipPivot())->getTable().'.started_at', 'desc');
+            ->orderBy((new MembershipPivot())->getTable() . '.started_at', 'desc');
     }
 
     public function primaryMembership(): ?Membership
@@ -42,19 +42,17 @@ trait HasMemberships
     {
         $matchingMembership = resolve(Membership::class)->findPrimaryByVATSIMLocality($division, $region);
 
-        if (! $matchingMembership) {
+        if (!$matchingMembership) {
             return false;
         }
 
         // Check if the user already has this membership, and the division/region combination is the same
-        if ($this->hasMembership($matchingMembership)) {
-            if ($this->primaryMembership()->pivot->division == $division && $this->primaryMembership()->pivot->region == $region) {
-                return false;
-            }
+        if ($this->hasMembership($matchingMembership) && ($this->primaryMembership()->pivot->division == $division && $this->primaryMembership()->pivot->region == $region)) {
+            return false;
         }
 
         // Check we can have secondary memberships
-        if (! $matchingMembership->can_have_secondaries) {
+        if (!$matchingMembership->can_have_secondaries) {
             $this->removeSecondaryMemberships();
         }
 
@@ -76,7 +74,7 @@ trait HasMemberships
         throw_if($membership->primary, new MembershipNotSecondaryException());
 
         // Check we can have secondary memberships
-        if ($this->primaryMembership() && ! $this->primaryMembership()->can_have_secondaries) {
+        if ($this->primaryMembership() && !$this->primaryMembership()->can_have_secondaries) {
             throw new PrimaryMembershipDoesntAllowSecondaryException();
         }
 
