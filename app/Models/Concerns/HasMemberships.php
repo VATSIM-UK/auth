@@ -48,7 +48,7 @@ trait HasMemberships
 
         // Check if the user already has this membership, and the division/region combination is the same
         if ($this->hasMembership($matchingMembership)) {
-            if($this->primaryMembership()->pivot->division == $division && $this->primaryMembership()->pivot->region == $region){
+            if ($this->primaryMembership()->pivot->division == $division && $this->primaryMembership()->pivot->region == $region) {
                 return false;
             }
         }
