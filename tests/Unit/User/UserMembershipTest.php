@@ -5,6 +5,7 @@ namespace Tests\Unit\User;
 use App\Exceptions\Memberships\MembershipNotSecondaryException;
 use App\Exceptions\Memberships\PrimaryMembershipDoesntAllowSecondaryException;
 use App\Models\Membership;
+use App\User;
 use Carbon\Carbon;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -71,6 +72,17 @@ class UserMembershipTest extends TestCase
         $this->assertNull($this->user->primaryMembership()->pivot->ended_at);
 
         $this->assertNotNull(Membership\MembershipPivot::where(['user_id' => $this->user->id, 'membership_id' => $this->activeMembership->id])->first()->ended_at);
+    }
+
+    /** @test */
+    public function itCanUpdatePrimaryMembershipEvenInPrimaryMembershipDoesntChange()
+    {
+        $user = factory(User::class)->create();
+        $this->assertTrue($user->updatePrimaryMembership('USA', 'USA-N'));
+        $this->assertTrue($user->fresh()->updatePrimaryMembership('CAN', 'USA-N'));
+        $this->assertFalse($user->fresh()->updatePrimaryMembership('CAN', 'USA-N'));
+
+        $this->assertEquals(2, $user->fresh()->membershipHistory()->count());
     }
 
     /** @test */
