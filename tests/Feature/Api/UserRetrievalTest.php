@@ -334,6 +334,9 @@ class UserRetrievalTest extends TestCase
                 secondaryMemberships {
                     identifier
                 }
+                is_home_member
+                is_transferring
+                is_visiting
             }
         }
         ');
@@ -344,6 +347,9 @@ class UserRetrievalTest extends TestCase
         $this->assertCount(3, $result['membershipHistory']);
         $this->assertEquals(Membership::IDENT_INTERNATIONAL, $result['primaryMembership']['identifier']);
         $this->assertCount(1, $result['secondaryMemberships']);
+        $this->assertFalse($result['is_home_member']);
+        $this->assertFalse($result['is_transferring']);
+        $this->assertTrue($result['is_visiting']);
     }
 
     private function assertApiUnauthenticatedResponse($response)
