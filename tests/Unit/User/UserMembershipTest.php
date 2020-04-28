@@ -57,7 +57,7 @@ class UserMembershipTest extends TestCase
     /** @test */
     public function itCanUpdatePrimaryMembership()
     {
-        $now = Carbon::now()->micro(0)->seconds(0);
+        $now = Carbon::now()->setMicro(0)->setSeconds(0);
         Carbon::setTestNow($now);
         $this->assertNotEquals('Division', $this->user->primaryMembership()->name);
         $this->assertNull(Membership\MembershipPivot::where(['user_id' => $this->user->id, 'membership_id' => $this->activeMembership->id])->first()->ended_at);
