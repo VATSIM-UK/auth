@@ -28,9 +28,10 @@ trait HasMemberships
 
     public function primaryMembership(): ?Membership
     {
-        if($this->primaryMembership){
+        if ($this->primaryMembership) {
             return $this->primaryMembership;
         }
+
         return $this->primaryMembership = $this->memberships()
             ->primary()
             ->first();
