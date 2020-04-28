@@ -10,7 +10,7 @@ class UserMembershipMutation
     public function addVisitingMembership($rootValue, array $args): bool
     {
         $user = User::findOrFail($args['user_id']);
-        $membership = Membership::findByIdent(Membership::IDENT_VISITING);
+        $membership = Membership::findByIdentifier(Membership::IDENT_VISITING);
 
         $user->addSecondaryMembership($membership);
 
@@ -20,7 +20,7 @@ class UserMembershipMutation
     public function addTransferringMembership($rootValue, array $args): bool
     {
         $user = User::findOrFail($args['user_id']);
-        $membership = Membership::findByIdent(Membership::IDENT_TRANSFERING);
+        $membership = Membership::findByIdentifier(Membership::IDENT_TRANSFERING);
 
         $user->addSecondaryMembership($membership);
 

@@ -64,6 +64,7 @@ class UserMembershipTest extends TestCase
 
         $this->assertTrue($this->user->updatePrimaryMembership('GBR', 'EUR'));
         // Test adding duplicate
+        $this->user = $this->user->fresh();
         $this->assertFalse($this->user->updatePrimaryMembership('GBR', 'EUR'));
 
         $this->assertEquals('Division', $this->user->primaryMembership()->name);
@@ -101,11 +102,11 @@ class UserMembershipTest extends TestCase
     public function itCanAddSecondaryMembershipIfAllowed()
     {
         $this->assertEquals(0, $this->user->secondaryMemberships->count());
-        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->user->addSecondaryMembership(Membership::findByIdentifier(Membership::IDENT_VISITING));
         $this->assertEquals(1, $this->user->fresh()->secondaryMemberships->count());
 
         // Test adding duplicate
-        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->user->addSecondaryMembership(Membership::findByIdentifier(Membership::IDENT_VISITING));
         $this->assertEquals(1, $this->user->fresh()->secondaryMemberships->count());
 
         // Set a primary membership that doesn't allow secondaries
@@ -115,14 +116,14 @@ class UserMembershipTest extends TestCase
         $this->assertEquals(0, $this->user->fresh()->secondaryMemberships->count());
 
         $this->expectException(PrimaryMembershipDoesntAllowSecondaryException::class);
-        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->user->fresh()->addSecondaryMembership(Membership::findByIdentifier(Membership::IDENT_VISITING));
     }
 
     /** @test */
     public function itThrowsAnExceptionIfAddingAPrimaryMembershipThroughSecondary()
     {
         $this->expectException(MembershipNotSecondaryException::class);
-        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_INTERNATIONAL));
+        $this->user->addSecondaryMembership(Membership::findByIdentifier(Membership::IDENT_INTERNATIONAL));
     }
 
     /** @test */
@@ -149,12 +150,12 @@ class UserMembershipTest extends TestCase
 
         $this->user->updatePrimaryMembership('EUD', 'EUR');
         $this->assertFalse($this->user->is_transferring);
-        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_TRANSFERING));
+        $this->user->addSecondaryMembership(Membership::findByIdentifier(Membership::IDENT_TRANSFERING));
         $this->assertTrue($this->user->is_transferring);
 
         $this->assertFalse($this->user->is_visiting);
-        $this->user->removeSecondaryMemberships();
-        $this->user->addSecondaryMembership(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->user->removeAllSecondaryMemberships();
+        $this->user->addSecondaryMembership(Membership::findByIdentifier(Membership::IDENT_VISITING));
         $this->assertTrue($this->user->is_visiting);
     }
 }

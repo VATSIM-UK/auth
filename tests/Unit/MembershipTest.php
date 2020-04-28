@@ -22,9 +22,9 @@ class MembershipTest extends TestCase
     /** @test */
     public function itCanFindByIdentity()
     {
-        $this->assertEquals('International', Membership::findByIdent(Membership::IDENT_INTERNATIONAL)->name);
-        $this->assertEquals('Visiting', Membership::findByIdent(Membership::IDENT_VISITING)->name);
-        $this->assertEquals(null, Membership::findByIdent('UKN'));
+        $this->assertEquals('International', Membership::findByIdentifier(Membership::IDENT_INTERNATIONAL)->name);
+        $this->assertEquals('Visiting', Membership::findByIdentifier(Membership::IDENT_VISITING)->name);
+        $this->assertEquals(null, Membership::findByIdentifier('UKN'));
     }
 
     /** @test */
@@ -38,7 +38,7 @@ class MembershipTest extends TestCase
     /** @test */
     public function itCanHaveManyUsers()
     {
-        $membership = Membership::findByIdent(Membership::IDENT_DIVISION);
+        $membership = Membership::findByIdentifier(Membership::IDENT_DIVISION);
         factory(User::class, 3)->create()->each(function (User $user) use ($membership) {
             $membership->users()->attach($user->id);
         });
@@ -49,7 +49,7 @@ class MembershipTest extends TestCase
     /** @test */
     public function itCanDetermineIfSecondary()
     {
-        $this->assertFalse(Membership::findByIdent(Membership::IDENT_DIVISION)->secondary);
-        $this->assertTrue(Membership::findByIdent(Membership::IDENT_VISITING)->secondary);
+        $this->assertFalse(Membership::findByIdentifier(Membership::IDENT_DIVISION)->secondary);
+        $this->assertTrue(Membership::findByIdentifier(Membership::IDENT_VISITING)->secondary);
     }
 }

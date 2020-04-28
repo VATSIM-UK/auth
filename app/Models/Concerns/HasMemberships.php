@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 trait HasMemberships
 {
+    private $primaryMembership;
+
     public function memberships(): BelongsToMany
     {
         return $this->membershipsRelationship()
@@ -26,7 +28,10 @@ trait HasMemberships
 
     public function primaryMembership(): ?Membership
     {
-        return $this->memberships()
+        if($this->primaryMembership){
+            return $this->primaryMembership;
+        }
+        return $this->primaryMembership = $this->memberships()
             ->primary()
             ->first();
     }
@@ -47,13 +52,15 @@ trait HasMemberships
         }
 
         // Check if the user already has this membership, and the division/region combination is the same
-        if ($this->hasMembership($matchingMembership) && ($this->primaryMembership()->pivot->division == $division && $this->primaryMembership()->pivot->region == $region)) {
+        $divisionSameAsCurrent = $this->primaryMembership() && $this->primaryMembership()->pivot->division == $division;
+        $regionSameAsCurrent = $this->primaryMembership() && $this->primaryMembership()->pivot->region == $region;
+        if ($this->hasMembership($matchingMembership) && $divisionSameAsCurrent && $regionSameAsCurrent) {
             return false;
         }
 
         // Check we can have secondary memberships
         if (! $matchingMembership->can_have_secondaries) {
-            $this->removeSecondaryMemberships();
+            $this->removeAllSecondaryMemberships();
         }
 
         // End Previous Primary Membership
@@ -89,7 +96,7 @@ trait HasMemberships
         return true;
     }
 
-    public function removeSecondaryMemberships(): void
+    public function removeAllSecondaryMemberships(): void
     {
         $this->secondaryMemberships->each(function ($membership) {
             $this->removeMembership($membership);

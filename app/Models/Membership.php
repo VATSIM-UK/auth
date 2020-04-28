@@ -39,7 +39,7 @@ class Membership extends Model
         return $query->orderBy('priority');
     }
 
-    public static function findByIdent(string $ident): ?self
+    public static function findByIdentifier(string $ident): ?self
     {
         return self::where('identifier', $ident)->first();
     }

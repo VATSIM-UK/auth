@@ -2,9 +2,9 @@
 
 namespace App\Exceptions\Memberships;
 
-use Exception;
+use App\Exceptions\PublicValidationException;
 
-class MembershipNotSecondaryException extends Exception
+class MembershipNotSecondaryException extends PublicValidationException
 {
     protected $message = 'The subject membership is not a secondary membership';
 }

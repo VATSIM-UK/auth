@@ -19,8 +19,8 @@ class CreateMembershipTables extends Migration
             $table->string('identifier');
             $table->boolean('primary')->default(true);
             $table->string('name');
-            $table->string('division_expression')->nullable(); // Comma-delimited list of divisions that qualify for this membership. * = Any division
-            $table->string('region_expression')->nullable(); // Comma-delimited list of regions that qualify for this membership. * = Any region
+            $table->string('division_expression')->nullable()->comment("Comma-delimited list of divisions that qualify for this membership. * = Any division");
+            $table->string('region_expression')->nullable()->comment("Comma-delimited list of regions that qualify for this membership. * = Any region");
             $table->boolean('can_have_secondaries')->default(true);
             $table->integer('priority')->default('99');
         });

@@ -313,11 +313,11 @@ class UserRetrievalTest extends TestCase
         $this->asUserOnAPI();
 
         // Add states
-        $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_DIVISION), [
+        $this->user->memberships()->attach(Membership::findByIdentifier(Membership::IDENT_DIVISION), [
             'ended_at' => Carbon::now(),
         ]);
-        $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_INTERNATIONAL));
-        $this->user->memberships()->attach(Membership::findByIdent(Membership::IDENT_VISITING));
+        $this->user->memberships()->attach(Membership::findByIdentifier(Membership::IDENT_INTERNATIONAL));
+        $this->user->memberships()->attach(Membership::findByIdentifier(Membership::IDENT_VISITING));
 
         $result = $this->graphQL('
         query{

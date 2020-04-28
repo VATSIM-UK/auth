@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Exceptions\Memberships\PrimaryMembershipDoesntAllowSecondaryException;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
@@ -25,7 +26,7 @@ class UserMembershipTest extends TestCase
             mutation {
                 addVisitingMembershipToUser(user_id: {$this->user->id})
             }
-        ")->assertJsonStructure(['errors']);
+        ")->assertJsonPath('errors.0.message', (new PrimaryMembershipDoesntAllowSecondaryException)->getMessage());
     }
 
     public function testCanGiveTransferringMembershipToUser()
@@ -44,6 +45,6 @@ class UserMembershipTest extends TestCase
             mutation {
                 addTransferringMembershipToUser(user_id: {$this->user->id})
             }
-        ")->assertJsonStructure(['errors']);
+        ")->assertJsonPath('errors.0.message', (new PrimaryMembershipDoesntAllowSecondaryException)->getMessage());
     }
 }
