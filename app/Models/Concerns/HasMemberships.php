@@ -74,6 +74,9 @@ trait HasMemberships
             'started_at' => Carbon::now(),
         ]);
 
+        // Clear primary membership cache
+        $this->primaryMembership = null;
+
         return true;
     }
 
