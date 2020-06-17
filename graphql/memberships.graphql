@@ -1,0 +1,8 @@
+extend type Mutation  @middleware(checks: ["client:machine-only"]){
+    addVisitingMembershipToUser(
+        user_id: ID!
+    ): Boolean @field(resolver: "UserMembershipMutation@addVisitingMembership")
+    addTransferringMembershipToUser(
+        user_id: ID!
+    ): Boolean @field(resolver: "UserMembershipMutation@addTransferringMembership")
+}

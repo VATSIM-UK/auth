@@ -2,11 +2,13 @@
 
 namespace Tests;
 
+use App\Passport\Client;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Passport;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -28,6 +30,16 @@ abstract class TestCase extends BaseTestCase
         Gate::before(function () {
             return true;
         });
+    }
+
+    public function asMachineMachine()
+    {
+        Passport::actingAsClient(new Client(), ['machine-only']);
+    }
+
+    public function asUserOnAPI()
+    {
+        Passport::actingAs($this->user);
     }
 
     public function assertCollectionSubset($subset, $collection)
