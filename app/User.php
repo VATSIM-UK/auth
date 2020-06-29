@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Concerns\HasBans;
+use App\Models\Concerns\HasMemberships;
 use App\Models\Concerns\HasPassword;
 use App\Models\Concerns\HasRatings;
 use App\Models\Concerns\HasRoles;
@@ -15,7 +16,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements CanResetPasswordInterface
 {
-    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, CanResetPassword, HasRoles;
+    use Notifiable, HasApiTokens, HasPassword, HasRatings, HasBans, CanResetPassword, HasRoles, HasMemberships;
 
     protected $table = 'users';
 

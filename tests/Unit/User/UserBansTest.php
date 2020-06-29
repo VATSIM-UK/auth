@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\User;
 
 use App\Events\User\Banned;
 use App\Events\User\BanRepealed;

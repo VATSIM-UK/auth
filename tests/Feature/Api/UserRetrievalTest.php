@@ -4,13 +4,12 @@ namespace Tests\Feature\Api;
 
 use App\Constants\BanTypeConstants;
 use App\Models\Ban;
+use App\Models\Membership;
 use App\Models\Permissions\Assignment;
 use App\Models\Rating;
 use App\Models\Role;
-use App\Passport\Client;
 use App\User;
 use Carbon\Carbon;
-use Laravel\Passport\Passport;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 
@@ -309,14 +308,48 @@ class UserRetrievalTest extends TestCase
         ')->assertJsonPath('data.authUserCan', false);
     }
 
-    private function asMachineMachine()
+    public function testItCanRetrieveMemberships()
     {
-        Passport::actingAsClient(new Client(), ['machine-only']);
-    }
+        $this->asUserOnAPI();
 
-    private function asUserOnAPI()
-    {
-        Passport::actingAs($this->user);
+        // Add states
+        $this->user->memberships()->attach(Membership::findByIdentifier(Membership::IDENT_DIVISION), [
+            'ended_at' => Carbon::now(),
+        ]);
+        $this->user->memberships()->attach(Membership::findByIdentifier(Membership::IDENT_INTERNATIONAL));
+        $this->user->memberships()->attach(Membership::findByIdentifier(Membership::IDENT_VISITING));
+
+        $result = $this->graphQL('
+        query{
+            authUser {
+                memberships {
+                    identifier
+                }
+                membershipHistory {
+                    identifier
+                }
+                primaryMembership {
+                    identifier
+                }
+                secondaryMemberships {
+                    identifier
+                }
+                is_home_member
+                is_transferring
+                is_visiting
+            }
+        }
+        ');
+
+        $result = $result->json('data.authUser');
+
+        $this->assertCount(2, $result['memberships']);
+        $this->assertCount(3, $result['membershipHistory']);
+        $this->assertEquals(Membership::IDENT_INTERNATIONAL, $result['primaryMembership']['identifier']);
+        $this->assertCount(1, $result['secondaryMemberships']);
+        $this->assertFalse($result['is_home_member']);
+        $this->assertFalse($result['is_transferring']);
+        $this->assertTrue($result['is_visiting']);
     }
 
     private function assertApiUnauthenticatedResponse($response)
