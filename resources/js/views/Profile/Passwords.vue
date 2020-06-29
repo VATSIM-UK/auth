@@ -64,9 +64,9 @@
 </template>
 <script>
     import gql from 'graphql-tag'
-    import Errors from '../components/ui/errors'
-    import MutationButton from "../components/MutationButton";
-    import DefaultLayout from "../components/layout/DefaultLayout";
+    import Errors from '../../components/ui/errors'
+    import MutationButton from "../../components/MutationButton";
+    import DefaultLayout from "../../components/layout/DefaultLayout";
 
     export default {
         components: {DefaultLayout, MutationButton},

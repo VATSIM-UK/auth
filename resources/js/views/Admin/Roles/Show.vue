@@ -106,11 +106,11 @@
 </template>
 <script>
     import gql from 'graphql-tag'
-    import PermissionsAssignmentMatrix from "../components/PermissionsAssignmentMatrix";
-    import MutationButton from "../components/MutationButton";
-    import Errors from '../components/ui/errors'
-    import ErrorMessage from "../components/ui/ErrorMessage";
-    import DefaultLayout from "../components/layout/DefaultLayout";
+    import PermissionsAssignmentMatrix from "../../../components/PermissionsAssignmentMatrix";
+    import MutationButton from "../../../components/MutationButton";
+    import Errors from '../../../components/ui/errors'
+    import ErrorMessage from "../../../components/ui/ErrorMessage";
+    import DefaultLayout from "../../../components/layout/DefaultLayout";
 
     export default {
         components: {

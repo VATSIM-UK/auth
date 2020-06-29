@@ -21,9 +21,9 @@
 </template>
 
 <script>
-    import DefaultLayout from "../components/layout/DefaultLayout";
+    import DefaultLayout from "../../../components/layout/DefaultLayout";
     import gql from 'graphql-tag'
-    import ErrorMessage from "../components/ui/ErrorMessage";
+    import ErrorMessage from "../../../components/ui/ErrorMessage";
 
     export default {
         name: "Users",

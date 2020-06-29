@@ -11,7 +11,14 @@
                 </div>
                 <div class="col">
                     <ul class="list-group">
-                        <li class="list-group-item">📅 Member of VATSIM since {{user.joined_at | dateTimeFormat("D/M/YYYY")}}</li>
+                        <li class="list-group-item">
+                            <template v-if="user.banned">
+                                🚨 Currently banned
+                            </template>
+                            <template v-else>
+                                ✅ Currently in good standing
+                            </template>
+                        </li>
                         <li class="list-group-item">
                             <b>Primary Membership</b>
                             <div v-if="user.is_home_member">
@@ -21,7 +28,7 @@
                                 🌍 {{user.primaryMembership.name}} Member ({{user.primaryMembership.pivot.division}} - {{user.primaryMembership.pivot.region}})
                             </div>
                         </li>
-                        <li class="list-group-item" v-if="user.secondaryMemberships">
+                        <li class="list-group-item" v-if="user.secondaryMemberships.length">
                             <b>Secondary Memberships</b>
                             <div v-for="membership in user.secondaryMemberships">
                                 <template v-if="membership.identifier === 'TFR'">🚚</template>
@@ -30,6 +37,7 @@
                                 Is {{membership.name}}
                             </div>
                         </li>
+                        <li class="list-group-item">📅 Member of VATSIM since {{user.joined_at | dateTimeFormat("D/M/YYYY")}}</li>
                     </ul>
                 </div>
             </div>
@@ -38,10 +46,10 @@
 </template>
 
 <script>
-    import DefaultLayout from "../components/layout/DefaultLayout";
+    import DefaultLayout from "../../../components/layout/DefaultLayout";
     import gql from 'graphql-tag'
-    import ErrorMessage from "../components/ui/ErrorMessage";
-    import Errors from "../components/ui/errors";
+    import ErrorMessage from "../../../components/ui/ErrorMessage";
+    import Errors from "../../../components/ui/errors";
 
     export default {
         name: "Users",
@@ -84,6 +92,7 @@
                             identifier
                             name
                         }
+                        banned
                     }
                 }`,
                 variables() {

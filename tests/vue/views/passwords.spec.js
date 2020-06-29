@@ -1,5 +1,5 @@
 import {shallowMount} from '@vue/test-utils';
-import Passwords from '../../../resources/js/views/Passwords';
+import Passwords from '../../../resources/js/views/Profile/Passwords';
 import expect from 'expect';
 import vue from "vue";
 
