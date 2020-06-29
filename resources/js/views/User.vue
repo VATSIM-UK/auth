@@ -12,6 +12,24 @@
                 <div class="col">
                     <ul class="list-group">
                         <li class="list-group-item">📅 Member of VATSIM since {{user.joined_at | dateTimeFormat("D/M/YYYY")}}</li>
+                        <li class="list-group-item">
+                            <b>Primary Membership</b>
+                            <div v-if="user.is_home_member">
+                                🏠 Home Member
+                            </div>
+                            <div v-else>
+                                🌍 {{user.primaryMembership.name}} Member ({{user.primaryMembership.pivot.division}} - {{user.primaryMembership.pivot.region}})
+                            </div>
+                        </li>
+                        <li class="list-group-item" v-if="user.secondaryMemberships">
+                            <b>Secondary Memberships</b>
+                            <div v-for="membership in user.secondaryMemberships">
+                                <template v-if="membership.identifier === 'TFR'">🚚</template>
+                                <template v-else-if="membership.identifier === 'VST'">✈</template>
+                                <template v-else>⚠</template>
+                                Is {{membership.name}}
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -52,6 +70,20 @@
                         joined_at
                         cert_checked_at
                         created_at
+                        is_home_member
+                        is_transferring
+                        is_visiting
+                        primaryMembership {
+                            name
+                            pivot {
+                                division
+                                region
+                            }
+                        }
+                        secondaryMemberships {
+                            identifier
+                            name
+                        }
                     }
                 }`,
                 variables() {

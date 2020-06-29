@@ -104,4 +104,12 @@ type Membership {
     region_expression: [String!]
     can_have_secondaries: Boolean!
     priority: Int!
+    pivot: MembershipPivot
+}
+
+type MembershipPivot {
+    division: String
+    region: String
+    started_at: DateTime!
+    ended_at: DateTime
 }
