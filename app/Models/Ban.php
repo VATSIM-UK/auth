@@ -90,7 +90,7 @@ class Ban extends Model
 
     public function getIsActiveAttribute(): bool
     {
-        return !$this->ends_at || $this->ends_at->isFuture();
+        return ! $this->ends_at || $this->ends_at->isFuture();
     }
 
     public function getIsLocalAttribute(): bool
