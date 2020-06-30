@@ -34,8 +34,7 @@ trait HasBans
         return $this->bans()
             ->where('starts_at', '<=', Carbon::now())
             ->where(function (Builder $query) {
-                return $query->where('ends_at', '>', Carbon::now())
-                    ->orWhereNull('ends_at');
+                return $query->active();
             })
             ->whereNull('repealed_at');
     }

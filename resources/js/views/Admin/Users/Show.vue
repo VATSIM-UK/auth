@@ -5,9 +5,41 @@
         </template>
 
         <template v-if="!$apolloData.loading && user">
+            <h3>{{user.name_full}}</h3>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+                <button class="navbar-toggler" type="button" data-toggle="collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <router-link class="nav-link" :to="{name:'admin.users.bans', params: {id: user.id}}">Bans
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link class="nav-link" :to="{name:'admin.users.roles', params: {id: user.id}}">Roles
+                            </router-link>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
             <div class="row">
                 <div class="col">
-                    <h3>{{user.name_full}}</h3>
+                    <table class="table table-responsive">
+                        <tr class="table-info">
+                            <th>🎧 Controller Rating:</th>
+                            <td>{{user.atcRating.code}}</td>
+                        </tr>
+                        <tr class="table-info">
+                            <th>🛫 Pilot Ratings:</th>
+                            <td>
+                                <div v-for="rating in user.pilotRatings">
+                                    {{rating.code}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div class="col">
                     <ul class="list-group">
@@ -25,7 +57,8 @@
                                 🏠 Home Member
                             </div>
                             <div v-else>
-                                🌍 {{user.primaryMembership.name}} Member ({{user.primaryMembership.pivot.division}} - {{user.primaryMembership.pivot.region}})
+                                🌍 {{user.primaryMembership.name}} Member ({{user.primaryMembership.pivot.division}} -
+                                {{user.primaryMembership.pivot.region}})
                             </div>
                         </li>
                         <li class="list-group-item" v-if="user.secondaryMemberships.length">
@@ -37,7 +70,9 @@
                                 Is {{membership.name}}
                             </div>
                         </li>
-                        <li class="list-group-item">📅 Member of VATSIM since {{user.joined_at | dateTimeFormat("D/M/YYYY")}}</li>
+                        <li class="list-group-item">📅 Member of VATSIM since {{user.joined_at |
+                            dateTimeFormat("D/M/YYYY")}}
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -52,7 +87,7 @@
     import Errors from "../../../components/ui/errors";
 
     export default {
-        name: "Users",
+        name: "Show",
         components: {ErrorMessage, DefaultLayout},
         data() {
             return {
@@ -90,6 +125,14 @@
                         }
                         secondaryMemberships {
                             identifier
+                            name
+                        }
+                        atcRating {
+                            code
+                            name
+                        }
+                        pilotRatings {
+                            code
                             name
                         }
                         banned

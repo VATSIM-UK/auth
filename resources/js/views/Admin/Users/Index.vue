@@ -51,7 +51,7 @@
                         return;
                     }
 
-                    this.$router.push({name: "admin.users.view", params: {id: this.searchCID}})
+                    this.$router.push({name: "admin.users.show", params: {id: this.searchCID}})
                 })
             }
         }

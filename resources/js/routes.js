@@ -8,6 +8,8 @@ import AdminRolesIndex from './views/Admin/Roles/Index'
 import AdminRolesShow from "./views/Admin/Roles/Show";
 import AdminUsersIndex from "./views/Admin/Users/Index";
 import AdminUsersShow from "./views/Admin/Users/Show";
+import AdminUsersBans from "./views/Admin/Users/Bans"
+import AdminUsersRoles from "./views/Admin/Users/Roles"
 
 export default [
     {
@@ -69,8 +71,26 @@ export default [
 
     {
         path: '/admin/users/:id',
-        name: 'admin.users.view',
+        name: 'admin.users.show',
         component: AdminUsersShow,
+        meta: {
+            permission: 'auth.users'
+        }
+    },
+
+    {
+        path: '/admin/users/:id/bans',
+        name: 'admin.users.bans',
+        component: AdminUsersBans,
+        meta: {
+            permission: 'auth.users.bans'
+        }
+    },
+
+    {
+        path: '/admin/users/:id/roles',
+        name: 'admin.users.roles',
+        component: AdminUsersRoles,
         meta: {
             permission: 'auth.users'
         }

@@ -5,14 +5,14 @@ namespace Tests;
 use App\Passport\Client;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, DatabaseTransactions;
+    use CreatesApplication, RefreshDatabase;
 
     /* @var User */
     protected $user;

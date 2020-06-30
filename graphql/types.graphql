@@ -64,6 +64,10 @@ type Ban {
     updated_at: DateTime!
     repealed_at: DateTime
 
+    is_active: Boolean!
+    is_network: Boolean!
+    is_local: Boolean!
+
     user: User!
     banner: User
     reason: BanReason

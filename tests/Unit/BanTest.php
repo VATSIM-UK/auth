@@ -66,4 +66,11 @@ class BanTest extends TestCase
         $this->assertFalse($this->ban2->is_local);
         $this->assertFalse($this->ban1->is_network);
     }
+
+    /** @test */
+    public function itReportIfActive()
+    {
+        $this->assertTrue($this->ban1->is_active);
+        $this->assertFalse($this->ban2->is_active);
+    }
 }
