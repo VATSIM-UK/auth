@@ -73,7 +73,7 @@ class Ban extends Model
 
     public function end(): bool
     {
-        if (!$this->ends_at) {
+        if (! $this->ends_at) {
             $this->ends_at = Carbon::now();
             $this->save();
 
@@ -94,7 +94,7 @@ class Ban extends Model
 
     public function getIsActiveAttribute(): bool
     {
-        return !$this->repealed_at && (!$this->ends_at || $this->ends_at->isFuture());
+        return ! $this->repealed_at && (! $this->ends_at || $this->ends_at->isFuture());
     }
 
     public function getIsLocalAttribute(): bool

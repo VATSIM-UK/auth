@@ -38,7 +38,7 @@ class User extends Authenticatable implements CanResetPasswordInterface
 
     protected $casts = [
         'inactive' => 'bool',
-        'id' => 'int'
+        'id' => 'int',
     ];
 
     protected $dates = [

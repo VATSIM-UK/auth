@@ -3,7 +3,6 @@
 namespace Tests\Unit\Commands;
 
 use App\Passport\Client;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PersonalAccessTokenFactory;
@@ -22,7 +21,7 @@ class GenerateAuthTokenCommandTest extends TestCase
             return;
         }
         $this->artisan("token:generate {$this->user->id}")
-            ->expectsOutput("No personal access client has been setup. Create one with \"php artisan passport:client --personal\"");
+            ->expectsOutput('No personal access client has been setup. Create one with "php artisan passport:client --personal"');
     }
 
     /** @test */
@@ -51,6 +50,6 @@ class GenerateAuthTokenCommandTest extends TestCase
         });
 
         $this->artisan("token:generate {$this->user->id}")
-            ->expectsOutput("Success! Token: eYMyJWTHere");
+            ->expectsOutput('Success! Token: eYMyJWTHere');
     }
 }

@@ -19,7 +19,7 @@ class BanTest extends TestCase
         parent::setUp();
         $this->ban1 = factory(Ban::class)->create([
             'type' => BanTypeConstants::LOCAL,
-            'ends_at' => Carbon::now()->addDay()
+            'ends_at' => Carbon::now()->addDay(),
         ]);
         $this->ban2 = factory(Ban::class)->create([
             'type' => BanTypeConstants::NETWORK,
@@ -27,7 +27,7 @@ class BanTest extends TestCase
         ]);
         $this->ban3 = factory(Ban::class)->create([
             'type' => BanTypeConstants::NETWORK,
-            'ends_at' => Carbon::now()->subDay()
+            'ends_at' => Carbon::now()->subDay(),
         ]);
     }
 
@@ -52,7 +52,7 @@ class BanTest extends TestCase
     /** @test */
     public function itCanGetNotRepealedBans()
     {
-        $this->assertEquals([$this->ban1->id,$this->ban3->id], Ban::notRepealed()->pluck('id')->all());
+        $this->assertEquals([$this->ban1->id, $this->ban3->id], Ban::notRepealed()->pluck('id')->all());
     }
 
     /** @test */
