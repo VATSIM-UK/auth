@@ -53,14 +53,14 @@
                             </template>
                         </li>
                         <li class="list-group-item">
-                            <strong>Primary Membership</strong>
-                            <div v-if="user.is_home_member">
+                            <strong class="d-block">Primary Membership</strong>
+                            <template v-if="user.is_home_member">
                                 🏠 Home Member
-                            </div>
-                            <div v-else>
-                                🌍 {{user.primaryMembership.name}} Member ({{user.primaryMembership.pivot.division}} -
-                                {{user.primaryMembership.pivot.region}})
-                            </div>
+                            </template>
+                            <template v-else>
+                                🌍 {{user.primaryMembership.name}} Member
+                            </template>
+                            ({{user.primaryMembership.pivot.division}} - {{user.primaryMembership.pivot.region}})
                         </li>
                         <li class="list-group-item" v-if="user.secondaryMemberships.length">
                             <strong>Secondary Memberships</strong>
