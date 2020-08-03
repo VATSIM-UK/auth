@@ -21,7 +21,7 @@ trait HasBans
      */
     public function bans(): HasMany
     {
-        return $this->hasMany(Ban::class)->orderBy('starts_at');
+        return $this->hasMany(Ban::class)->orderByDesc('starts_at');
     }
 
     /**

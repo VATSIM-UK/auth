@@ -3,13 +3,13 @@
         <div class="container" v-if="!$apolloData.loading && user">
             <h3><router-link :to="{name: 'admin.users.show', params: {id: user.id}}">{{user.name_full}}</router-link>'s Ban History</h3>
             <table class="table table-striped">
-                <caption>Table displaying the user's bans</caption>
+                <caption class="d-none">Table displaying the user's bans</caption>
                 <thead>
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Reason</th>
                     <th scope="col">Type</th>
-                    <th scope="col">Active</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Banned By</th>
                     <td></td>
                 </tr>
@@ -30,25 +30,31 @@
                         <template v-if="ban.is_active">
                             ⏳ Active
                         </template>
+                        <template v-else-if="ban.repealed_at">
+                            Repealed
+                        </template>
                         <template v-else>
-                            ✅ Expired
+                            Expired
                         </template>
                     </td>
                     <td>
-                        {{ban.banner.name_full}} ({{ban.banner.id}})
+                        <router-link :to="{name: 'admin.users.show', params: {id: ban.banner.id}}">{{ban.banner.name_full}}</router-link>
                     </td>
                     <td>
                         <template v-if="ban.is_active">
                             Ends:
                             <template v-if="ban.ends_at">
-                                {{ban.ends_at | dateTimeFormat('d/m/Y H:m')}}
+                                {{ban.ends_at | dateTimeFormat('D/M/Y H:m')}}
                             </template>
                             <template v-else>
                                 Indefinite
                             </template>
                         </template>
+                        <template v-else-if="ban.repealed_at">
+                            Repealed: {{ban.repealed_at | dateTimeFormat('D/M/Y H:m')}}
+                        </template>
                         <template v-else>
-                            Ended: {{ban.ends_at | dateTimeFormat('d/m/Y H:m')}}
+                            Ended: {{ban.ends_at | dateTimeFormat('D/M/Y H:m')}}
                         </template>
                     </td>
                 </tr>

@@ -26,8 +26,8 @@
             </nav>
             <div class="row">
                 <div class="col">
-                    <table class="table table-responsive">
-                        <caption>Table displaying the users controller and pilot ratings</caption>
+                    <table class="table">
+                        <caption class="d-none">Table displaying the users controller and pilot ratings</caption>
                         <tr class="table-info">
                             <th scope="row">🎧 Controller Rating:</th>
                             <td>{{user.atcRating.code}}</td>
