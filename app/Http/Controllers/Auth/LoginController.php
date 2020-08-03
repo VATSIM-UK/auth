@@ -147,10 +147,9 @@ class LoginController extends Controller
         ]);
 
         if (! Auth::attempt(['id' => $this->partialWebUser->id, 'password' => $request->input($passwordFieldName)])) {
-            $error = ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 $passwordFieldName => ['The supplied password did not match our records'],
             ]);
-            throw $error;
         }
 
         return $this->authDone($this->partialWebUser);
