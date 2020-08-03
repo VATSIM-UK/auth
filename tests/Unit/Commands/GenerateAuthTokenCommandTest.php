@@ -21,9 +21,8 @@ class GenerateAuthTokenCommandTest extends TestCase
 
             return;
         }
-
-        Artisan::call("token:generate {$this->user->id}");
-        $this->assertEquals("No personal access client has been setup. Create one with \"php artisan passport:client --personal\"\n", Artisan::output());
+        $this->artisan("token:generate {$this->user->id}")
+            ->expectsOutput("No personal access client has been setup. Create one with \"php artisan passport:client --personal\"");
     }
 
     /** @test */
@@ -32,8 +31,8 @@ class GenerateAuthTokenCommandTest extends TestCase
         $client = app()->make(ClientRepository::class)->create(null, 'Personal Access Client', '/', true);
         Passport::personalAccessClientId($client->id);
 
-        Artisan::call('token:generate 1234');
-        $this->assertEquals("A user was not found with the ID 1234\n", Artisan::output());
+        $this->artisan('token:generate 1234')
+            ->expectsOutput('A user was not found with the ID 1234');
     }
 
     /** @test */
@@ -51,7 +50,7 @@ class GenerateAuthTokenCommandTest extends TestCase
                 ));
         });
 
-        Artisan::call("token:generate {$this->user->id}");
-        $this->assertEquals("Success! Token: eYMyJWTHere\n", Artisan::output());
+        $this->artisan("token:generate {$this->user->id}")
+            ->expectsOutput("Success! Token: eYMyJWTHere");
     }
 }

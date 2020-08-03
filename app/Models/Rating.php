@@ -16,6 +16,10 @@ class Rating extends Model
     protected $table = 'ratings';
     public $timestamps = false;
 
+    protected $casts = [
+        'type' => 'int',
+    ];
+
     protected $enumCasts = [
         'type' => RatingTypeConstants::class,
     ];
