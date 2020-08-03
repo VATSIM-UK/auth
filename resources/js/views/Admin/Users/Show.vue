@@ -27,12 +27,13 @@
             <div class="row">
                 <div class="col">
                     <table class="table table-responsive">
+                        <caption>Table displaying the users controller and pilot ratings</caption>
                         <tr class="table-info">
-                            <th>🎧 Controller Rating:</th>
+                            <th scope="row">🎧 Controller Rating:</th>
                             <td>{{user.atcRating.code}}</td>
                         </tr>
                         <tr class="table-info">
-                            <th>🛫 Pilot Ratings:</th>
+                            <th scope="row">🛫 Pilot Ratings:</th>
                             <td>
                                 <div v-for="rating in user.pilotRatings">
                                     {{rating.code}}
@@ -52,7 +53,7 @@
                             </template>
                         </li>
                         <li class="list-group-item">
-                            <b>Primary Membership</b>
+                            <strong>Primary Membership</strong>
                             <div v-if="user.is_home_member">
                                 🏠 Home Member
                             </div>
@@ -62,7 +63,7 @@
                             </div>
                         </li>
                         <li class="list-group-item" v-if="user.secondaryMemberships.length">
-                            <b>Secondary Memberships</b>
+                            <strong>Secondary Memberships</strong>
                             <div v-for="membership in user.secondaryMemberships">
                                 <template v-if="membership.identifier === 'TFR'">🚚</template>
                                 <template v-else-if="membership.identifier === 'VST'">✈</template>

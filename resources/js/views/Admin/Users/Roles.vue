@@ -3,10 +3,11 @@
         <div class="container" v-if="!$apolloData.loading && user">
             <h3><router-link :to="{name: 'admin.users.show', params: {id: user.id}}">{{user.name_full}}</router-link>'s Roles</h3>
             <table class="table table-striped">
+                <caption>Table displaying the user's roles</caption>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
                 </tr>
                 </thead>
                 <tbody>

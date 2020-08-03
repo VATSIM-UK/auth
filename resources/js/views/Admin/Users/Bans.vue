@@ -3,13 +3,14 @@
         <div class="container" v-if="!$apolloData.loading && user">
             <h3><router-link :to="{name: 'admin.users.show', params: {id: user.id}}">{{user.name_full}}</router-link>'s Ban History</h3>
             <table class="table table-striped">
+                <caption>Table displaying the user's bans</caption>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Reason</th>
-                    <th>Type</th>
-                    <th>Active</th>
-                    <th>Banned By</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Active</th>
+                    <th scope="col">Banned By</th>
                     <td></td>
                 </tr>
                 </thead>
