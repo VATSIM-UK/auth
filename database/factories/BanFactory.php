@@ -12,7 +12,7 @@ $factory->define(\App\Models\Ban::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(\App\Models\Ban\Reason::class, function (Faker\Generator $faker) use ($factory) {
+$factory->define(\App\Models\Ban\Reason::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'body' => $faker->paragraph,
