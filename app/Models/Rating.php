@@ -13,9 +13,12 @@ class Rating extends Model
 {
     use CastsEnums;
 
-    protected $connection = 'mysql';
     protected $table = 'ratings';
     public $timestamps = false;
+
+    protected $casts = [
+        'type' => 'int',
+    ];
 
     protected $enumCasts = [
         'type' => RatingTypeConstants::class,

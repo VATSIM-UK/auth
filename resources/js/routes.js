@@ -1,8 +1,15 @@
-import Passwords from './views/Passwords'
+
 import NotFound from './views/errors/NotFound'
 import Dashboard from './views/Dashboard'
-import Roles from './views/Roles'
-import Role from "./views/Role";
+
+import ProfilePasswords from './views/Profile/Passwords'
+
+import AdminRolesIndex from './views/Admin/Roles/Index'
+import AdminRolesShow from "./views/Admin/Roles/Show";
+import AdminUsersIndex from "./views/Admin/Users/Index";
+import AdminUsersShow from "./views/Admin/Users/Show";
+import AdminUsersBans from "./views/Admin/Users/Bans"
+import AdminUsersRoles from "./views/Admin/Users/Roles"
 
 export default [
     {
@@ -10,15 +17,27 @@ export default [
         name: 'dashboard',
         component: Dashboard,
     },
+
+    /*
+        Self-management Routes
+     */
+
     {
         path: '/settings/password',
         name: 'settings.password',
-        component: Passwords,
+        component: ProfilePasswords,
     },
+
+
+    /*
+        Admin Routes
+     */
+
+    // Roles
     {
         path: '/admin/roles',
         name: 'admin.roles',
-        component: Roles,
+        component: AdminRolesIndex,
         meta: {
             permission: 'auth.roles'
         }
@@ -26,7 +45,7 @@ export default [
     {
         path: '/admin/role/new',
         name: 'admin.role.create',
-        component: Role,
+        component: AdminRolesShow,
         meta: {
             permission: 'auth.roles.create'
         }
@@ -34,11 +53,51 @@ export default [
     {
         path: '/admin/role/:id',
         name: 'admin.role.update',
-        component: Role,
+        component: AdminRolesShow,
         meta: {
             permission: 'auth.roles.update'
         }
     },
+
+    // User Management
+    {
+        path: '/admin/users',
+        name: 'admin.users',
+        component: AdminUsersIndex,
+        meta: {
+            permission: 'auth.users'
+        }
+    },
+
+    {
+        path: '/admin/users/:id',
+        name: 'admin.users.show',
+        component: AdminUsersShow,
+        meta: {
+            permission: 'auth.users'
+        }
+    },
+
+    {
+        path: '/admin/users/:id/bans',
+        name: 'admin.users.bans',
+        component: AdminUsersBans,
+        meta: {
+            permission: 'auth.users.bans'
+        }
+    },
+
+    {
+        path: '/admin/users/:id/roles',
+        name: 'admin.users.roles',
+        component: AdminUsersRoles,
+        meta: {
+            permission: 'auth.users'
+        }
+    },
+
+
+    // Catch-all 404
     {
         path: '*',
         component: NotFound,
@@ -47,7 +106,12 @@ export default [
 
 // Don't want the globally applied loading spinner on a route?
 // add in the following meta field:
-
 // meta: {
 //     globalLoadState: false
+// }
+
+// Route Permissions
+// These can be added by specifying the permission meta field
+// meta: {
+//     permission: 'auth.users'
 // }

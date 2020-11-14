@@ -1,0 +1,7 @@
+extend type Query @middleware(checks: ["auth:api"]){
+    userByID(id: ID! @eq): User @find
+
+    authUser: User @auth
+    authUserCan(permissions: [String!]!): Boolean @field(resolver: "AuthorizeUser")
+}
+

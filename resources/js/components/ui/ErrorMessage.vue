@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" @after-leave="$emit('done')">
     <div class="alert alert-danger" v-show="countdown || !hideAfter" role="alert">
-      <h4 class="alert-heading">{{title}}</h4>
+      <h4 class="alert-heading mb-0">{{title}}</h4>
       <template v-if="isErrorsObject">
         <ul v-if="errors.count() > 1 || !Array.isArray(errors.all())">
           <template v-for="error in errors.errors">
@@ -14,7 +14,7 @@
 
       <slot/>
 
-      <div v-if="hideAfter" style="height: 2px" class="progress mt-2">
+      <div v-if="hideAfter && showProgress" style="height: 2px" class="progress mt-2">
         <div class="progress-bar bg-danger"
              role="progressbar"
              aria-valuemin="0"
@@ -35,7 +35,6 @@
         props: {
             errors: {
                 type: Errors,
-                required: true
             },
             title: {
                 type: String,
@@ -44,6 +43,10 @@
             hideAfter: {
                 type: Number,
                 default: null
+            },
+            showProgress: {
+                type: Boolean,
+                default: true
             }
         },
         data() {

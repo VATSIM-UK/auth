@@ -8,6 +8,7 @@ import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import Cookie from 'js-cookie'
 import App from './views/App'
+import moment from "moment";
 
 import Routes from './routes'
 
@@ -42,6 +43,12 @@ Vue.mixin({
         }
     }
 });
+
+Vue.filter('dateTimeFormat', function (value, format) {
+    if (!value) return ''
+    value = value.toString()
+    return moment(value).format(format);
+})
 
 /*
    Setup GraphQL Client with Authentication Headers

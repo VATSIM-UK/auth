@@ -8,6 +8,19 @@
             "update",
             "delete",
             "assign"
-        ]
+        ],
+        "users": {
+            "0": "impersonate",
+            "bans": [
+                "create",
+                "modify",
+                "repeal"
+            ],
+            "notes": [
+                "create",
+                "update",
+                "delete"
+            ]
+        }
     }
 }

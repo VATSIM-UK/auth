@@ -102,7 +102,7 @@ class UserBansTest extends TestCase
         $this->user->banLocally('Did something bad', $reason, $banner);
 
         Event::assertDispatched(Banned::class);
-        $this->assertEquals(Carbon::now()->addHours(12), $this->user->fresh()->currentBans->first()->ends_at);
+        $this->assertEquals(Carbon::now()->millis(0)->addHours(12), $this->user->fresh()->currentBans->first()->ends_at);
     }
 
     /** @test */
@@ -118,7 +118,7 @@ class UserBansTest extends TestCase
         $this->user->banLocally('Did something bad', null, $banner, Carbon::now()->addMonth());
 
         Event::assertDispatched(Banned::class);
-        $this->assertEquals(Carbon::now()->addMonth(), $this->user->fresh()->currentBans->first()->ends_at);
+        $this->assertEquals(Carbon::now()->millis(0)->addMonth(), $this->user->fresh()->currentBans->first()->ends_at);
     }
 
     /** @test */
@@ -138,7 +138,7 @@ class UserBansTest extends TestCase
         $this->user->banLocally('Did something bad', $reason, $banner->id);
 
         Event::assertDispatched(Banned::class);
-        $this->assertEquals(Carbon::now()->addDay()->addHours(12), $this->user->fresh()->currentBans->first()->ends_at);
+        $this->assertEquals(Carbon::now()->millis(0)->addDay()->addHours(12), $this->user->fresh()->currentBans->first()->ends_at);
     }
 
     /** @test */
