@@ -20,7 +20,7 @@
         "jsdom": "^15.2.1",
         "jsdom-global": "^3.0.2",
         "laravel-mix": "^4.0.7",
-        "lodash": "^4.17.13",
+        "lodash": "^4.17.21",
         "mocha": "^6.2.2",
         "mochapack": "^1.1.13",
         "popper.js": "^1.12",
