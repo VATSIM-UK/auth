@@ -27,8 +27,7 @@ trait HasPermissions
     /**
      * Determine if the model may perform the given permission.
      *
-     * @param string $permission
-     *
+     * @param  string  $permission
      * @return bool
      */
     public function hasPermissionTo($permission): bool
@@ -39,8 +38,7 @@ trait HasPermissions
     /**
      * Determine if the model has any of the given permissions.
      *
-     * @param array ...$permissions
-     *
+     * @param  array  ...$permissions
      * @return bool
      */
     public function hasAnyPermission(...$permissions): bool
@@ -60,8 +58,7 @@ trait HasPermissions
     /**
      * Determine if the model has all of the given permissions.
      *
-     * @param array ...$permissions
-     *
+     * @param  array  ...$permissions
      * @return bool
      */
     public function hasAllPermissions(...$permissions): bool
@@ -81,8 +78,7 @@ trait HasPermissions
     /**
      * Determine if the model has, via roles, the given permission.
      *
-     * @param string $permission
-     *
+     * @param  string  $permission
      * @return bool
      */
     public function hasPermissionViaRole($permission): bool
@@ -93,8 +89,7 @@ trait HasPermissions
     /**
      * Determine if the model has the given permission.
      *
-     * @param string $permission
-     *
+     * @param  string  $permission
      * @return bool
      */
     public function hasDirectPermission($permission): bool
@@ -134,8 +129,7 @@ trait HasPermissions
     /**
      * Grant the given permission(s) to a role.
      *
-     * @param string|array|Collection $permissions
-     *
+     * @param  string|array|Collection  $permissions
      * @return $this
      */
     public function givePermissionTo(...$permissions): self
@@ -175,8 +169,7 @@ trait HasPermissions
     /**
      * Remove all current permissions and set the given ones.
      *
-     * @param string|array|Collection $permissions
-     *
+     * @param  string|array|Collection  $permissions
      * @return $this
      */
     public function syncPermissions(...$permissions): self
@@ -193,8 +186,7 @@ trait HasPermissions
     /**
      * Revoke the given permission.
      *
-     * @param string|string[] $permission
-     *
+     * @param  string|string[]  $permission
      * @return $this
      */
     public function revokePermissionTo($permission): self

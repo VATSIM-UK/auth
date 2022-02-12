@@ -31,7 +31,7 @@ trait HasPassword
      *
      * Will hash the password, or set it as null if required.
      *
-     * @param null|string $password The password value to set.
+     * @param  null|string  $password  The password value to set.
      */
     public function setPasswordAttribute($password): void
     {
@@ -109,7 +109,7 @@ trait HasPassword
     /**
      * Set the user's password.
      *
-     * @param string $password The password string.
+     * @param  string  $password  The password string.
      * @return bool
      */
     public function setPassword(string $password): bool
