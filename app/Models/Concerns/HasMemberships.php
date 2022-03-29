@@ -108,7 +108,7 @@ trait HasMemberships
     }
 
     /**
-     * @param Membership|int|string $membership
+     * @param  Membership|int|string  $membership
      * @return bool
      */
     public function hasMembership($membership): bool
