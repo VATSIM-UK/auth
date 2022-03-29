@@ -52,7 +52,7 @@ class LoginController extends Controller
     /**
      * This function acts as an internal router for all login-related actions.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handleLogin(Request $request)

@@ -106,7 +106,7 @@ class VATSIMSSO
      *
      * @param $returnUrl
      * @param $success
-     * @param null $error
+     * @param  null  $error
      * @return bool|mixed
      */
     public function login($returnUrl, $success, $error = null)
@@ -133,7 +133,7 @@ class VATSIMSSO
      * @param $secret
      * @param $verifier
      * @param $success
-     * @param null $error
+     * @param  null  $error
      * @return bool|mixed
      */
     public function validate($key, $secret, $verifier, $success, $error = null)
@@ -155,9 +155,9 @@ class VATSIMSSO
     /**
      * Request a login token from VATSIM (required to send someone for an SSO login).
      *
-     * @param string $return_url URL for VATSIM to return memers to after login
-     * @param bool $allow_sus true to allow suspended VATSIM accounts to log in
-     * @param bool $allow_ina true to allow inactive VATSIM accounts to log in
+     * @param  string  $return_url  URL for VATSIM to return memers to after login
+     * @param  bool  $allow_sus  true to allow suspended VATSIM accounts to log in
+     * @param  bool  $allow_ina  true to allow inactive VATSIM accounts to log in
      * @return object|bool
      */
     public function requestToken($return_url = false, $allow_sus = false, $allow_ina = false)
@@ -223,9 +223,9 @@ class VATSIMSSO
     /**
      * Obtains a user's login details from a token key and secret.
      *
-     * @param string $tokenKey The token key provided by VATSIM
-     * @param secret $tokenSecret The secret associated with the token
-     * @return object|false         false if error, otherwise returns user details
+     * @param  string  $tokenKey  The token key provided by VATSIM
+     * @param  secret  $tokenSecret  The secret associated with the token
+     * @return object|false false if error, otherwise returns user details
      */
     public function checkLogin($tokenKey, $tokenSecret, $tokenVerifier)
     {
@@ -282,9 +282,9 @@ class VATSIMSSO
     /**
      * Perform a (post) cURL request.
      *
-     * @param type $url Destination of request
-     * @param type $bodu Query string of data to be posted
-     * @return bool              true if able to make request
+     * @param  type  $url  Destination of request
+     * @param  type  $bodu  Query string of data to be posted
+     * @return bool true if able to make request
      */
     private function curlRequest($url, $body)
     {
@@ -325,7 +325,7 @@ class VATSIMSSO
     /**
      * Redirect the user to VATSIM to log in/confirm login.
      *
-     * @return bool              false if failed
+     * @return bool false if failed
      */
     public function sendToVatsim()
     {
@@ -341,9 +341,9 @@ class VATSIMSSO
     /**
      * Set the signing method to be used to encrypt request signature.
      *
-     * @param string $signature Signature encryption method: RSA|HMAC
-     * @param string $private_key openssl RSA private key (only needed if using RSA)
-     * @return bool                  true if able to use this signing type
+     * @param  string  $signature  Signature encryption method: RSA|HMAC
+     * @param  string  $private_key  openssl RSA private key (only needed if using RSA)
+     * @return bool true if able to use this signing type
      */
     public function signature($signature, $private_key = false)
     {
@@ -389,7 +389,7 @@ class VATSIMSSO
     /**
      * Obtain the last generated error from this class.
      *
-     * @return array                Array of the latest error
+     * @return array Array of the latest error
      */
     public function getError()
     {
