@@ -29,6 +29,7 @@ class RsaSha1 extends BaseRsaSha1
      * Fetch the public RSA certificate (we do not use this functionality).
      *
      * @param $request
+     *
      * @throws OAuthServerException
      */
     public function fetch_public_cert(&$request)
