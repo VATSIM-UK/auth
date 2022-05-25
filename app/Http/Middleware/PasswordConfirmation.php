@@ -11,9 +11,10 @@ class PasswordConfirmation extends RequirePassword
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @return mixed
+     *
      * @throws \Throwable UnauthorizedException
      */
     public function handle($request, Closure $next, $redirectToRoute = null)
