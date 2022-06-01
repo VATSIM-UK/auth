@@ -20,7 +20,8 @@ class HasPermissionDirective extends BaseDirective implements FieldMiddleware
 
     /**
      * CanDirective constructor.
-     * @param Gate $gate
+     *
+     * @param  Gate  $gate
      * @return void
      */
     public function __construct(Gate $gate)
@@ -31,8 +32,8 @@ class HasPermissionDirective extends BaseDirective implements FieldMiddleware
     /**
      * Ensure the user is authorized to access this field.
      *
-     * @param FieldValue $fieldValue
-     * @param Closure $next
+     * @param  FieldValue  $fieldValue
+     * @param  Closure  $next
      * @return FieldValue
      */
     public function handleField(FieldValue $fieldValue, Closure $next): FieldValue
@@ -54,8 +55,8 @@ class HasPermissionDirective extends BaseDirective implements FieldMiddleware
     }
 
     /**
-     * @param Gate $gate
-     * @param string|string[] $ability
+     * @param  Gate  $gate
+     * @param  string|string[]  $ability
      * @return void
      *
      * @throws AuthorizationException
