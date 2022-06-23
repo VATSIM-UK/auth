@@ -32,8 +32,8 @@ trait HasRoles
     /**
      * Scope the model query to certain roles only.
      *
-     * @param Builder $query
-     * @param string|array|Collection $roles
+     * @param  Builder  $query
+     * @param  string|array|Collection  $roles
      * @return Builder
      */
     public function scopeRole(Builder $query, $roles): Builder
@@ -65,8 +65,7 @@ trait HasRoles
     /**
      * Assign the given role to the model.
      *
-     * @param Collection|array|string ...$roles
-     *
+     * @param  Collection|array|string  ...$roles
      * @return $this
      */
     public function assignRole(...$roles): self
@@ -95,8 +94,7 @@ trait HasRoles
     /**
      * Revoke the given role from the model.
      *
-     * @param string|Role $role
-     *
+     * @param  string|Role  $role
      * @return self
      */
     public function removeRole($role): self
@@ -114,8 +112,7 @@ trait HasRoles
     /**
      * Remove all current roles and set the given ones.
      *
-     * @param array|Role|string ...$roles
-     *
+     * @param  array|Role|string  ...$roles
      * @return $this
      */
     public function syncRoles(...$roles): self
@@ -142,7 +139,7 @@ trait HasRoles
     /**
      * Determine if the model has (one of) the given role(s).
      *
-     * @param string|int|array|Role $roles
+     * @param  string|int|array|Role  $roles
      * @return bool
      */
     public function hasRole($roles): bool
@@ -174,7 +171,7 @@ trait HasRoles
     /**
      * Returns if the model has a role by a role ID.
      *
-     * @param int $roleID
+     * @param  int  $roleID
      * @return bool
      */
     public function hasRoleByID(int $roleID): bool
@@ -185,7 +182,7 @@ trait HasRoles
     /**
      * Returns if the model has a role by a role name.
      *
-     * @param string $roleName
+     * @param  string  $roleName
      * @return bool
      */
     public function hasRoleByName(string $roleName): bool
@@ -196,8 +193,7 @@ trait HasRoles
     /**
      * Determine if the model has any of the given role(s).
      *
-     * @param string|array|Role|Collection $roles
-     *
+     * @param  string|array|Role|Collection  $roles
      * @return bool
      */
     public function hasAnyRole($roles): bool
@@ -208,7 +204,7 @@ trait HasRoles
     /**
      * Determine if the model has all of the given role(s).
      *
-     * @param string|Role|Collection|array $roles
+     * @param  string|Role|Collection|array  $roles
      * @return bool
      */
     public function hasAllRoles($roles): bool
@@ -242,8 +238,9 @@ trait HasRoles
     /**
      * Return a role model from an id or name.
      *
-     * @param int|string|Role $role
+     * @param  int|string|Role  $role
      * @return Role
+     *
      * @throws ModelNotFoundException
      */
     protected function getStoredRole($role): Role
@@ -261,7 +258,7 @@ trait HasRoles
     /**
      * Converts a glued string into an array of parts.
      *
-     * @param string $pipeString
+     * @param  string  $pipeString
      * @return array
      */
     protected function convertPipeToArray(string $pipeString): array
@@ -285,7 +282,7 @@ trait HasRoles
     /**
      * Converts an input list of role identifiers, and returns a collection of their id's.
      *
-     * @param array|Role|string $roles
+     * @param  array|Role|string  $roles
      * @return Collection
      */
     private function roleInputToIds($roles): Collection
