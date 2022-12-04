@@ -14,7 +14,7 @@ class BanRepealed extends BaseUserEvent
     /**
      * Create a new event instance.
      *
-     * @param Ban $ban
+     * @param  Ban  $ban
      */
     public function __construct(Ban $ban)
     {
