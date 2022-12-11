@@ -13,7 +13,7 @@ class ConstantServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      *
-     * @param TypeRegistry $typeRegistry
+     * @param  TypeRegistry  $typeRegistry
      * @return void
      */
     public function boot(TypeRegistry $typeRegistry)
