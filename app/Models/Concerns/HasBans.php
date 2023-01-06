@@ -64,10 +64,11 @@ trait HasBans
      * Ban the user locally.
      *
      * @param $body
-     * @param Ban\Reason $reason
-     * @param User|int $banner
-     * @param Carbon $end
+     * @param  Ban\Reason  $reason
+     * @param  User|int  $banner
+     * @param  Carbon  $end
      * @return Ban
+     *
      * @throws BanEndsBeforeStartException
      */
     public function banLocally($body, Ban\Reason $reason = null, $banner = null, Carbon $end = null): Ban
@@ -78,8 +79,9 @@ trait HasBans
     /**
      * Adds a network ban for the user (only affects status on local system).
      *
-     * @param null $body
+     * @param  null  $body
      * @return Ban
+     *
      * @throws AlreadyNetworkBannedException
      * @throws BanEndsBeforeStartException
      */
@@ -112,10 +114,11 @@ trait HasBans
      *
      * @param $type int A BanConstant type
      * @param $body string
-     * @param Ban\Reason $reason
-     * @param User|int $banner
-     * @param Carbon|null $end
+     * @param  Ban\Reason  $reason
+     * @param  User|int  $banner
+     * @param  Carbon|null  $end
      * @return Ban
+     *
      * @throws BanEndsBeforeStartException
      */
     private function ban($type, $body, Ban\Reason $reason = null, $banner = null, Carbon $end = null): Ban
